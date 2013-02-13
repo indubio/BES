@@ -1,0 +1,209 @@
+body,table,td,tr,div,p,pre,h1,h2,h3,h4,ul {font-family:Arial,Sans-Serif; font-weight:normal;text-decoration:none;}
+body,td,div,p,pre,ul,input,button,submit,select {font-size: 12px;}
+
+p,h1,h2,h3 {padding:0px;margin:0px;}
+li         {margin:2px 0px 0px 0px;}
+
+h1 {font-size: 16px; font-weight:bold;}
+h2 {font-size: 14px; font-weight:bold;}
+h3 {font-size: 12px;}
+
+body {
+  background-color: #DCE0D3;
+  color:#000000;
+  margin: 10px;
+  text-align:center;
+}
+
+#pagecontainer{
+  padding: 1px 1px 1px 1px;
+  margin: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align:center;
+  position:relative;
+  width:900px;
+  border:0px solid #000000;
+  background-color: transparent;
+}
+
+#headbox {
+  width: auto;
+  padding: 0px;
+  text-align: left;
+  background-color: #B5B5B5;
+  border:1px solid #000000;
+  overflow: auto;
+  position:relative;
+}
+
+#mainbox {
+  width: auto;
+  padding: 0px;
+  margin-top: 15px;
+  text-align: left;
+  background-color: #B5B5B5;
+  border:1px solid #000000;
+  overflow: auto;
+  position:relative;
+}
+
+#headcontent {
+  width: auto;
+  padding: 5px;
+  text-align: left;
+  background-color: transparent;
+  border:0px solid #000000;
+  overflow: auto;
+  position:relative;
+}
+
+#headmenu {
+  width: auto;
+  padding: 2px 5px 2px 5px;
+  text-align: left;
+  background-color: #D3D3D3;
+  border:0px solid #000000;
+  overflow: auto;
+  position:relative;
+}
+
+#maincontent {
+  width: auto;
+  text-align: left;
+  background-color: transparent;
+  border:0px solid #ffffff;
+  overflow: auto;
+  position:relative;
+  margin: 5px 5px;
+}
+
+#mainfooter {
+  width: auto;
+  padding: 5px;
+  text-align: left;
+  background-color: #D3D3D3;
+  border:0px solid #ffffff;
+  overflow: auto;
+  position:relative;
+}
+
+a.menu, a.menu:link, a.menu:visited, a.menu:active, a.menu:hover
+{
+    color:#000000;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration: none;
+}
+a.menu:hover
+{
+    color:#FFFFFF;
+    background-color: #000000;
+}
+
+a.downloadlink, a.downloadlink:link, a.downloadlink:visited, a.downloadlink:active, a.downloadlink:hover
+{
+    color:#000000;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration: none;
+}
+a.downloadlink:hover
+{
+    color:#FFFFFF;
+    background-color: #000000;
+}
+
+/* Umrandung Fieldset */
+fieldset        {border-color:#000000; border: solid 1px; padding:10px; margin:0px;}
+fieldset.h1     {border-color:#000000;}
+fieldset.h2     {border-color:#444444;}
+fieldset.error  {border-color:#FF0000;}
+legend          {font-weight:bold;}
+legend.h1       {color:#000000; font-size: 12px;}
+legend.h2       {color:#444444; font-size: 12px;}
+legend.error    {color:#FF0000; font-size: 12px;}
+
+label {color:#444444; font-size:12px; font-weight:bold;}
+
+/* AutoComplete Style */
+.ac_results    {padding: 0px;border: 2px solid black;background-color: white;overflow: hidden;z-index: 99999;}
+.ac_results ul {width: 100%;list-style-position: outside;list-style: none;padding: 0;margin: 0;}
+.ac_results li {margin: 0px;padding: 2px 5px;cursor: default;display: block;font: menu;font-size: 12px;line-height: 16px;overflow: hidden; text-align: left}
+.ac_loading    {background: white url('../images/ac_indicator.gif') right center no-repeat;}
+.ac_odd        {background-color: #EEEEEE;}
+.ac_over       {background-color: #0A246A;color: white;}
+
+/* Login */
+div.container_login   {text-align: left; width: 30em; margin: 0 auto;}
+div.logininnen        {padding-top:10px;}
+p.login               {margin:5px;}
+div.loginerror        {background-color: #000000; color: #FFFFFF;margin:5px;}
+input.login           {width:15em;}
+label.login           {font-weight: bold; color: #000000; font-size: 12px; float: left; width: 10em;}
+fieldset.login        {margin-top: 20px; border: #000000 solid 1px; background: transparent;}
+fieldset.login legend {font-weight: bold; color: #000000; background-color: transparent;}
+fieldset.loginfooter  {font-weight: normal; color: #000000; background: #D3D3D3; margin-top: 0; margin-bottom: 0.5em; border-top: 0; text-align: right; float: none; clear: both;}
+
+/* Verlauf */
+fieldset.verlauf_entry {margin-bottom: 10px;}
+
+
+div.checklabel {float: left; text-align: right;}
+div.checkselect{text-align:left}
+
+input.dateinput {width:6em;}
+input.timeinput {width:3em;}
+
+.clear{
+  overflow: hidden;
+  width: 100%;
+  clear: both;
+  margin: 0px;
+  padding:0px ;
+  height: 0px;
+  line-height: 0px;
+  font-size: 0px;
+}
+
+.searchbox{
+  background-image:url('../images/searchicon.gif');
+  background-repeat:no-repeat;
+  padding-left:20px;
+}
+
+.tt_badoedit {
+  background: transparent url(../images/btn_info_k.png) no-repeat center top;
+  height: 16px;
+  width : 16px;
+  border: 0px solid #333333;
+  margin: 0;
+  padding: 0;
+}
+
+#infobox_wrapper {
+  backgrounds: #ff0000;
+  position: relative;
+}
+
+#verlauf_body fieldset.entry {
+  margin-bottom: 10px;
+}
+
+#verlauf_body fieldset.entry legend {
+  font-size: 14px;
+  font-weight: bold;
+  font-family: sans-serif,Arial,Helvetica,Tahoma,Verdana;
+  text-decoration: none;
+  color: #000000;
+}
+
+#verlauf_body fieldset.entry, div.content p {
+  font-size: 13px;
+  font-weight: normal ;
+  font-family: sans-serif,Arial,Helvetica,Tahoma,Verdana;
+  text-decoration: none;
+  color: #000000;
+  margin : 0px 20px 5px 20px;
+  line-height: 1.6em;
+}
