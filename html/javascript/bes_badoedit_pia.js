@@ -161,6 +161,15 @@ $("#badoedit_pia #piabe_btn_getstammdata").click(function() {
 						} else {
 							$("#badoedit_pia #"+index).attr("checked", "").val("0");
 						}
+						// Andere Krisen: Beschreibung enable/disable
+						if (index == 'piabef_cb_akrisen') {
+							if (value == "1") {
+								$('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled");
+							} else {
+								$('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled").val("");
+								$('#badoedit_pia #piabef_cb_akrisen_txt').attr("readonly", "readonly").attr("disabled", "disabled");
+							}
+						}
 					} else if (index == "piabef_migration") {
 						// Migration
 						if (value == "2") {
@@ -328,6 +337,16 @@ $('#badoedit_pia #piabef_migration').change(function() {
 		$(element).focus();
 	} else {
 		$(element).val("").attr("readonly", "readonly").attr("disabled", "disabled");
+	}
+});
+
+// Andere Krise
+$('#badoedit_pia #piabef_cb_akrisen').change(function() {
+	if ($(this).val() == 1) {
+		$('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled");
+	} else {
+		$('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled").val("");
+		$('#badoedit_pia #piabef_cb_akrisen_txt').attr("readonly", "readonly").attr("disabled", "disabled");
 	}
 });
 

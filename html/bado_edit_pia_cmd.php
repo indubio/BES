@@ -123,7 +123,7 @@ function save_pia_bado ($i_values) {
 		$i_values['piabef_migration_txt'] = "";
 	}
 	if (!(isset($i_values['piabef_akrise_txt']))) {
-		$i_values['piabef_akrise_txt'] = -1;
+		$i_values['piabef_akrise_txt'] = "";
 	}
 	if (!(isset($i_values['piabef_weiterbehandlung_evb']))) {
 		$i_values['piabef_weiterbehandlung_evb'] = -1;
@@ -131,6 +131,10 @@ function save_pia_bado ($i_values) {
 	// wenn nicht migration, dann textfeld leer
 	if ($i_values['piabef_migration'] != 2) {
 		$i_values['migration_txt'] = "";
+	}
+	// wenn nicht andere Krise, dann Textfeld leer
+	if ($i_values['piabef_cb_akrisen'] !=1) {
+		$i_values['piabef_cb_akrisen_txt'] = "";
 	}
 
 	// wenn nicht Weiterbehandlung EvB, dann textfeld leer
