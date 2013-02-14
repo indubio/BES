@@ -2,7 +2,7 @@
 
 // VERSION VARS
 define('BES_VERSION_MAJOR', '1');
-define('BES_VERSION_MINOR', '3');
+define('BES_VERSION_MINOR', '1.0');
 
 // Error codes
 define('GENERAL_MESSAGE', 200);
