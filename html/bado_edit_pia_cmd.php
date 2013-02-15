@@ -330,7 +330,7 @@ if (count($error_msgs) == 0) {
 	if ($_POST['ajax_pia_cmd'] == "close") {
 		$error_msgs = save_pia_bado($_POST);
 		if (count($error_msgs) == 0) {
-			list ($error_msgs, $incorrect_msgs) = check_pia_bado($_POST, $db_daten['badotyp']);
+			list ($error_msgs, $incorrect_msgs) = check_pia_bado($_POST, $db_daten);
 			if (count($error_msgs) == 0) {
 				if (count($incorrect_msgs) == 0) {
 					$query = "UPDATE `fall_pia` SET "
