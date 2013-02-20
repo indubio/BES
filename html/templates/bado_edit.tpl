@@ -76,6 +76,9 @@ Entlassung:&nbsp;{$fall_entlass_info}
             <fieldset class="h2"><legend class="h2">Einweisung / Verlegung / Weiterleitung</legend>
               <select id="einweisung" name="einweisung">{html_options values=$einweisung_values output=$einweisung_options selected=$fall_einweisung_selected}</select>
               <label for="einweisung_evb">Klinik im EvB:&nbsp;</label><select id="einweisung_evb" name="einweisung_evb" {if $fall_einweisung_selected!=7}disabled="disabled"{/if}>{html_options values=$kliniken_evb_values output=$kliniken_evb_options selected=$fall_einweisung_evb_selected}</select>
+              <br/><br/>
+              <label for="einweisung_additional">weitere optionale Angaben:</label><br/>
+              <input type="text" id="einweisung_additional" name="einweisung_additional" size="50" value="{$fall_einweisung_additional}"/>
             </fieldset>
           </td>
         </tr>

@@ -116,6 +116,7 @@ function mywaf($var = array()) {
 				case "einkuenfte"            : if ($value!=""){if (idnotindb("f_einkuenfte",$value)){$error=true;}} else {$error=true;} break;
 				case "einweisung"            : if ($value!=""){if (idnotindb("f_einweisung",$value)){$error=true;}} else {$error=true;} break;
 				case "einweisung_evb"        : if ($value!=""){if (idnotindb("f_kliniken_evb",$value)){$error=true;}} else {$error=true;} break;
+				case "einweisung_additional" : break;
 				case "emodus"                : if ($value!=""){if (idnotindb("f_emodus",$value)){$error=true;}} else {$error=true;} break;
 				case "entlassungsdatum"      : if ($value!=""){if (isnotdate($value)){$error=true;}} break;
 				case "entlassungszeit"       : if ($value!=""){if (isnottime($value)){$error=true;}} break;

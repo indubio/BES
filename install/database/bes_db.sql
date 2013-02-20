@@ -496,6 +496,7 @@ CREATE TABLE IF NOT EXISTS `fall` (
   `wohnsituation_e` int(11) NOT NULL DEFAULT '-1',
   `einweisung` int(11) NOT NULL DEFAULT '-1',
   `einweisung_evb` int(11) NOT NULL DEFAULT '-1',
+  `einweisung_additional` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `begleitung1` int(11) NOT NULL DEFAULT '-1',
   `begleitung2` int(11) NOT NULL DEFAULT '-1',
   `modus_a` int(11) NOT NULL DEFAULT '-1',

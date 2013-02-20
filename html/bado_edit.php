@@ -139,6 +139,7 @@ if ($mode == "submit") {
 		"`wohnsituation_e`='".$submit['wohnsituation_e']."', ".
 		"`einweisung`='".$submit['einweisung']."', ".
 		"`einweisung_evb`='".$submit['einweisung_evb']."', ".
+		"`einweisung_additional`='".$submit['einweisung_additional']."', ".
 		"`begleitung1`='".$submit['begleitung1']."', ".
 		"`begleitung2`='".$submit['begleitung2']."', ".
 		"`modus_a`='".$submit['amodus']."', ".
@@ -307,7 +308,13 @@ if ($mode == "edit") {
 			$smarty -> assign("fall_".$value."_selected", $row[$value]);
 		}
 		$smarty -> assign('fall_dbid', $row['ID']);
-		$smarty -> assign('fall_migration_anderer', htmlspecialchars($row['migration_anderer'], ENT_NOQUOTES, 'UTF-8'));
+		$smarty -> assign(
+			'fall_migration_anderer',
+			htmlspecialchars($row['migration_anderer'], ENT_NOQUOTES, 'UTF-8'));
+		$smarty -> assign(
+			'fall_einweisung_additional',
+			htmlspecialchars($row['einweisung_additional'], ENT_NOQUOTES, 'UTF-8')
+		);
 		$smarty -> assign('fall_amodus_selected', $row['modus_a']);
 		$smarty -> assign('fall_emodus_selected', $row['modus_e']);
 		if ( ($row['station_a'] == 6) or ($row['station_a'] == 7) or ($row['station_a'] == 8) ) {
