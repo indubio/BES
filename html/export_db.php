@@ -26,7 +26,7 @@ $error = array();
 if ($_GET['export_dbpia'] == 1) {
 	$output = exportMysqlToCsv_PIA($_GET["export_dbyear"]);
 } else {
-	$output = exportMysqlToCsv($_GET["export_dbyear"]);
+	$output = exportMysqlToCsv_IP($_GET["export_dbyear"]);
 }
 
 $dirname = "export/".session_id();
