@@ -75,7 +75,7 @@ if ($_GET['mode'] == "export"){
 		1 => array('pipe', 'w'),  //stdout
 		2 => array('pipe', 'w'),  //stderr
 	);
-    $process = proc_open("binary/wkhtmltopdf-amd64".$args." - -", $descriptorspec, $pipes);
+    $process = proc_open("../binary/wkhtmltopdf-amd64".$args." - -", $descriptorspec, $pipes);
 	fwrite($pipes[0], $verlauf_html);
 	fclose($pipes[0]);
 	
