@@ -128,7 +128,7 @@ if(!empty($_POST)) {
 				"', `ldapusername`='".$_POST['ldapusername'].
 				"', `arzt`='".$_POST['arztlist'].
 				"', `active`='".$_POST['active'].
-				"WHERE `ID`='".$_POST['userdbid']."'";
+				"' WHERE `ID`='".$_POST['userdbid']."'";
 		}
 		if (!($result = mysql_query($query))) {
 			$error[] = "Datenbank Fehler";
