@@ -703,9 +703,6 @@ $(document).ready(function() {
 						});
 					}
 				});
-			} else {
-				usereditBoxy.hideAndUnload();
-				adminuserTable.fnDraw();
 			}
 		});
 	};

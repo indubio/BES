@@ -4,7 +4,7 @@ include ('bes_init.php');
 /*
  * Authentication
  */
-if ($_SESSION['logedin'] !=1 or auth($_SESSION['userlevel'], PAGE_ADMIN_USER)) {
+if ($_SESSION['logedin'] !=1 or auth($_SESSION['userlevel'], PAGE_ADMIN_USER) !=1) {
 	exit;
 }
 
