@@ -2,8 +2,6 @@
 -- version 3.4.11.1deb1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Erstellungszeit: 29. Jan 2013 um 20:27
 -- Server Version: 5.5.29
 -- PHP-Version: 5.4.6-1ubuntu1.1
 
@@ -674,6 +672,21 @@ CREATE TABLE IF NOT EXISTS `user` (
   `lastlogintry` datetime NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci PACK_KEYS=1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `userfunction`
+--
+
+CREATE TABLE IF NOT EXISTS `userfunction` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `male` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `female` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `order` int(11) NOT NULL DEFAULT '-1',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
