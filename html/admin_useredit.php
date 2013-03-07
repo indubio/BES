@@ -1,6 +1,6 @@
 <?php
 include ('bes_init.php');
-
+$error = array();
 /*
  * Authentication
  */
@@ -18,7 +18,7 @@ $_GET = escape_and_clear($_GET);
  * WAF Variablen Check 
  */
 if (mywaf($_GET)) { exit; }
-if (mywaf($_POST)){ exit; }
+if (mywaf($_POST)){ $error[] = "Variablen Fehler"; }
 
 
 // Selectbox Element generieren
@@ -70,102 +70,102 @@ $smarty -> assign('userfunction_options', $dummyarray_k);
 //////////////////////////////////////////////////////////////////////////////
 
 if(!empty($_POST)) {
-	if ($_POST['active'] !=1 ) {$_POST['active'] = 0;}
-	if ($_POST['arztlist'] !=1 ) {$_POST['arztlist'] = 0;}
-	if ($_POST['ldaplogin'] !=1 ) {$_POST['ldaplogin'] = 0;}
-
-	// Eingabencheck
-	$error = array();
-	if ($_POST['username'] == "") {
-		$error[] = "System Name nicht angegeben";
-	}
-	if ($_POST['familienname'] == "") {
-		$error[] = "Familiename nicht angegeben";
-	}
-	//kein LDAP Login und kein Passwort
-	if ($_POST['ldaplogin'] == 0 and $_POST['password'] == "") {
-		$error[] = "Passwort nötig, wenn keine LDAP-Authentifizierung";
-	}
-	// LDAP Login aber kein LDAP Name angegeben
-	if ($_POST['ldaplogin'] == 1 and $_POST['ldapusername'] == "") {
-		$error[] = "zur LDAP-Authentifizierung LDAP Username nötig";
-	}
-	//arzt aber nicht in behandler gruppe
-	if ($_POST['arztlist'] == 1 and $_POST['usergroup'] != UG_BEHANDLER) {
-		$error[] = "Nur Behandler können in der Arztliste sein";
-	}
-	// add oder edit (1) username schon vorhanden (2) username mit anderer id schon vorhanden
-	$query = "SELECT * FROM user WHERE `username`='".$_POST['username']."'";
-	$result = mysql_query($query);
-	$num_user = mysql_num_rows($result);
-	if ($_POST['userdbid'] == "" and $num_user !=0 ){
-		$error[] = "Systemname bereits vergeben";
-	}
-	if ($_POST['userdbid'] != "") {
-		if ($num_user != 0) {
-			$row = mysql_fetch_array($result);
-			if ($row['ID'] != $_POST['userdbid']) {
-				$error[] = "Systemname bereits vergeben";
-			}
-			unset($row);
-		}
-	}
-	mysql_free_result($result);
-	// Eingabecheck Ende
 	if (count($error) == 0) {
-		if ($_POST['userdbid'] == "") {
-			// neuen benutzer anlegen
-			$query = "INSERT INTO user (".
-				"`ID`, ".
-				"`username`,".
-				"`password`,".
-				"`familienname`,".
-				"`vorname`,".
-				"`ldaplogin`,".
-				"`ldapusername`,".
-				"`userlevel`,".
-				"`stationsid`,".
-				"`active`,".
-				"`arzt`,".
-				"`geschlecht`,".
-				"`email`,".
-				"`function`".
-				") VALUES (".
-				"NULL".
-				" ,'".$_POST['username'].
-				"','".$_POST['password'].
-				"','".$_POST['familienname'].
-				"','".$_POST['vorname'].
-				"','".$_POST['ldaplogin'].
-				"','".$_POST['ldapusername'].
-				"','".$_POST['usergroup'].
-				"','".$_POST['stationid'].
-				"','".$_POST['active'].
-				"','".$_POST['arztlist'].
-				"','".$_POST['usergender'].
-				"','".$_POST['usermail'].
-				"','".$_POST['userfunction'].
-				"')";
-		} else {
-			// Benutzer updaten
-			$query = "UPDATE `user` SET ".
-				"`familienname`='".$_POST['familienname'].
-				"', `vorname`='".$_POST['vorname'].
-				"', `username`='".$_POST['username'].
-				"', `password`='".$_POST['password'].
-				"', `userlevel`='".$_POST['usergroup'].
-				"', `stationsid`='".$_POST['stationid'].
-				"', `ldaplogin`='".$_POST['ldaplogin'].
-				"', `ldapusername`='".$_POST['ldapusername'].
-				"', `arzt`='".$_POST['arztlist'].
-				"', `active`='".$_POST['active'].
-				"', `geschlecht`='".$_POST['usergender'].
-				"', `email`='".$_POST['usermail'].
-				"', `function`='".$_POST['userfunction'].
-				"' WHERE `ID`='".$_POST['userdbid']."'";
+		if ($_POST['active'] !=1 ) {$_POST['active'] = 0;}
+		if ($_POST['arztlist'] !=1 ) {$_POST['arztlist'] = 0;}
+		if ($_POST['ldaplogin'] !=1 ) {$_POST['ldaplogin'] = 0;}
+		// Eingabencheck
+		if ($_POST['username'] == "") {
+			$error[] = "System Name nicht angegeben";
 		}
-		if (!($result = mysql_query($query))) {
-			$error[] = "Datenbank Fehler";
+		if ($_POST['familienname'] == "") {
+			$error[] = "Familiename nicht angegeben";
+		}
+		//kein LDAP Login und kein Passwort
+		if ($_POST['ldaplogin'] == 0 and $_POST['password'] == "") {
+			$error[] = "Passwort nötig, wenn keine LDAP-Authentifizierung";
+		}
+		// LDAP Login aber kein LDAP Name angegeben
+		if ($_POST['ldaplogin'] == 1 and $_POST['ldapusername'] == "") {
+			$error[] = "zur LDAP-Authentifizierung LDAP Username nötig";
+		}
+		//arzt aber nicht in behandler gruppe
+		if ($_POST['arztlist'] == 1 and $_POST['usergroup'] != UG_BEHANDLER) {
+			$error[] = "Nur Behandler können in der Arztliste sein";
+		}
+		// add oder edit (1) username schon vorhanden (2) username mit anderer id schon vorhanden
+		$query = "SELECT * FROM user WHERE `username`='".$_POST['username']."'";
+		$result = mysql_query($query);
+		$num_user = mysql_num_rows($result);
+		if ($_POST['userdbid'] == "" and $num_user !=0 ){
+			$error[] = "Systemname bereits vergeben";
+		}
+		if ($_POST['userdbid'] != "") {
+			if ($num_user != 0) {
+				$row = mysql_fetch_array($result);
+				if ($row['ID'] != $_POST['userdbid']) {
+					$error[] = "Systemname bereits vergeben";
+				}
+				unset($row);
+			}
+		}
+		mysql_free_result($result);
+		// Eingabecheck Ende
+		if (count($error) == 0) {
+			if ($_POST['userdbid'] == "") {
+				// neuen benutzer anlegen
+				$query = "INSERT INTO user (".
+					"`ID`, ".
+					"`username`,".
+					"`password`,".
+					"`familienname`,".
+					"`vorname`,".
+					"`ldaplogin`,".
+					"`ldapusername`,".
+					"`userlevel`,".
+					"`stationsid`,".
+					"`active`,".
+					"`arzt`,".
+					"`geschlecht`,".
+					"`email`,".
+					"`function`".
+					") VALUES (".
+					"NULL".
+					" ,'".$_POST['username'].
+					"','".$_POST['password'].
+					"','".$_POST['familienname'].
+					"','".$_POST['vorname'].
+					"','".$_POST['ldaplogin'].
+					"','".$_POST['ldapusername'].
+					"','".$_POST['usergroup'].
+					"','".$_POST['stationid'].
+					"','".$_POST['active'].
+					"','".$_POST['arztlist'].
+					"','".$_POST['usergender'].
+					"','".$_POST['usermail'].
+					"','".$_POST['userfunction'].
+					"')";
+			} else {
+				// Benutzer updaten
+				$query = "UPDATE `user` SET ".
+					"`familienname`='".$_POST['familienname'].
+					"', `vorname`='".$_POST['vorname'].
+					"', `username`='".$_POST['username'].
+					"', `password`='".$_POST['password'].
+					"', `userlevel`='".$_POST['usergroup'].
+					"', `stationsid`='".$_POST['stationid'].
+					"', `ldaplogin`='".$_POST['ldaplogin'].
+					"', `ldapusername`='".$_POST['ldapusername'].
+					"', `arzt`='".$_POST['arztlist'].
+					"', `active`='".$_POST['active'].
+					"', `geschlecht`='".$_POST['usergender'].
+					"', `email`='".$_POST['usermail'].
+					"', `function`='".$_POST['userfunction'].
+					"' WHERE `ID`='".$_POST['userdbid']."'";
+			}
+			if (!($result = mysql_query($query))) {
+				$error[] = "Datenbank Fehler";
+			}
 		}
 	}
 	if (count($error) == 0) {
