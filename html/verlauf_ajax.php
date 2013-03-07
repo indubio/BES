@@ -35,7 +35,10 @@ if (count($error) == 0){
 		$old_entry = array();
 		// if exist get source entry
 		if ($_POST['verlauf_dbid'] != ''){
-			$query = "SELECT * FROM `verlauf` WHERE `ID`='".$_POST['verlauf_dbid']."'";
+			$query = "SELECT *, ".
+				"TIMESTAMPDIFF(MINUTE, `update_timestamp`, NOW()) ".
+				"as timediff_lastupdate ".
+				"FROM `verlauf` WHERE `ID`='".$_POST['verlauf_dbid']."'";
 			$result = mysql_query($query);
 			$num_entry = mysql_num_rows($result);
 			if ($num_entry == 1){
@@ -46,19 +49,23 @@ if (count($error) == 0){
 				$error[] = "Verlauf ID fehlerhaft";
 			}
 		}
-		
 		// user is owner?
 		if (count($error) == 0 and $_POST['verlauf_dbid'] != ''){
 			if ($old_entry['owner'] != $_SESSION['userid']){
 				$error[] = "Eintrag besitzt einen anderen Ersteller";
 			}
 		}
-		if (count($error) == 0){
-			if (($_POST['verlauf_dbid'] != '') and ($old_entry['session_id'] == session_id())){
+		if (count($error) == 0) {
+			// update conditions
+			$dbid_exist = $_POST['verlauf_dbid'] != '';
+			$is_same_session = $old_entry['session_id'] == session_id();
+			$timelimit_not_reached = $old_entry['timediff_lastupdate'] < 60;
+			if ($dbid_exist and $is_same_session and $timelimit_not_reached) {
 				// update db entry
 				$json['dbid'] = $_POST['verlauf_dbid'];
 				$query = "UPDATE `verlauf` SET ".
-					"`text`='".$new_entry['text']."' ".
+					"`text`='".$new_entry['text']."', ".
+					"`update_timestamp`= NULL ".
 					"WHERE `ID`='".$_POST['verlauf_dbid']."'";
 				if (!($result = mysql_query($query))){
 					$error[] = "DB Error";
