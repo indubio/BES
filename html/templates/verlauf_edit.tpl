@@ -17,7 +17,7 @@ Entlassung:&nbsp;{$fall_entlass_info}
     <span id="firstentry_jump_loc" name="firstentry_jump_loc">&nbsp;</span>
     {foreach from=$verlauf item=verlauf_entry}
 	<fieldset class="entry">
-	    <legend>{$verlauf_entry.creation_date}&nbsp;{$verlauf_entry.creation_time}&nbsp;-&nbsp;{$verlauf_entry.owner_lastname},&nbsp;{$verlauf_entry.owner_firstname}</legend>
+	    <legend>{$verlauf_entry.creation_date}&nbsp;{$verlauf_entry.creation_time}&nbsp;-&nbsp;{$verlauf_entry.owner_lastname},&nbsp;{$verlauf_entry.owner_firstname}&nbsp;-&nbsp;{$verlauf_entry.owner_function}</legend>
 	    <div id="{$case_dbid}_{$verlauf_entry.dbid}" class="content{if $verlauf_entry.editable==1} editable{/if}">{$verlauf_entry.text}</div>
 	</fieldset>
     {/foreach}

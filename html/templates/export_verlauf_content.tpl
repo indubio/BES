@@ -32,7 +32,7 @@
 <body style="margin-top:-25px; padding:0px;">
     {foreach from=$verlauf item=verlauf_entry}
 	<fieldset>
-	    <legend>{$verlauf_entry.creation_date}&nbsp;{$verlauf_entry.creation_time}&nbsp;-&nbsp;{$verlauf_entry.owner_lastname},&nbsp;{$verlauf_entry.owner_firstname}</legend>
+	    <legend>{$verlauf_entry.creation_date}&nbsp;{$verlauf_entry.creation_time}&nbsp;-&nbsp;{$verlauf_entry.owner_lastname},&nbsp;{$verlauf_entry.owner_firstname}&nbsp;[{$verlauf_entry.owner_function}]</legend>
 	    <div>{$verlauf_entry.text}</div>
 	</fieldset>
     {/foreach}

@@ -62,6 +62,7 @@ if ($mode == "edit"){
 				'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
 				'owner_firstname' => get_username_by_id($row['owner'], "first"),
 				'owner_lastname' => get_username_by_id($row['owner'], "last"),
+				'owner_function' => get_function_by_userid($row['owner']),
 				'editable' => 0,
 				'session' => session_id()
 			);
