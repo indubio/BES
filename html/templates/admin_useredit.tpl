@@ -16,12 +16,24 @@
   <td align="left"><input type="input" id="vorname" name="vorname" value="{$user_vorname}"/></td></td>
  </tr>
  <tr>
+   <td align="left"><label for="geschlecht">Geschlecht</label></td>
+   <td align="left"><select id="usergender" name="usergender">{html_options values=$usergender_values output=$usergender_options selected=$user_gender_selected}</select></td>
+ </tr>
+ <tr>
   <td align="left"><label for="username">System Name</label></td>
   <td align="left"><input type="input" id="username" name="username" value="{$user_username}"/></td>
  </tr>
  <tr>
   <td align="left"><label for="password">Passwort</label></td>
   <td align="left"><input type="input" id="password" name="password" value="{$user_password}"/></td>
+ </tr>
+ <tr>
+   <td align="left"><label for="usermail">eMail Adresse</label></td>
+   <td align="left"><input type="input" id="usermail" name="usermail" value="{$user_mail}"/></td>
+ </tr>
+ <tr>
+   <td align="left"><label for="userfunction">Funktion/Anstellung</label></td>
+   <td align="left"><select id="userfunction" name="userfunction">{html_options values=$userfunction_values output=$userfunction_options selected=$user_function_selected}</select></td>
  </tr>
  <tr>
   <td align="left"><label for="usergroup">Benutzergruppe</label></td>

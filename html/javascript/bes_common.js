@@ -677,6 +677,9 @@ $(document).ready(function() {
 								ldaplogin   : c.find("#useredit_boxy_form #ldaplogin").val(),
 								active      : c.find("#useredit_boxy_form #active").val(),
 								arztlist    : c.find("#useredit_boxy_form #arztlist").val(),
+								usergender  : c.find("#useredit_boxy_form #usergender").val(),
+								usermail    : c.find("#useredit_boxy_form #usermail").val(),
+								userfunction: c.find("#useredit_boxy_form #userfunction").val(),
 								userdbid    : userid
 							}, function(data) {
 								if (data != "success") {

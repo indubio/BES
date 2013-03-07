@@ -155,7 +155,10 @@ function mywaf($var = array()) {
 				case "suizid_sv"             : if ($value!=""){if (idnotindb("f_suizid_sv",$value)){$error=true;}} else {$error=true;} break;
 				case "unterbringungsdauer"   : if ($value!=""){if (idnotindb("f_unterbringungsdauer",$value)){$error=true;}} else {$error=true;} break;
 				case "userdbid"              : if ($value!=""){if (idnotindb("user",$value)){$error=true;}} else {$error=true;} break;
+				case "userfunction"          : if ($value!="0"){if (idnotindb("userfunction",$value)){$error=TRUE;}} else {$error=FALSE;} break;
+				case "usergender"            : if ($value != "0" and $value != "1" and $value !="2") {$error = true;} break;
 				case "usergroup"             : if ($value!=""){if (idnotindb("usergroups",$value)){$error=true;}} else {$error=true;} break;
+				case "usermail"              : break;
 				case "username"              : break;
 				case "verlauf_dbid"          : if ($value!=""){if (idnotindb("verlauf",$value)){$error=true;}} else {$error=true;} break;
 				case "vorname"               : break;

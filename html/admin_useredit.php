@@ -50,6 +50,23 @@ mysql_free_result($result);
 $smarty -> assign('stations_values', $dummyarray_i);
 $smarty -> assign('stations_options', $dummyarray_k);
 
+// gender select options
+$smarty -> assign('usergender_values', array("0", "1", "2"));
+$smarty -> assign('usergender_options', array("&nbsp;", "männlich", "weiblich"));
+
+// userfunction select options
+$dummyarray_i = array("0");
+$dummyarray_k = array("&nbsp;");
+$query = "SELECT * FROM `userfunction` ORDER BY `order` ASC";
+$result = mysql_query($query);
+while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	array_push($dummyarray_i, $row['ID']);
+	array_push($dummyarray_k, $row['male']);
+}
+mysql_free_result($result);
+$smarty -> assign('userfunction_values', $dummyarray_i);
+$smarty -> assign('userfunction_options', $dummyarray_k);
+
 //////////////////////////////////////////////////////////////////////////////
 
 if(!empty($_POST)) {
@@ -99,9 +116,20 @@ if(!empty($_POST)) {
 		if ($_POST['userdbid'] == "") {
 			// neuen benutzer anlegen
 			$query = "INSERT INTO user (".
-				"`ID`".",`username`,`password`,`familienname`,`vorname`,".
-				"`ldaplogin`,`ldapusername`,`userlevel`,`stationsid`,".
-				"`active`,`arzt`".
+				"`ID`, ".
+				"`username`,".
+				"`password`,".
+				"`familienname`,".
+				"`vorname`,".
+				"`ldaplogin`,".
+				"`ldapusername`,".
+				"`userlevel`,".
+				"`stationsid`,".
+				"`active`,".
+				"`arzt`,".
+				"`geschlecht`,".
+				"`email`,".
+				"`function`".
 				") VALUES (".
 				"NULL".
 				" ,'".$_POST['username'].
@@ -114,6 +142,9 @@ if(!empty($_POST)) {
 				"','".$_POST['stationid'].
 				"','".$_POST['active'].
 				"','".$_POST['arztlist'].
+				"','".$_POST['usergender'].
+				"','".$_POST['usermail'].
+				"','".$_POST['userfunction'].
 				"')";
 		} else {
 			// Benutzer updaten
@@ -128,6 +159,9 @@ if(!empty($_POST)) {
 				"', `ldapusername`='".$_POST['ldapusername'].
 				"', `arzt`='".$_POST['arztlist'].
 				"', `active`='".$_POST['active'].
+				"', `geschlecht`='".$_POST['usergender'].
+				"', `email`='".$_POST['usermail'].
+				"', `function`='".$_POST['userfunction'].
 				"' WHERE `ID`='".$_POST['userdbid']."'";
 		}
 		if (!($result = mysql_query($query))) {
@@ -159,6 +193,9 @@ if ($_GET['userdbid'] == "") {
 	$smarty -> assign('user_password', "");
 	$smarty -> assign('user_familienname', "");
 	$smarty -> assign('user_vorname', "");
+	$smarty -> assing('user_gender', "0");
+	$smarty -> assign('user_mail', "");
+	$smarty -> assign('user_function', "0");
 	$smarty -> assign('user_group_selected', "3");
 	$smarty -> assign('user_station_selected', "-1");
 	$smarty -> assign('user_ldapusername', "");
@@ -176,6 +213,9 @@ if ($_GET['userdbid'] == "") {
 		$smarty -> assign('user_password', htmlspecialchars($row['password'], ENT_NOQUOTES, 'UTF-8'));
 		$smarty -> assign('user_familienname', htmlspecialchars($row['familienname'], ENT_NOQUOTES, 'UTF-8'));
 		$smarty -> assign('user_vorname', htmlspecialchars($row['vorname'], ENT_NOQUOTES, 'UTF-8'));
+		$smarty -> assign('user_gender_selected', $row['geschlecht']);
+		$smarty -> assign('user_mail', htmlspecialchars($row['email'], ENT_NOQUOTES, 'UTF-8'));
+		$smarty -> assign('user_function_selected', $row['function']);
 		$smarty -> assign('user_group_selected', $row['userlevel']);
 		$smarty -> assign('user_station_selected', $row['stationsid']);
 		$smarty -> assign('user_ldapusername', htmlspecialchars($row['ldapusername'], ENT_NOQUOTES, 'UTF-8'));
