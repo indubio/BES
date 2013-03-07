@@ -63,6 +63,31 @@ function get_username_by_id ($user_dbid = 0, $format = "short") {
 }
 
 ////////
+function get_function_by_userid ($user_dbid = 0) {
+	$query = "SELECT geschlecht, function FROM `user` WHERE `ID`='".$user_dbid."'";
+	$result = mysql_query($query);
+	if (mysql_num_rows($result) == 1) {
+		$userdata = mysql_fetch_array($result);
+		mysql_free_result($result);
+		if ($userdata['function'] > 0) {
+			$query = "SELECT * FROM `userfunction` WHERE `ID`='".$userdata['function']."'";
+			$result = mysql_query($query);
+			$functiondata = mysql_fetch_array($result);
+			mysql_free_result($result);
+			if ($userdata['geschlecht'] < 2) {
+				return $functiondata['male'];
+			} else {
+				return $functiondata['female'];
+			}
+		} else {
+			return "";
+		}
+	} else {
+		return "";
+	}
+}
+
+////////
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
 	global $smarty;
 	switch($msg_code) {
