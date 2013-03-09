@@ -188,12 +188,12 @@ if(!empty($_POST)) {
 	}
 }
 // Keine Variablen Übergabe
-if ($_GET['userdbid'] == "") {
+if (!isset($_GET['userdbid'])) {
 	$smarty -> assign('user_username', "");
 	$smarty -> assign('user_password', "");
 	$smarty -> assign('user_familienname', "");
 	$smarty -> assign('user_vorname', "");
-	$smarty -> assing('user_gender', "0");
+	$smarty -> assign('user_gender', "0");
 	$smarty -> assign('user_mail', "");
 	$smarty -> assign('user_function', "0");
 	$smarty -> assign('user_group_selected', "3");
