@@ -1,0 +1,29 @@
+; System Config
+; Example
+[mysql]
+user = ""
+pass = ""
+dbname = ""
+dbhost = ""
+
+[ldap]
+host = ""
+port = ""
+dc = ""
+
+[soap]
+user = ""
+pass = ""
+domain = ""
+url = ""
+
+[print]
+script = ""
+
+[html]
+headline = ""
+
+[system]
+;section is deprecated
+dir_base = ""
+dir_www = ""
