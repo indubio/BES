@@ -724,6 +724,34 @@ CREATE TABLE IF NOT EXISTS `verlauf` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `report_recipients`
+--
+
+CREATE TABLE IF NOT EXISTS `report_recipients` (
+  `reportID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `reports`
+--
+
+CREATE TABLE IF NOT EXISTS `reports` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL DEFAULT '',
+  `mail_to` varchar(50) NOT NULL DEFAULT '',
+  `mail_from` varchar(50) NOT NULL DEFAULT '',
+  `mail_head` varchar(50) NOT NULL DEFAULT '',
+  `mail_body_plain` text NOT NULL,
+  `mail_body_html` text NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
