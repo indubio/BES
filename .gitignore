@@ -1,2 +1,4 @@
 .project
 _private/*
+
+*.pyc
