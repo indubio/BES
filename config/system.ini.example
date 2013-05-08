@@ -6,6 +6,13 @@ pass = ""
 dbname = ""
 dbhost = ""
 
+[idsql]
+user = ""
+pass = ""
+dc   = ""
+host = ""
+session = ""
+
 [ldap]
 host = ""
 port = ""
