@@ -289,14 +289,14 @@ class Case(object):
                 where PROCEDURES_ID=?
                 """
             Procedures_CodesSQLCursor.execute(sqlquery, procedure.ID)
-            CodesID = Procedures_CodesSQLResult.fetchone().codes_ID
+            CodesID = Procedures_CodesSQLCursor.fetchone().codes_ID
             # get Code
-            CodesSQLQuery = """
+            sqlquery = """
                 select * from CODES
                 where ID=?
             """
             CodesSQLCursor.execute(sqlquery, CodesID)
-            code = CodesSQLResult.fetchone()
+            code = CodesSQLCursor.fetchone()
             ProceduresList.append({
                 'cdate': procedure.PDATE,
                 'code': code.VALUE
