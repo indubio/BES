@@ -1,13 +1,18 @@
-# Regelbehandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen ohne Therapieeinheiten pro Woche
+# Regelbehandlung bei psychischen und psychosomatischen Störungen und
+# Verhaltensstörungen bei Erwachsenen ohne Therapieeinheiten pro Woche
 ops_codes <- c(
     "9-604"
     )
-# Regelbehandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen mit durch Ärzte und/oder Psychologen erbrachten Therapieeinheiten
+# Regelbehandlung bei psychischen und psychosomatischen Störungen und
+# Verhaltensstörungen bei Erwachsenen mit durch Ärzte und/oder Psychologen
+# erbrachten Therapieeinheiten
 ops_codes <- c(ops_codes,
     "9-605.0", "9-605.1", "9-605.2", "9-605.3", "9-605.4", "9-605.5",
     "9-605.6", "9-605.7", "9-605.8", "9-605.9", "9-605.a"
     )
-# Regelbehandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen mit durch Spezialtherapeuten und/oder Pflegefachpersonen erbrachten Therapieeinheiten
+# Regelbehandlung bei psychischen und psychosomatischen Störungen und
+# Verhaltensstörungen bei Erwachsenen mit durch Spezialtherapeuten und/oder
+# Pflegefachpersonen erbrachten Therapieeinheiten
 ops_codes <- c(ops_codes,
     "9-606.0", "9-606.1", "9-606.2", "9-606.3", "9-606.4", "9-606.5",
     "9-606.6", "9-606.7", "9-606.8", "9-606.9", "9-606.a", "9-606.b",
@@ -15,17 +20,20 @@ ops_codes <- c(ops_codes,
     "9-606.j", "9-606.k", "9-606.m", "9-606.n", "9-606.p", "9-606.q",
     "9-606.r"
     )
-# Intensivbehandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen, bei Patienten mit 1 bis 2 Merkmalen
+# Intensivbehandlung bei psychischen und psychosomatischen Störungen und
+# Verhaltensstörungen bei Erwachsenen, bei Patienten mit 1 bis 2 Merkmalen
 ops_codes <- c(ops_codes,
     "9-614.0"
     )
-# Intensivbehandlung mit durch Ärzte und/oder Psychologen erbrachten Therapieeinheiten
+# Intensivbehandlung mit durch Ärzte und/oder Psychologen erbrachten
+# Therapieeinheiten
 ops_codes <- c(ops_codes,
     "9-614.10", "9-614.11", "9-614.12", "9-614.13", "9-614.14",
     "9-614.15", "9-614.16", "9-614.17", "9-614.18", "9-614.19",
     "9-614.1a"
 )
-# Intensivbehandlung mit durch Spezialtherapeuten und/oder Pflegefachpersonen erbrachten Therapieeinheiten
+# Intensivbehandlung mit durch Spezialtherapeuten und/oder Pflegefachpersonen
+# erbrachten Therapieeinheiten
 ops_codes <- c(ops_codes,
     "9-614.20", "9-614.21", "9-614.22", "9-614.23", "9-614.24",
     "9-614.25", "9-614.26", "9-614.27", "9-614.28", "9-614.29",
