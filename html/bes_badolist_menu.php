@@ -47,18 +47,14 @@ if (isset($_POST['fall_dbid_pia'])){
 $result = mysql_query($query);
 $num_fall = mysql_num_rows($result);
 
-if ($num_fall==1){
+if ($num_fall == 1){
 	$row = mysql_fetch_array($result);
 	mysql_free_result($result);
-	$bado_geschlossen=$row['geschlossen'];
-	$smarty->assign('dbid',$row['ID']);
-	$smarty->assign('station_selected',$row['station_c']);
-	$current_station=$row['station_c'];
-	if ($row['behandler']==-1){
-		$smarty->assign('behandler_selected',$_SESSION['userid']);
-	} else {
-		$smarty->assign('behandler_selected',$row['behandler']);
-	}
+	$bado_geschlossen = $row['geschlossen'];
+	$smarty -> assign('dbid', $row['ID']);
+	$smarty -> assign('station_selected', $row['station_c']);
+	$smarty -> assign('behandler_selected', $row['behandler']);
+	$current_station = $row['station_c'];
 	if (($row['station_a'] == 6 and $_POST['fall_dbtbl'] == 1) or ($row['station_a'] == 8 and $_POST['fall_dbtbl'] == 1)){
 		$smarty -> assign('station_changeable', "true");
 	} else {
