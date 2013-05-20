@@ -64,8 +64,6 @@ class Case(object):
             self.__CaseID = SQLCursor.fetchone().ID
         except:
             pass
-        else:
-            self.__CaseID = ''
 
         ## get CaseNodeID by CaseID
         if self.__CaseID != '':
