@@ -57,7 +57,7 @@ class Case(object):
         ## get CaseID
         sqlquery = """
             select ID from CASES
-            where CID = ?
+            where CID=?
             """
         SQLCursor.execute(sqlquery, self.__Soarian_Nr)
         try:
@@ -69,7 +69,7 @@ class Case(object):
         if self.__CaseID != '':
             sqlquery = """
                 select nodes_ID from CASES_NODES
-                where CASES_ID = ?
+                where CASES_ID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseID)
             self.__CaseNodeID = SQLCursor.fetchone().nodes_ID
@@ -78,7 +78,7 @@ class Case(object):
             ## get CaseEHRID by CaseNodeID
             sqlquery = """
                 select ehrid from NODES
-                where ID = ?
+                where ID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseNodeID)
             self.__CaseEHRID = SQLCursor.fetchone().ehrid
@@ -86,7 +86,7 @@ class Case(object):
             ## get CaseNodeChildID by CaseNodeID
             sqlquery = """
                 select ID from NODES
-                where PARENTID = ?
+                where PARENTID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseNodeID)
             self.__CaseNodeChildID = SQLCursor.fetchone().ID
@@ -98,55 +98,56 @@ class Case(object):
         die nach Datum sortiert ist
         """
         PsychPVList = []
-        # init SQL connections and cursors
-        NodesSQLConn = pyodbc.connect(self.__connection_str)
-        NodesSQLCursor = NodesSQLConn.cursor()
-        NodeChildsSQLConn = pyodbc.connect(self.__connection_str)
-        NodeChildsSQLCursor = NodeChildsSQLConn.cursor()
-        PropertiesSQLConn = pyodbc.connect(self.__connection_str)
-        PropertiesSQLCursor = PropertiesSQLConn.cursor()
-        # fetch nodes
-        sqlquery = """
-            select * from NODES
-            where NODETYPEID='3' and PARENTID=?
-            """
-        for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
-            newPsychPV = PsychPV()
-            sqlquery = """
-                select * from PROPERTIES
-                where NodeID=?
-                """
-            for property in PropertiesSQLCursor.execute(sqlquery, node.ID):
-                if property.PROPERTYNAME == 'Finished':
-                    if property.PROPERTYVALUE == 'true':
-                        newPsychPV.Finished = True
-                if property.PROPERTYNAME == 'Date':
-                    newPsychPV.Date = datetime.datetime.strptime(
-                        property.PROPERTYVALUE.split('T')[0],
-                        "%Y-%m-%d").date()
+        if self.__CaseNodeChildID != '':
+            # init SQL connections and cursors
+            NodesSQLConn = pyodbc.connect(self.__connection_str)
+            NodesSQLCursor = NodesSQLConn.cursor()
+            NodeChildsSQLConn = pyodbc.connect(self.__connection_str)
+            NodeChildsSQLCursor = NodeChildsSQLConn.cursor()
+            PropertiesSQLConn = pyodbc.connect(self.__connection_str)
+            PropertiesSQLCursor = PropertiesSQLConn.cursor()
+            # fetch nodes
             sqlquery = """
                 select * from NODES
-                where ParentID=?
-                and NODETYPEID='7'
+                where NODETYPEID='3' and PARENTID=?
                 """
-            for ChildNode in NodeChildsSQLCursor.execute(sqlquery, node.ID):
+            for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
+                newPsychPV = PsychPV()
                 sqlquery = """
                     select * from PROPERTIES
                     where NodeID=?
                     """
-                for ChildNodeProperty in PropertiesSQLCursor.execute(sqlquery, ChildNode.ID):
-                    if ChildNodeProperty.PROPERTYNAME == 'Value':
-                        newPsychPV.StatusStr = ChildNodeProperty.PROPERTYVALUE
-            PsychPVList.append(newPsychPV)
-            del newPsychPV
-        # close SQL connections and cursors
-        NodesSQLCursor.close()
-        NodesSQLConn.close()
-        NodeChildsSQLCursor.close()
-        NodeChildsSQLConn.close()
-        PropertiesSQLCursor.close()
-        PropertiesSQLConn.close()
-        PsychPVList.sort(key = lambda x: x.Date)
+                for property in PropertiesSQLCursor.execute(sqlquery, node.ID):
+                    if property.PROPERTYNAME == 'Finished':
+                        if property.PROPERTYVALUE == 'true':
+                            newPsychPV.Finished = True
+                    if property.PROPERTYNAME == 'Date':
+                        newPsychPV.Date = datetime.datetime.strptime(
+                            property.PROPERTYVALUE.split('T')[0],
+                            "%Y-%m-%d").date()
+                sqlquery = """
+                    select * from NODES
+                    where ParentID=?
+                    and NODETYPEID='7'
+                    """
+                for ChildNode in NodeChildsSQLCursor.execute(sqlquery, node.ID):
+                    sqlquery = """
+                        select * from PROPERTIES
+                        where NodeID=?
+                        """
+                    for ChildNodeProperty in PropertiesSQLCursor.execute(sqlquery, ChildNode.ID):
+                        if ChildNodeProperty.PROPERTYNAME == 'Value':
+                            newPsychPV.StatusStr = ChildNodeProperty.PROPERTYVALUE
+                PsychPVList.append(newPsychPV)
+                del newPsychPV
+            # close SQL connections and cursors
+            NodesSQLCursor.close()
+            NodesSQLConn.close()
+            NodeChildsSQLCursor.close()
+            NodeChildsSQLConn.close()
+            PropertiesSQLCursor.close()
+            PropertiesSQLConn.close()
+            PsychPVList.sort(key = lambda x: x.Date)
         return PsychPVList
 
     def getLastPsychPVCode(self):
@@ -165,96 +166,97 @@ class Case(object):
         die nach Datum sortiert ist
         """
         PsychStatusList = []
-        # init SQL connections and cursors
-        NodesSQLConn = pyodbc.connect(self.__connection_str)
-        NodesSQLCursor = NodesSQLConn.cursor()
-        NodeChildsSQLConn = pyodbc.connect(self.__connection_str)
-        NodeChildsSQLCursor = NodeChildsSQLConn.cursor()
-        PropertiesSQLConn = pyodbc.connect(self.__connection_str)
-        PropertiesSQLCursor = PropertiesSQLConn.cursor()
-        ## fetch all Status Nodes
-        sqlquery = """
-            select ID from NODES
-            where NODETYPEID='8'
-            and PARENTID=?
-        """
-        for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
-            newPsychStatus = PsychStatus()
+        if self.__CaseNodeChildID != '':
+            # init SQL connections and cursors
+            NodesSQLConn = pyodbc.connect(self.__connection_str)
+            NodesSQLCursor = NodesSQLConn.cursor()
+            NodeChildsSQLConn = pyodbc.connect(self.__connection_str)
+            NodeChildsSQLCursor = NodeChildsSQLConn.cursor()
+            PropertiesSQLConn = pyodbc.connect(self.__connection_str)
+            PropertiesSQLCursor = PropertiesSQLConn.cursor()
+            ## fetch all Status Nodes
             sqlquery = """
-                select * from PROPERTIES
-                where NODEID=?
+                select ID from NODES
+                where NODETYPEID='8'
+                and PARENTID=?
                 """
-            for row in PropertiesSQLCursor.execute(sqlquery, node.ID):
-                if row.PROPERTYNAME == 'Date':
-                    newPsychStatus.Date = datetime.datetime.strptime(
-                        row.PROPERTYVALUE.split('T')[0],
-                        "%Y-%m-%d").date()
-                if row.PROPERTYNAME =='Finished':
-                    if row.PROPERTYVALUE == 'false':
-                        newPsychStatus.Finished = False
-                    elif row.PROPERTYVALUE == 'true':
-                        newPsychStatus.Finished = True
-            ## get Child Nodes and Data
-            sqlquery = """
-                select * from NODES
-                where PARENTID=?
-                """
-            IntensiveCareNode = ''
-            for node_row in NodeChildsSQLCursor.execute(sqlquery, node.ID):
+            for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
+                newPsychStatus = PsychStatus()
                 sqlquery = """
                     select * from PROPERTIES
                     where NODEID=?
                     """
-                for nodeprop in PropertiesSQLCursor.execute(sqlquery, node_row.ID):
-                    if nodeprop.PROPERTYNAME == 'IntensiveCare':
-                        if nodeprop.PROPERTYVALUE == 'true':
-                            newPsychStatus.IntensiveCare = True
-                            IntensiveCareNode = node_row.ID
-                    if nodeprop.PROPERTYNAME == 'Integrated':
-                        if nodeprop.PROPERTYVALUE == 'true':
-                            newPsychStatus.IntegratedCare = True
-                    if nodeprop.PROPERTYNAME == 'ParentsSetting':
-                        if nodeprop.PROPERTYVALUE == 'true':
-                            newPsychStatus.ParentsSettingCare = True
-                    if nodeprop.PROPERTYNAME == 'Value':
-                        newPsychStatus.Status = nodeprop.PROPERTYVALUE
-            if IntensiveCareNode != '':
+                for row in PropertiesSQLCursor.execute(sqlquery, node.ID):
+                    if row.PROPERTYNAME == 'Date':
+                        newPsychStatus.Date = datetime.datetime.strptime(
+                            row.PROPERTYVALUE.split('T')[0],
+                            "%Y-%m-%d").date()
+                    if row.PROPERTYNAME =='Finished':
+                        if row.PROPERTYVALUE == 'false':
+                            newPsychStatus.Finished = False
+                        elif row.PROPERTYVALUE == 'true':
+                            newPsychStatus.Finished = True
+                ## get Child Nodes and Data
                 sqlquery = """
                     select * from NODES
                     where PARENTID=?
                     """
-                for childnode in NodeChildsSQLCursor.execute(sqlquery, IntensiveCareNode):
+                IntensiveCareNode = ''
+                for node_row in NodeChildsSQLCursor.execute(sqlquery, node.ID):
                     sqlquery = """
                         select * from PROPERTIES
                         where NODEID=?
                         """
-                    for childnodeproperty in PropertiesSQLCursor.execute(sqlquery, childnode.ID):
-                        if childnodeproperty.PROPERTYNAME[:6] == 'Reason':
-                            if childnodeproperty.PROPERTYVALUE != '':
-                                newPsychStatus.IntensiveCareReasons.append(childnodeproperty.PROPERTYNAME[-1:])
+                    for nodeprop in PropertiesSQLCursor.execute(sqlquery, node_row.ID):
+                        if nodeprop.PROPERTYNAME == 'IntensiveCare':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.IntensiveCare = True
+                                IntensiveCareNode = node_row.ID
+                        if nodeprop.PROPERTYNAME == 'Integrated':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.IntegratedCare = True
+                        if nodeprop.PROPERTYNAME == 'ParentsSetting':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.ParentsSettingCare = True
+                        if nodeprop.PROPERTYNAME == 'Value':
+                            newPsychStatus.Status = nodeprop.PROPERTYVALUE
+                if IntensiveCareNode != '':
+                    sqlquery = """
+                        select * from NODES
+                        where PARENTID=?
+                        """
+                    for childnode in NodeChildsSQLCursor.execute(sqlquery, IntensiveCareNode):
+                        sqlquery = """
+                            select * from PROPERTIES
+                            where NODEID=?
+                            """
+                        for childnodeproperty in PropertiesSQLCursor.execute(sqlquery, childnode.ID):
+                            if childnodeproperty.PROPERTYNAME[:6] == 'Reason':
+                                if childnodeproperty.PROPERTYVALUE != '':
+                                    newPsychStatus.IntensiveCareReasons.append(childnodeproperty.PROPERTYNAME[-1:])
 
-            if newPsychStatus.IntensiveCare:
-                newPsychStatus.StatusStr  = "I" + str(len(newPsychStatus.IntensiveCareReasons))
-            if newPsychStatus.Status == "0":
-                newPsychStatus.StatusStr = "R"
-            if newPsychStatus.Status == "1":
-                newPsychStatus.StatusStr = "PSYK"
-            if newPsychStatus.Status == "2":
-                newPsychStatus.StatusStr = "PSOK"
-            if newPsychStatus.IntegratedCare:
-                newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"+"))
-            if newPsychStatus.ParentsSettingCare:
-                newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"*"))
-            PsychStatusList.append(newPsychStatus)
-            del newPsychStatus
-        # close SQL connections and cursors
-        PropertiesSQLCursor.close()
-        PropertiesSQLConn.close()
-        NodeChildsSQLCursor.close()
-        NodeChildsSQLConn.close()
-        NodesSQLCursor.close()
-        NodesSQLConn.close()
-        PsychStatusList.sort(key = lambda x: x.Date)
+                if newPsychStatus.IntensiveCare:
+                    newPsychStatus.StatusStr  = "I" + str(len(newPsychStatus.IntensiveCareReasons))
+                if newPsychStatus.Status == "0":
+                    newPsychStatus.StatusStr = "R"
+                if newPsychStatus.Status == "1":
+                    newPsychStatus.StatusStr = "PSYK"
+                if newPsychStatus.Status == "2":
+                    newPsychStatus.StatusStr = "PSOK"
+                if newPsychStatus.IntegratedCare:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"+"))
+                if newPsychStatus.ParentsSettingCare:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"*"))
+                PsychStatusList.append(newPsychStatus)
+                del newPsychStatus
+            # close SQL connections and cursors
+            PropertiesSQLCursor.close()
+            PropertiesSQLConn.close()
+            NodeChildsSQLCursor.close()
+            NodeChildsSQLConn.close()
+            NodesSQLCursor.close()
+            NodesSQLConn.close()
+            PsychStatusList.sort(key = lambda x: x.Date)
         return PsychStatusList
 
     def getLastPsychStatusCode(self):
@@ -272,45 +274,46 @@ class Case(object):
         Liefert die Prozeduren Codes als array zurück
         """
         ProceduresList = []
-        # init SQL connections and cursors
-        ProceduresSQLConn = pyodbc.connect(self.__connection_str)
-        ProceduresSQLCursor = ProceduresSQLConn.cursor()
-        Procedures_CodesSQLConn = pyodbc.connect(self.__connection_str)
-        Procedures_CodesSQLCursor = Procedures_CodesSQLConn.cursor()
-        CodesSQLConn = pyodbc.connect(self.__connection_str)
-        CodesSQLCursor = CodesSQLConn.cursor()
-        ## fetch all Procedures
-        sqlquery = """
-            select * from PROCEDURES
-            where CID=?
-            order by PDATE asc
-            """
-        for procedure in ProceduresSQLCursor.execute(sqlquery, self.__CaseID):
-            # get Code ID
+        if self.__CaseID != '':
+            # init SQL connections and cursors
+            ProceduresSQLConn = pyodbc.connect(self.__connection_str)
+            ProceduresSQLCursor = ProceduresSQLConn.cursor()
+            Procedures_CodesSQLConn = pyodbc.connect(self.__connection_str)
+            Procedures_CodesSQLCursor = Procedures_CodesSQLConn.cursor()
+            CodesSQLConn = pyodbc.connect(self.__connection_str)
+            CodesSQLCursor = CodesSQLConn.cursor()
+            ## fetch all Procedures
             sqlquery = """
-                select codes_ID from PROCEDURES_CODES
-                where PROCEDURES_ID=?
+                select * from PROCEDURES
+                where CID=?
+                order by PDATE asc
                 """
-            Procedures_CodesSQLCursor.execute(sqlquery, procedure.ID)
-            CodesID = Procedures_CodesSQLCursor.fetchone().codes_ID
-            # get Code
-            sqlquery = """
-                select * from CODES
-                where ID=?
-            """
-            CodesSQLCursor.execute(sqlquery, CodesID)
-            code = CodesSQLCursor.fetchone()
-            ProceduresList.append({
-                'cdate': procedure.PDATE,
-                'code': code.VALUE
-                })
-        # close SQL connections and cursors
-        ProceduresSQLCursor.close()
-        ProceduresSQLConn.close()
-        Procedures_CodesSQLCursor.close()
-        Procedures_CodesSQLConn.close()
-        CodesSQLCursor.close()
-        CodesSQLConn.close()
+            for procedure in ProceduresSQLCursor.execute(sqlquery, self.__CaseID):
+                # get Code ID
+                sqlquery = """
+                    select codes_ID from PROCEDURES_CODES
+                    where PROCEDURES_ID=?
+                    """
+                Procedures_CodesSQLCursor.execute(sqlquery, procedure.ID)
+                CodesID = Procedures_CodesSQLCursor.fetchone().codes_ID
+                # get Code
+                sqlquery = """
+                    select * from CODES
+                    where ID=?
+                """
+                CodesSQLCursor.execute(sqlquery, CodesID)
+                code = CodesSQLCursor.fetchone()
+                ProceduresList.append({
+                    'cdate': procedure.PDATE,
+                    'code': code.VALUE
+                    })
+            # close SQL connections and cursors
+            ProceduresSQLCursor.close()
+            ProceduresSQLConn.close()
+            Procedures_CodesSQLCursor.close()
+            Procedures_CodesSQLConn.close()
+            CodesSQLCursor.close()
+            CodesSQLConn.close()
         return ProceduresList
 
 class connection(object):
