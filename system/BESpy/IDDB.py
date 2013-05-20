@@ -60,7 +60,12 @@ class Case(object):
             where CID = ?
             """
         SQLCursor.execute(sqlquery, self.__Soarian_Nr)
-        self.__CaseID = SQLCursor.fetchone().ID
+        try:
+            self.__CaseID = SQLCursor.fetchone().ID
+        except:
+            pass
+        else:
+            self.__CaseID = ''
 
         ## get CaseNodeID by CaseID
         if self.__CaseID != '':
