@@ -342,13 +342,16 @@ $('#badoedit_pia #piabef_migration').change(function() {
 
 // Andere Krise
 $('#badoedit_pia #piabef_cb_akrisen').change(function() {
-	if ($(this).val() == 1) {
-		$('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled");
-	} else {
-		$('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled").val("");
-		$('#badoedit_pia #piabef_cb_akrisen_txt').attr("readonly", "readonly").attr("disabled", "disabled");
-	}
-});
+    var element = $('#badoedit_pia #piabef_cb_akrisen_txt');
+    $(element).removeAttr("readonly").removeAttr("disabled");
+    if ($(this).is(':checked')) {
+        $(this).val(1);
+        $(element).removeAttr("readonly").removeAttr("disabled");
+    } else {
+        $(this).val(0);
+        $(element).removeAttr("readonly").removeAttr("disabled").val("");
+        $(element).attr("readonly", "readonly").attr("disabled", "disabled");
+    }
 
 // Mehrfachauswahl Zusatzbetreuung
 $('#badoedit_pia .zusatzbetreuung').change(function() {
