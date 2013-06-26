@@ -352,6 +352,7 @@ $('#badoedit_pia #piabef_cb_akrisen').change(function() {
         $(element).removeAttr("readonly").removeAttr("disabled").val("");
         $(element).attr("readonly", "readonly").attr("disabled", "disabled");
     }
+});
 
 // Mehrfachauswahl Zusatzbetreuung
 $('#badoedit_pia .zusatzbetreuung').change(function() {
