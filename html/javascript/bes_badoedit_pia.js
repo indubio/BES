@@ -269,6 +269,7 @@ $("#badoedit_pia .numericonly").blur(function() {
 
 // Entlassung show/hide oncheckbox switch
 $("#badoedit_pia #piabef_cb_entlassung").click(function() {
+    var wb_evb = $('#piabef_weiterbehandlung_evb');
     if ($(this).attr("checked")) {
         $("#entlassbox").show(200);
     } else {
@@ -277,9 +278,8 @@ $("#badoedit_pia #piabef_cb_entlassung").click(function() {
         $('#piabef_weiterbehandlung1').val(-1);
         $('#piabef_weiterbehandlung2').val(-1);
         $('#piabef_weiterbehandlung3').val(-1);
-        $('#piabef_weiterbehandlung_evb').val(-1);
-        $('#piabef_weiterbehandlung_evb').removeAttr("readonly").removeAttr("disabled");
-        $('#piabef_weiterbehandlung_evb').val("-1").attr("readonly", "readonly").attr("disabled", "disabled");
+        wb_evb.removeAttr("readonly").removeAttr("disabled");
+        wb_evb.val(-1).attr("readonly", "readonly").attr("disabled", "disabled");
         $("#entlassbox").hide(200);
     }
 });
