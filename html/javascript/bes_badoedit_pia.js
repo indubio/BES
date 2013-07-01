@@ -286,45 +286,41 @@ $("#badoedit_pia #piabef_cb_entlassung").click(function() {
 
 // PIA BADO EDIT Weiterbehandlung
 $('#badoedit_pia .weiterbehandlung').change(function() {
-    // keine oder unbekannte Weiterbehandlung
-    if ($(this).val() == 16 || $(this).val() == 99){
-        $('#piabef_weiterbehandlung1').val($(this).val());
-        $('#piabef_weiterbehandlung2').val(-1).attr("readonly", "readonly").attr("disabled", "disabled");
-        $('#piabef_weiterbehandlung3').val(-1).attr("readonly", "readonly").attr("disabled", "disabled");
-    } else {
-        $('#piabef_weiterbehandlung2').removeAttr("readonly").removeAttr("disabled");
-        $('#piabef_weiterbehandlung3').removeAttr("readonly").removeAttr("disabled");
-    }
-    // andere Klinik im eignen Haus
-    var evb_element = $('#piabef_weiterbehandlung_evb');
-    if ($('#piabef_weiterbehandlung1').val() == 3 || $('#piabef_weiterbehandlung2').val() == 3 || $('#piabef_weiterbehandlung3').val() == 3) {
-        $(evb_element).removeAttr("readonly").removeAttr("disabled");
-    } else {
-        $(evb_element).removeAttr("readonly").removeAttr("disabled");
-        $(evb_element).val("-1").attr("readonly", "readonly").attr("disabled", "disabled");
-    }
-    // Aufrücken, wenn leer
-    if ($('#piabef_weiterbehandlung2').val() == -1) {
-        $('#piabef_weiterbehandlung2').val( $('#piabef_weiterbehandlung3').val() );
-        $('#piabef_weiterbehandlung3').val(-1);
-    }
-    if ($('#piabef_weiterbehandlung1').val() == -1) {
-        $('#piabef_weiterbehandlung1').val( $('#piabef_weiterbehandlung2').val() );
-        $('#piabef_weiterbehandlung2').val(-1);
-    }
-    // Doppeleinträge verhindern
     var wb1 = $('#piabef_weiterbehandlung1');
     var wb2 = $('#piabef_weiterbehandlung2');
     var wb3 = $('#piabef_weiterbehandlung3');
-    if (wb1.val() == wb2.val()) {
+    var wb_evb = $('#piabef_weiterbehandlung_evb');
+    // keine oder unbekannte Weiterbehandlung
+    if ($(this).val() == 16 || $(this).val() == 99){
+        wb1.val($(this).val());
+        wb2.val(-1).attr("readonly", "readonly").attr("disabled", "disabled");
+        wb3.val(-1).attr("readonly", "readonly").attr("disabled", "disabled");
+    } else {
+        wb2.removeAttr("readonly").removeAttr("disabled");
+        wb3.removeAttr("readonly").removeAttr("disabled");
+    }
+    // andere Klinik im eignen Haus
+    if (wb1.val() == 3 || wb2.val() == 3 || wb3.val() == 3) {
+        wb_evb.removeAttr("readonly").removeAttr("disabled");
+    } else {
+        wb_evb.val(-1);
+        wb_evb.removeAttr("readonly").removeAttr("disabled");
+        wb_evb.attr("readonly", "readonly");
+        wb_evb.attr("disabled", "disabled");
+    }
+    // Aufrücken, wenn leer
+    if (wb2.val() == -1) {
+        wb2.val( wb3.val() );
+        wb3.val(-1);
+    }
+    if (wb1.val() == -1) {
+        wb1.val( wb2.val() );
         wb2.val(-1);
     }
-    if (wb1.val() == wb3.val()) {
-        wb3.val(-1);
-    }
-    if (wb2.val() == wb3.val()) {
-        wb3.val(-1);
-    }
+    // Doppeleinträge verhindern
+    if (wb1.val() == wb2.val()) { wb2.val(-1); }
+    if (wb1.val() == wb3.val()) { wb3.val(-1); }
+    if (wb2.val() == wb3.val()) { wb3.val(-1); }
 });
 
 // PIA BADO EDIT Migration
