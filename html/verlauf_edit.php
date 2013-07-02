@@ -16,6 +16,8 @@ if (auth($_SESSION['userlevel'], PAGE_VERLAUFEDIT) != 1){
     );
 }
 
+$verlauf_ro = user_permission($_SESSION['userid'], 'r_verlauf_ro');
+
 /* 
  * Escaping
  */
@@ -92,6 +94,7 @@ if ($mode == "edit"){
     } else {
         message_die(GENERAL_ERROR, "Fall nicht in der Datenbank gefunden", "Fehler");
     }
+    $smarty -> assign('permission_ro', $verlauf_ro);
     $smarty -> display('verlauf_edit.tpl');
 }
 ?>

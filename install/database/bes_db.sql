@@ -673,6 +673,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `lastactivity` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `loginretries` int(11) NOT NULL,
   `lastlogintry` datetime NOT NULL,
+  `r_verlauf_ro` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci PACK_KEYS=1 AUTO_INCREMENT=1 ;
 

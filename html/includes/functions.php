@@ -249,4 +249,18 @@ function auth($userlevel = 0 ,$page_id = 0) {
     );
     return $userlevel_pageauth[$userlevel][$page_id];
 }
+
+// Auth User
+function user_permission($userID = '', $rightRow = '') {
+    $query = "SELECT * FROM `user` WHERE `ID`='".$userID."'";
+    if ($result = mysql_query($query)) {
+        $num = mysql_num_rows($result);
+        if ($num == 1) {
+            $rowfetch = mysql_fetch_array($result);
+            mysql_free_result($result);
+            return ($rowfetch[$rightRow] == 1 ? TRUE : FALSE);
+        }
+    }
+    return FALSE;
+}
 ?>

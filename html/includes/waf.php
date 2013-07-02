@@ -142,6 +142,7 @@ function mywaf($var = array()) {
                 case "pdfmodus"              : if ($value!="" and $value!="toprint"){$error=true;} break;
                 case "psydiag1"              : if ($value!=""){if (isnotadiag($value)){$error=true;}} break;
                 case "psydiag2"              : if ($value!=""){if (isnotadiag($value)){$error=true;}} break;
+                case "r_verlauf_ro"          : if ($value!=0 and $value!=1){$error=true;} break;
                 case "rechtsstatus"          : if ($value!=""){if (idnotindb("f_rechtsstatus",$value)){$error=true;}} else {$error=true;} break;
                 case "selstation"            : if ($value!=""){if (idnotindb("f_psy_stationen",$value) and $value!=0 and $value!=99){$error=true;}} else {$error=true;} break;
                 case "silently"              : if ($value!=0 and $value!=1){$error=true;} break;

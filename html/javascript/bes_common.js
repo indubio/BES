@@ -680,6 +680,7 @@ $(document).ready(function() {
                                 usergender  : c.find("#useredit_boxy_form #usergender").val(),
                                 usermail    : c.find("#useredit_boxy_form #usermail").val(),
                                 userfunction: c.find("#useredit_boxy_form #userfunction").val(),
+                                r_verlauf_ro: c.find("#useredit_boxy_form #r_verlauf_ro").val(),
                                 userdbid    : userid
                             }, function(data) {
                                 if (data != "success") {

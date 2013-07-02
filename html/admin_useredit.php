@@ -129,6 +129,7 @@ if(!empty($_POST)) {
                     "`geschlecht`,".
                     "`email`,".
                     "`function`".
+                    "`r_verlauf_ro`".
                     ") VALUES (".
                     "NULL".
                     " ,'".$_POST['username'].
@@ -144,6 +145,7 @@ if(!empty($_POST)) {
                     "','".$_POST['usergender'].
                     "','".$_POST['usermail'].
                     "','".$_POST['userfunction'].
+                    "','".$_POST['r_verlauf_ro'].
                     "')";
             } else {
                 // Benutzer updaten
@@ -161,6 +163,7 @@ if(!empty($_POST)) {
                     "', `geschlecht`='".$_POST['usergender'].
                     "', `email`='".$_POST['usermail'].
                     "', `function`='".$_POST['userfunction'].
+                    "', `r_verlauf_ro`='".$_POST['r_verlauf_ro'].
                     "' WHERE `ID`='".$_POST['userdbid']."'";
             }
             if (!($result = mysql_query($query))) {
@@ -183,6 +186,10 @@ if(!empty($_POST)) {
         $smarty -> assign('user_active', $_POST['active']);
         $smarty -> assign('user_ldaplogin', $_POST['ldaplogin']);
         $smarty -> assign('user_arzt', $_POST['arztlist']);
+        $smarty -> assign('user_gender_selected', $_POST['usergender']);
+        $smarty -> assign('user_function_selected', $_POST['userfunction']);
+        $smarty -> assign('user_mail', $_POST['usermail']);
+        $smarty -> assign('user_r_verlauf_ro', $_POST['r_verlauf_ro']);
         $smarty -> display('admin_useredit.tpl');
         exit;
     }
@@ -222,6 +229,7 @@ if (!isset($_GET['userdbid'])) {
         $smarty -> assign('user_active', $row['active']);
         $smarty -> assign('user_ldaplogin', $row['ldaplogin']);
         $smarty -> assign('user_arzt', $row['arzt']);
+        $smarty -> assign('user_r_verlauf_ro', $row['r_verlauf_ro']);
     }
 }
 
