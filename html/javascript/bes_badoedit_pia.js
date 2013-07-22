@@ -151,33 +151,41 @@ $("#badoedit_pia #piabe_btn_getstammdata").click(function() {
             piabadoBoxy.center();
             if (data_splitresult[1].length > 3) {
                 var form_data = jQuery.parseJSON(data_splitresult[1]);
+                var checkboxes = [
+                    "piabef_cb_skrisen", "piabef_cb_akrisen", "piabef_cb_zwang",
+                    "piabef_cb_bausweis", "piabef_cb_gbetreuung"
+                ];
                 $.each(form_data, function(index, value) {
-                    if (index == "piabef_cb_skrisen" || index == "piabef_cb_akrisen" || index == "piabef_cb_zwang" || index == "piabef_cb_bausweis" || index == "piabef_cb_gbetreuung") {
+                    if ($.inArray(index, checkboxes) > -1){
                         // Checkbox
                         if (value == "1") {
                             $("#badoedit_pia #"+index).attr("checked", "checked").val("1");
                         } else {
-                            $("#badoedit_pia #"+index).attr("checked", "").val("0");
+                            $("#badoedit_pia #"+index).removeAttr("checked").val("0");
                         }
                         // Andere Krisen: Beschreibung enable/disable
                         if (index == 'piabef_cb_akrisen') {
+                            var akrisen_txt_obj = $('#badoedit_pia #piabef_cb_akrisen_txt');
                             if (value == "1") {
-                                $('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled");
+                                akrisen_txt_obj.removeAttr("readonly").removeAttr("disabled");
                             } else {
-                                $('#badoedit_pia #piabef_cb_akrisen_txt').removeAttr("readonly").removeAttr("disabled").val("");
-                                $('#badoedit_pia #piabef_cb_akrisen_txt').attr("readonly", "readonly").attr("disabled", "disabled");
+                                akrisen_txt_obj.removeAttr("readonly").removeAttr("disabled").val("");
+                                akrisen_txt_obj.attr("readonly", "readonly").attr("disabled", "disabled");
                             }
-                        }
-                    } else if (index == "piabef_migration") {
-                        // Migration
-                        if (value == "2") {
-                            $('#badoedit_pia #piabef_migration_txt').removeAttr("readonly").removeAttr("disabled");
-                        } else {
-                            $('#badoedit_pia #piabef_migration_txt').attr("readonly","readonly").attr("disabled","disabled");
                         }
                     } else {
                         // der Rest
                         $("#badoedit_pia #"+index).val(value);
+                        // migration txt object
+                        if (index == "piabef_migration") {
+                            var migration_txt_obj = $('#badoedit_pia #piabef_migration_txt');
+                            if (value == "2") {
+                                migration_txt_obj.removeAttr("readonly").removeAttr("disabled");
+                            } else {
+                                migration_txt_obj.removeAttr("readonly").removeAttr("disabled");
+                                migration_txt_obj.attr("readonly","readonly").attr("disabled","disabled");
+                            }
+                        }
                     }
                 });
             }
