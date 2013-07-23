@@ -57,21 +57,19 @@ if ($num_fall == 1){
     $smarty -> assign('station_selected', $row['station_c']);
     $smarty -> assign('behandler_selected', $row['behandler']);
     $current_station = $row['station_c'];
-    if (($row['station_a'] == 6 and $_POST['fall_dbtbl'] == 1) or ($row['station_a'] == 8 and $_POST['fall_dbtbl'] == 1)){
-        $smarty -> assign('station_changeable', "true");
-    } else {
-        $smarty -> assign('station_changeable', "false");
+    $smarty -> assign('station_changeable', "false");
+    // Station aenderbar: nicht PIA und nur Station 6 oder 8
+    if ($_POST['fall_dbtbl'] == 1) {
+        if ($row['station_a'] == 6 or $row['station_a'] == 8 ){
+            $smarty -> assign('station_changeable', "true");
+        }
     }
-    // PIA Fälle ausschliessen
+    // Kein Verlauf bei PIA Faellen
     if ($_POST['fall_dbtbl'] != 1) {
         $verlauf_allow = 0;
     }
-    // test auf Station 6 beschränkt
-    if ($row['station_a'] != 6){
-        $verlauf_allow = 0;
-    }
 } else {
-    $error_msgs[]="Datenbank Fehler";
+    $error_msgs[] = "Datenbank Fehler";
 }
 
 // Behandlerliste erstellen -> erst die der aktuellen Station und dann der Rest
