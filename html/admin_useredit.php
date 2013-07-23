@@ -115,21 +115,21 @@ if(!empty($_POST)) {
             if ($_POST['userdbid'] == "") {
                 // neuen benutzer anlegen
                 $query = "INSERT INTO user (".
-                    "`ID`, ".
-                    "`username`,".
-                    "`password`,".
-                    "`familienname`,".
-                    "`vorname`,".
-                    "`ldaplogin`,".
-                    "`ldapusername`,".
-                    "`userlevel`,".
-                    "`stationsid`,".
-                    "`active`,".
-                    "`arzt`,".
-                    "`geschlecht`,".
-                    "`email`,".
-                    "`function`".
-                    "`r_verlauf_ro`".
+                    "`ID`".
+                    ",`username`".
+                    ",`password`".
+                    ",`familienname`".
+                    ",`vorname`".
+                    ",`ldaplogin`".
+                    ",`ldapusername`".
+                    ",`userlevel`".
+                    ",`stationsid`".
+                    ",`active`".
+                    ",`arzt`".
+                    ",`geschlecht`".
+                    ",`email`".
+                    ",`function`".
+                    ",`r_verlauf_ro`".
                     ") VALUES (".
                     "NULL".
                     " ,'".$_POST['username'].
