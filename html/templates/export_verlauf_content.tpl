@@ -36,5 +36,6 @@
 	    <div>{$verlauf_entry.text}</div>
 	</fieldset>
     {/foreach}
+    &nbsp;
 </body>
 </html>
