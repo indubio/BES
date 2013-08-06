@@ -14,9 +14,9 @@ $smarty -> compile_check = true;
 $smarty -> debugging = false;
 
 if ($_GET['mode'] == 'getheader') {
-	// Session Cookie ausschalten, um SessionID per GET zu ermöglichen
-	ini_set('session.use_cookies', 0);
-	ini_set('session.use_only_cookies', 0);
+    // Session Cookie ausschalten, um SessionID per GET zu ermöglichen
+    ini_set('session.use_cookies', 0);
+    ini_set('session.use_only_cookies', 0);
 }
 session_start();
 
@@ -35,26 +35,29 @@ $_GET = escape_and_clear($_GET);
 
 $scriptpath = $_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
 if ($_GET['mode'] == "export"){
-	
-	// get verlauf
-	$query = "SELECT * FROM `verlauf` WHERE `case_id`='".$_GET['fall_dbid']."' and `deprecated`='0' ORDER BY creation_datetime asc";
-	$result = mysql_query($query);
-	$verlauf = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		$verlauf_entry = array(
-			'dbid' => $row['ID'],
-			'text' => $row['text'],
-			'creation_date' => datetime_to_de($row['creation_datetime'], "date"),
-			'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
-			'owner_firstname' => get_username_by_id($row['owner'], "first"),
-			'owner_lastname' => get_username_by_id($row['owner'], "last"),
-			'owner_function' => get_function_by_userid($row['owner'])
-		);
-		$verlauf[] = $verlauf_entry;
-	}
+    // get verlauf
+    $query = "SELECT * FROM `verlauf` "
+        ."WHERE `case_id`='".$_GET['fall_dbid']."' "
+        ."and `deprecated`='0' "
+        ."and `text` != ''"
+        ."ORDER BY creation_datetime asc";
+    $result = mysql_query($query);
+    $verlauf = array();
+    while ($row = mysql_fetch_assoc($result)) {
+        $verlauf_entry = array(
+            'dbid' => $row['ID'],
+            'text' => $row['text'],
+            'creation_date' => datetime_to_de($row['creation_datetime'], "date"),
+            'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
+            'owner_firstname' => get_username_by_id($row['owner'], "first"),
+            'owner_lastname' => get_username_by_id($row['owner'], "last"),
+            'owner_function' => get_function_by_userid($row['owner'])
+        );
+        $verlauf[] = $verlauf_entry;
+    }
     mysql_free_result($result);
-	$smarty -> assign('verlauf', $verlauf);
-	$verlauf_html = $smarty -> fetch('export_verlauf_content.tpl');	
+    $smarty -> assign('verlauf', $verlauf);
+    $verlauf_html = $smarty -> fetch('export_verlauf_content.tpl');	
 
     // wkhtmltopdf commandline argumente
     $args = "";
@@ -66,25 +69,25 @@ if ($_GET['mode'] == "export"){
     $args.= " --footer-spacing 5";
     // SessionID per GET übergeben, da wkhtml nicht den SessionCookie hat
     $args.= " --header-html 'http://".$scriptpath."?mode=getheader&fall_dbid=".$_GET['fall_dbid']."&".session_name()."=".session_id()."'";
-	
-	// ohne dem crasht der Indianer :( 
-	// http://www.php.net/manual/en/function.popen.php#43865
-	session_write_close();
 
-	$descriptorspec = array(
-		0 => array('pipe', 'r'),  //stdin
-		1 => array('pipe', 'w'),  //stdout
-		2 => array('pipe', 'w'),  //stderr
-	);
+    // ohne dem crasht der Indianer :( 
+    // http://www.php.net/manual/en/function.popen.php#43865
+    session_write_close();
+
+    $descriptorspec = array(
+        0 => array('pipe', 'r'),  //stdin
+        1 => array('pipe', 'w'),  //stdout
+        2 => array('pipe', 'w'),  //stderr
+    );
     $process = proc_open("../binary/wkhtmltopdf-amd64".$args." - -", $descriptorspec, $pipes);
-	fwrite($pipes[0], $verlauf_html);
-	fclose($pipes[0]);
-	
-    $pdf_out = stream_get_contents($pipes[1]);
-	$errors = stream_get_contents($pipes[2]);
+    fwrite($pipes[0], $verlauf_html);
+    fclose($pipes[0]);
 
-	fclose($pipes[1]);
-	proc_close($process);
+    $pdf_out = stream_get_contents($pipes[1]);
+    $errors = stream_get_contents($pipes[2]);
+
+    fclose($pipes[1]);
+    proc_close($process);
 
     header("Content-Length: " . strlen($pdf_out));
     header("Content-type: application/octet-stream");

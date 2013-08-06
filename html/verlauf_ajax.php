@@ -7,11 +7,11 @@ $json = array();
  * Authentication
  */
 if (auth($_SESSION['userlevel'],PAGE_VERLAUFEDIT) !=1){
-	$error[] = "Sie haben nicht die nötigen Rechte um diese Seite aufzurufen!";
+    $error[] = "Sie haben nicht die nötigen Rechte um diese Seite aufzurufen!";
 }
 
 if(get_magic_quotes_gpc()){
-	$_POST = array_map('stripslashes', $_POST);
+    $_POST = array_map('stripslashes', $_POST);
 }
 $_POST = array_map('mysql_real_escape_string',$_POST);
 
@@ -23,89 +23,97 @@ if (count($error) == 0){
 /*
  * save entry
  */
-	if ($_POST['verlauf_cmd']=="save"){
-		$new_entry = array(
-			'case_id'           => $_POST['fall_dbid'],
-			'creation_datetime' => date("Y-m-d H:i:s"),
-			'text'              => $_POST['verlauf_content'],
-			'owner'             => $_SESSION['userid'],
-			'refer_id'          => "0",
-			'session_id'        => session_id()
-		);
-		$old_entry = array();
-		// if exist get source entry
-		if ($_POST['verlauf_dbid'] != ''){
-			$query = "SELECT *, ".
-				"TIMESTAMPDIFF(MINUTE, `update_timestamp`, NOW()) ".
-				"as timediff_lastupdate ".
-				"FROM `verlauf` WHERE `ID`='".$_POST['verlauf_dbid']."'";
-			$result = mysql_query($query);
-			$num_entry = mysql_num_rows($result);
-			if ($num_entry == 1){
-				$old_entry = mysql_fetch_array($result);
-				$new_entry['refer_id'] = $old_entry['ID'];
-				$new_entry['creation_datetime'] = $old_entry['creation_datetime'];
-			} else {
-				$error[] = "Verlauf ID fehlerhaft";
-			}
-		}
-		// user is owner?
-		if (count($error) == 0 and $_POST['verlauf_dbid'] != ''){
-			if ($old_entry['owner'] != $_SESSION['userid']){
-				$error[] = "Eintrag besitzt einen anderen Ersteller";
-			}
-		}
-		if (count($error) == 0) {
-			// update conditions
-			$dbid_exist = $_POST['verlauf_dbid'] != '';
-			$is_same_session = $old_entry['session_id'] == session_id();
-			$timelimit_not_reached = $old_entry['timediff_lastupdate'] < 60;
-			if ($dbid_exist and $is_same_session and $timelimit_not_reached) {
-				// update db entry
-				$json['dbid'] = $_POST['verlauf_dbid'];
-				$query = "UPDATE `verlauf` SET ".
-					"`text`='".$new_entry['text']."', ".
-					"`update_timestamp`= NULL ".
-					"WHERE `ID`='".$_POST['verlauf_dbid']."'";
-				if (!($result = mysql_query($query))){
-					$error[] = "DB Error";
-				}
-			} else {
-				if ($_POST['verlauf_dbid'] != '' and $old_entry['text'] == $new_entry['text']){
-					// do nothing if no changes
-					$json['dbid'] = $_POST['verlauf_dbid'];
-				} else {
-					// create new db entry
-					$query = "INSERT `verlauf`";
-					$query = "INSERT INTO `verlauf` ("
-						." `case_id`"
-						.",`creation_datetime`"
-						.",`text`"
-						.",`owner`"
-						.",`refer_id`"
-						.",`session_id`"
-						.") VALUES ("
-						." '".$new_entry['case_id']
-						."','".$new_entry['creation_datetime']
-						."','".$new_entry['text']
-						."','".$new_entry['owner']
-						."','".$new_entry['refer_id']
-						."','".$new_entry['session_id']
-						."')";
-					if (!($result = mysql_query($query))){
-						$error[] = "DB Error";
-					}
-					$new_dbid = mysql_insert_id();
-					$json['dbid'] = $new_dbid;
-					// set old entry "deprecated"
-					if ($_POST['verlauf_dbid']!=''){
-						$query = "UPDATE `verlauf` SET `deprecated`='1' WHERE `ID`='".$_POST['verlauf_dbid']."'";
-						$result = mysql_query($query);
-					}
-				}
-			}
-		}
-	}
+    if ($_POST['verlauf_cmd']=="save"){
+        $new_entry = array(
+            'case_id'           => $_POST['fall_dbid'],
+            'creation_datetime' => date("Y-m-d H:i:s"),
+            'text'              => $_POST['verlauf_content'],
+            'owner'             => $_SESSION['userid'],
+            'refer_id'          => "0",
+            'session_id'        => session_id()
+        );
+        $old_entry = array();
+        // if exist get source entry
+        if ($_POST['verlauf_dbid'] != ''){
+            $query = "SELECT *, ".
+                "TIMESTAMPDIFF(MINUTE, `update_timestamp`, NOW()) ".
+                "as timediff_lastupdate ".
+                "FROM `verlauf` WHERE `ID`='".$_POST['verlauf_dbid']."'";
+            $result = mysql_query($query);
+            $num_entry = mysql_num_rows($result);
+            if ($num_entry == 1){
+                $old_entry = mysql_fetch_array($result);
+                $new_entry['refer_id'] = $old_entry['ID'];
+                $new_entry['creation_datetime'] = $old_entry['creation_datetime'];
+            } else {
+                $error[] = "Verlauf ID fehlerhaft";
+            }
+        }
+        // user is owner?
+        if (count($error) == 0 and $_POST['verlauf_dbid'] != ''){
+            if ($old_entry['owner'] != $_SESSION['userid']){
+                $error[] = "Eintrag besitzt einen anderen Ersteller";
+            }
+        }
+        if (count($error) == 0) {
+            // update conditions
+            $dbid_exist = $_POST['verlauf_dbid'] != '';
+            $is_same_session = $old_entry['session_id'] == session_id();
+            $timelimit_not_reached = $old_entry['timediff_lastupdate'] < 60;
+            if ($dbid_exist and $is_same_session and $timelimit_not_reached) {
+                // if text empty then set entry deprecated
+                $deprecated = 0;
+                if ($new_entry['text'] == '') {
+                    $deprecated = 1;
+                }
+                // update db entry
+                $json['dbid'] = $_POST['verlauf_dbid'];
+                $query = "UPDATE `verlauf` SET ".
+                    "`text`='".$new_entry['text']."', ".
+                    "`update_timestamp`= NULL, ".
+                    "`deprecated`='".$deprecated."' ".
+                    "WHERE `ID`='".$_POST['verlauf_dbid']."'";
+                if (!($result = mysql_query($query))){
+                    $error[] = "DB Error";
+                }
+            } else {
+                if ($_POST['verlauf_dbid'] != ''
+                        and $old_entry['text'] == $new_entry['text']) {
+                    // do nothing if no changes
+                    $json['dbid'] = $_POST['verlauf_dbid'];
+                } else {
+                    // create new db entry
+                    $query = "INSERT `verlauf`";
+                    $query = "INSERT INTO `verlauf` ("
+                        ." `case_id`"
+                        .",`creation_datetime`"
+                        .",`text`"
+                        .",`owner`"
+                        .",`refer_id`"
+                        .",`session_id`"
+                        .") VALUES ("
+                        ." '".$new_entry['case_id']
+                        ."','".$new_entry['creation_datetime']
+                        ."','".$new_entry['text']
+                        ."','".$new_entry['owner']
+                        ."','".$new_entry['refer_id']
+                        ."','".$new_entry['session_id']
+                        ."')";
+                    if (!($result = mysql_query($query))){
+                        $error[] = "DB Error";
+                    }
+                    $new_dbid = mysql_insert_id();
+                    $json['dbid'] = $new_dbid;
+                    // set old entry "deprecated"
+                    if ($_POST['verlauf_dbid']!=''){
+                        $query = "UPDATE `verlauf` SET `deprecated`='1' "
+                            ."WHERE `ID`='".$_POST['verlauf_dbid']."'";
+                        $result = mysql_query($query);
+                    }
+                }
+            }
+        }
+    }
 }
 
 if (count($error) == 0){
@@ -118,5 +126,4 @@ if (count($error) == 0){
 $smarty -> debugging = false;
 $smarty -> assign('json_string', json_encode($json));
 $smarty -> display('ajax_json.tpl');
-
 ?>
