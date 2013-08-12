@@ -733,7 +733,8 @@ CREATE TABLE IF NOT EXISTS `verlauf` (
 
 CREATE TABLE IF NOT EXISTS `report_recipients` (
   `reportID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL
+  `userID` int(11) NOT NULL,
+  `inactive` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
