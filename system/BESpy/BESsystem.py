@@ -53,7 +53,7 @@ class ReportProperties (object):
                 user.email as email
             from report_recipients
             left outer join user on (user.ID = report_recipients.userID)
-            where reportID = '%s and inactive = 0'
+            where reportID = '%s' and inactive = '0'
         """ % (self.__propertiesdata['ID'])
         cursor.execute(sqlquery)
         for recipient in cursor.fetchall():
