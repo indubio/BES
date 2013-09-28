@@ -12,7 +12,7 @@ config.toolbar = 'MyToolbar';
 // http://docs.cksource.com/CKEditor_3.x/Developers_Guide/Toolbar
 config.toolbar_MyToolbar =
 [
-['Ajaxsave','-','Undo','Redo','-','Templates'],
+['Undo','Redo','-','Templates'],
 ['Bold','Italic','Strike','Underline','Subscript','Superscript','TextColor','BGColor'],
 ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 ['NumberedList','BulletedList','-','Outdent','Indent','-','SpecialChar'],
@@ -29,9 +29,13 @@ config.toolbar_MyToolbar =
 ];
 config.ProcessHTMLEntities=true;
 
+config.resize_enabled = false;
+
+config.height = 300;
+
 config.removePlugins = 'elementspath';
 
-config.extraPlugins = 'ajaxsave,jqueryspellchecker';
+config.extraPlugins = 'jqueryspellchecker';
 
 config.contentsCss =['javascript/ckeditor/contents.css', 'css/jquery.spellchecker.css']
 
