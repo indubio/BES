@@ -66,31 +66,7 @@ if ($mode == "edit"){
             $smarty->assign('fall_entlass_info', 'noch nicht entlassen');
         }
         $smarty->assign('case_dbid', $fall_dbid);
-        // get Verlauf
-        $query  = "SELECT * FROM `verlauf`";
-        $query .= " WHERE `case_id`='".$fall_dbid."' and `deprecated`='0'";
-        $query .= " ORDER BY creation_datetime asc";
-        $result = mysql_query($query);
-        $verlauf = array();
-        while ($row = mysql_fetch_assoc($result)) {
-            $verlauf_entry = array(
-                'dbid' => $row['ID'],
-                'text' => $row['text'],
-                'creation_date' => datetime_to_de($row['creation_datetime'], "date"),
-                'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
-                'owner_firstname' => get_username_by_id($row['owner'], "first"),
-                'owner_lastname' => get_username_by_id($row['owner'], "last"),
-                'owner_function' => get_function_by_userid($row['owner']),
-                'editable' => 0,
-                'session' => session_id()
-            );
-            if ($row['owner'] == $_SESSION['userid']){
-                $verlauf_entry['editable'] = 1;
-            }
-            $verlauf[] = $verlauf_entry;
-        }
         mysql_free_result($result);
-        $smarty -> assign('verlauf', $verlauf);
     } else {
         message_die(GENERAL_ERROR, "Fall nicht in der Datenbank gefunden", "Fehler");
     }
