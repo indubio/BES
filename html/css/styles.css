@@ -207,3 +207,19 @@ input.timeinput {width:3em;}
   margin : 0px 20px 5px 20px;
   line-height: 1.6em;
 }
+.verlauf_dlg_dt {
+  font-size: 14px;
+  font-weight: bold;
+}
+.verlauf_dlg_btn {
+  font-size: 12px;
+}
+.verlauf_dlg_btn_save {
+  font-size: 14px;
+  font-weight: bold;
+}
+.verlauf_dlg_error_msg {
+  color: #FF0000;
+  font-size: 14px;
+  font-weight: bold;
+}
