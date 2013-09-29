@@ -96,12 +96,12 @@ function edit_entry_dlg (caseDBID, entryDBID){
             c.find("#entry_dlg_form #cancel_btn").click(function() {
                 entryDlgBoxy.hideAndUnload();
                 entryDlgBoxy.unload();
-                get_verlauf();
+                get_verlauf(caseDBID);
             }),
             c.find("#entry_dlg_form #delete_btn").click(function() {
                 entryDlgBoxy.hideAndUnload();
                 entryDlgBoxy.unload();
-                get_verlauf();
+                get_verlauf(caseDBID);
             }),
             c.find("#entry_dlg_form #save_btn").click(function() {
                 save_btn = $(this);
