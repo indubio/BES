@@ -66,7 +66,6 @@ if ($mode == "edit"){
             $smarty->assign('fall_entlass_info', 'noch nicht entlassen');
         }
         $smarty->assign('case_dbid', $fall_dbid);
-        mysql_free_result($result);
     } else {
         message_die(GENERAL_ERROR, "Fall nicht in der Datenbank gefunden", "Fehler");
     }
