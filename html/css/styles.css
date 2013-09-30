@@ -207,6 +207,9 @@ input.timeinput {width:3em;}
   margin : 0px 20px 5px 20px;
   line-height: 1.6em;
 }
+#verlauf_body fieldset.entry, div.deleted p {
+  color: #888888;
+}
 .verlauf_dlg_dt {
   font-size: 14px;
   font-weight: bold;

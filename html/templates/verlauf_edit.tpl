@@ -14,6 +14,8 @@ Entlassung:&nbsp;{$fall_entlass_info}
 {/if}
 <input type="button" id="verlauf_reload_btn" name="verlauf_reload_btn" value="Verlauf neuladen" />
 <input type="button" id="verlauf_export" name="verlauf_export" value="Verlauf als PDF exportieren" />
+<br />
+<input type="checkbox" id="cb_viewdel" name="cb_viewdel" /><label for="cb_viewdel">&nbsp;gelöschte Einträge anzeigen</label><br />
 <hr />
 <br />
 <div id="verlauf_body"><br />Verlauf wird geladen...<br /><br /></div>

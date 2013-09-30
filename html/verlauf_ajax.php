@@ -45,6 +45,9 @@ if (count($error) == 0){
         $case_dbid = $_POST['case_dbid'];
         $query  = "SELECT * FROM `verlauf`";
         $query .= " WHERE `case_id`='".$case_dbid."' and `deprecated`='0'";
+        if (!isset($_POST['view_deleted'])){
+            $query .= " and `deleted`='0'";
+        }
         $query .= " ORDER BY creation_datetime desc";
         $result = mysql_query($query);
         $verlauf = array();
@@ -58,10 +61,16 @@ if (count($error) == 0){
                 'owner_lastname' => get_username_by_id($row['owner'], "last"),
                 'owner_function' => get_function_by_userid($row['owner']),
                 'editable' => 0,
+                'reuseable' => 0,
+                'deleted' => $row['deleted'],
                 'session' => session_id()
             );
             if ($row['owner'] == $_SESSION['userid']){
-                $verlauf_entry['editable'] = 1;
+                if ($verlauf_entry['deleted'] == 1) {
+                    $verlauf_entry['reuseable'] = 1;
+                } else {
+                    $verlauf_entry['editable'] = 1;
+                }
             }
             $verlauf[] = $verlauf_entry;
         }
@@ -142,6 +151,30 @@ if (count($error) == 0){
                 $result = mysql_query($query);
             }
             $json['action'] = 'new entry';
+        }
+    }
+/*
+ * delete entry
+ */
+    if ($_POST['verlauf_cmd'] == 'deleteentry'){
+        if ($_POST['eventdbid'] != '0'){
+            $query  = "UPDATE `verlauf` SET `deleted`='1' ";
+            $query .= "WHERE `ID`='".$_POST['eventdbid']."'";
+            $result = mysql_query($query);
+        } else {
+            $error[] = "Kein Eintrag übergeben";
+        }
+    }
+/*
+ * reuse deleted entry
+ */
+    if ($_POST['verlauf_cmd'] == 'reuseentry'){
+        if ($_POST['eventdbid'] != '0'){
+            $query  = "UPDATE `verlauf` SET `deleted`='0' ";
+            $query .= "WHERE `ID`='".$_POST['eventdbid']."'";
+            $result = mysql_query($query);
+        } else {
+            $error[] = "Kein Eintrag übergeben";
         }
     }
 }
