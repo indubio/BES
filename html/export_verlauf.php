@@ -39,6 +39,7 @@ if ($_GET['mode'] == "export"){
     $query = "SELECT * FROM `verlauf` "
         ."WHERE `case_id`='".$_GET['fall_dbid']."' "
         ."and `deprecated`='0' "
+        ."and `deleted`=0 "
         ."and `text` != ''"
         ."ORDER BY creation_datetime asc";
     $result = mysql_query($query);
