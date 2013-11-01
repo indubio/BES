@@ -687,6 +687,7 @@ CREATE TABLE IF NOT EXISTS `userfunction` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `male` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `female` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `verlauf_default` text CHARACTER SET utf8 NOT NULL DEFAULT '',
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `order` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`ID`)

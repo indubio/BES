@@ -3,6 +3,27 @@ include ('bes_init.php');
 $error = array();
 $json = array();
 
+function get_verlauf_default_text ($user_dbid = 0) {
+    $query = "SELECT function FROM `user` WHERE `ID`='".$user_dbid."'";
+    $result = mysql_query($query);
+    if (mysql_num_rows($result) == 1) {
+        $userdata = mysql_fetch_array($result);
+        mysql_free_result($result);
+        if ($userdata['function'] > 0) {
+            $query  = "SELECT verlauf_default FROM `userfunction` ";
+            $query .= "WHERE `ID`='".$userdata['function']."'";
+            $result = mysql_query($query);
+            $functiondata = mysql_fetch_array($result);
+            mysql_free_result($result);
+            return $functiondata['verlauf_default'];
+        } else {
+            return "";
+        }
+    } else {
+        return "";
+    }
+}
+
 /*
  * Authentication
  */
@@ -28,7 +49,9 @@ if (count($error) == 0){
         $current_datetime = new DateTime();
         $json['date'] = $current_datetime->format('d.m.Y');
         $json['time'] = $current_datetime->format('H:i');
-        $json['content'] = "<p><u><strong>Verlauf</strong></u></p><p>&nbsp;</p><p><u><strong>PPB</strong></u></p><p>&nbsp;</p><p><u><strong>Pharmakotherapie</strong></u></p><p>&nbsp;</p>";
+        // set default text by user group
+        $json['content'] = get_verlauf_default_text($_SESSION['userid']);
+        // get verlauf if available
         $query  = "SELECT * FROM `verlauf`";
         $query .= " WHERE `ID`='".$_POST['verlauf_dbid']."'";
         $result = mysql_query($query);
