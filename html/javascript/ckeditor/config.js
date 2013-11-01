@@ -13,7 +13,8 @@ config.toolbar = 'MyToolbar';
 config.toolbar_MyToolbar =
 [
 ['Undo','Redo','-','Templates'],
-['Bold','Italic','Strike','Underline','Subscript','Superscript','TextColor','BGColor'],
+['RemoveFormat','Bold','Italic','Strike','Underline','Subscript','Superscript',
+ 'TextColor','BGColor'],
 ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 ['NumberedList','BulletedList','-','Outdent','Indent','-','SpecialChar'],
 ['jQuerySpellChecker','-','Maximize','-','About']
