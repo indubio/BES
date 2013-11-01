@@ -24,4 +24,13 @@ $soapconfig['url']    = $ini_array['soap']['url'];
 // System
 $scriptconfig['printscript'] = $ini_array['print']['script'];
 
+// set timezone
+$scriptconfig['timezone'] = $ini_array['datetime']['timezone'];
+if ($scriptconfig['timezone'] == '') {
+    try {
+        $dummy = new DateTime();
+    } catch (Exception $e) {
+        date_default_timezone_set('Europe/Berlin');
+    }
+}
 ?>
