@@ -47,18 +47,30 @@ if (count($error) == 0){
     if ($_POST['verlauf_cmd']=="get_entry"){
         // default values
         $current_datetime = new DateTime();
-        $json['date'] = $current_datetime->format('d.m.Y');
-        $json['time'] = $current_datetime->format('H:i');
-        // set default text by user group
-        $json['content'] = get_verlauf_default_text($_SESSION['userid']);
-        // get verlauf if available
+        /*
+         * initial data
+         */
+        $json = array(
+            'date' => $current_datetime->format('d.m.Y'),
+            'time' => $current_datetime->format('H:i'),
+            'content' => get_verlauf_default_text($_SESSION['userid']),
+            'update_date' => "",
+            'update_time' => "",
+        );
+        /*
+         * get verlauf if available
+         */
         $query  = "SELECT * FROM `verlauf`";
         $query .= " WHERE `ID`='".$_POST['verlauf_dbid']."'";
         $result = mysql_query($query);
         while ($row = mysql_fetch_assoc($result)) {
-            $json['date'] = datetime_to_de($row['creation_datetime'], "date");
-            $json['time'] = datetime_to_de($row['creation_datetime'], "time");
-            $json['content'] = $row['text'];
+            $json = array(
+                'date' => datetime_to_de($row['creation_datetime'], "date"),
+                'time' => datetime_to_de($row['creation_datetime'], "time"),
+                'content' => $row['text'],
+                'update_date' => datetime_to_de($row['update_timestamp'], "date"),
+                'update_time' => datetime_to_de($row['update_timestamp'], "time")
+            );
         }
     }
 /*
@@ -83,6 +95,8 @@ if (count($error) == 0){
                 'owner_firstname' => get_username_by_id($row['owner'], "first"),
                 'owner_lastname' => get_username_by_id($row['owner'], "last"),
                 'owner_function' => get_function_by_userid($row['owner']),
+                'update_date' => datetime_to_de($row['update_timestamp'], "date"),
+                'update_time' => datetime_to_de($row['update_timestamp'], "time"),
                 'editable' => 0,
                 'reuseable' => 0,
                 'deleted' => $row['deleted'],
@@ -133,7 +147,6 @@ if (count($error) == 0){
             if ($num_entry == 1){
                 $old_entry = mysql_fetch_array($result);
                 $new_entry['refer_id'] = $old_entry['ID'];
-                //$new_entry['creation_datetime'] = $old_entry['creation_datetime'];
             } else {
                 $error[] = "Verlauf ID fehlerhaft";
             }
@@ -146,7 +159,6 @@ if (count($error) == 0){
         }
         if (count($error) == 0) {
             // create new db entry
-            $query = "INSERT `verlauf`";
             $query = "INSERT INTO `verlauf` ("
                 ." `case_id`"
                 .",`creation_datetime`"

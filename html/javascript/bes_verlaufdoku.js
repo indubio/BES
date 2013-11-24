@@ -50,6 +50,10 @@ function get_verlauf(caseDBID) {
                 new_entry += "<div id=\""+caseDBID + "_" + item["dbid"];
                 new_entry += "\" class=\"content" + deleted_class + "\">";
                 new_entry += item["text"] + "</div>";
+                new_entry += "<hr/><div class=\"updateinfo\">";
+                new_entry += "letzte Änderung am " + item["update_date"];
+                new_entry += " um " + item["update_time"];
+                new_entry += "</div>";
                 new_entry += "</fieldset>";
                 verlaufcontainer.append(new_entry);
             });

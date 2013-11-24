@@ -52,7 +52,9 @@ if ($_GET['mode'] == "export"){
             'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
             'owner_firstname' => get_username_by_id($row['owner'], "first"),
             'owner_lastname' => get_username_by_id($row['owner'], "last"),
-            'owner_function' => get_function_by_userid($row['owner'])
+            'owner_function' => get_function_by_userid($row['owner']),
+            'update_date' => datetime_to_de($row['update_timestamp'], "date"),
+            'update_time' => datetime_to_de($row['update_timestamp'], "time")
         );
         $verlauf[] = $verlauf_entry;
     }
@@ -65,6 +67,7 @@ if ($_GET['mode'] == "export"){
     $args.= " -q";
     $args.= " --margin-top 30mm";
     $args.= " --margin-left 20";
+    $args.= " --margin-right 20";
     $args.= " --footer-center [page]/[topage]";
     $args.= " --footer-line";
     $args.= " --footer-spacing 5";

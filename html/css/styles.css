@@ -4,6 +4,13 @@ body,td,div,p,pre,ul,input,button,submit,select {font-size: 12px;}
 p,h1,h2,h3 {padding:0px;margin:0px;}
 li         {margin:2px 0px 0px 0px;}
 
+hr {
+    background-color: #000;
+    color: #000;
+    border: 0;
+    height: 1px;
+}
+
 h1 {font-size: 16px; font-weight:bold;}
 h2 {font-size: 14px; font-weight:bold;}
 h3 {font-size: 12px;}
@@ -188,6 +195,7 @@ input.timeinput {width:3em;}
 
 #verlauf_body fieldset.entry {
   margin-bottom: 10px;
+  border-color: #000000;
 }
 
 #verlauf_body fieldset.entry legend {
@@ -204,23 +212,38 @@ input.timeinput {width:3em;}
   font-family: sans-serif,Arial,Helvetica,Tahoma,Verdana;
   text-decoration: none;
   color: #000000;
+  text-align: left;
   margin : 0px 20px 5px 20px;
   line-height: 1.6em;
 }
+
 #verlauf_body fieldset.entry, div.deleted p {
   color: #888888;
+  text-align: left;
 }
+
+#verlauf_body fieldset.entry, div.updateinfo {
+  color: #888888;
+  font-size: 12px;
+  font-weight: normal ;
+  font-family: sans-serif,Arial,Helvetica,Tahoma,Verdana;
+  text-align: right;
+}
+
 .verlauf_dlg_dt {
   font-size: 14px;
   font-weight: bold;
 }
+
 .verlauf_dlg_btn {
   font-size: 12px;
 }
+
 .verlauf_dlg_btn_save {
   font-size: 14px;
   font-weight: bold;
 }
+
 .verlauf_dlg_error_msg {
   color: #FF0000;
   font-size: 14px;
