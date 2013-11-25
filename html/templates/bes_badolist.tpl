@@ -4,7 +4,7 @@
 <hr /><br />
 <div id="focus_holder"></div>
 <div>
-{if $user_level==UG_ADMIN or $user_level==UG_BEHANDLER or $user_level==UG_STATUSER}
+{if $user_level==UG_ADMIN or $user_level==UG_BEHANDLER or $user_level==UG_STATION}
 Auswahl:&nbsp;<select id="dT_SelectFilter1" name="station" >{html_options values=$station_values output=$station_options selected=$station_selected}</select>&nbsp;&nbsp;
 {else}
 <input type="hidden" id="dT_SelectFilter1" name="station" value="{$station_selected}" />
