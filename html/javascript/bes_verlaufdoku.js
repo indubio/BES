@@ -43,7 +43,8 @@ function get_verlauf(caseDBID) {
                 if (item['deleted'] == 1) {
                     deleted_class += " deleted"
                 }
-                new_entry += item["creation_date"] + "&nbsp;" + item["creation_time"];
+                new_entry += item["creation_date"] + "&nbsp[" + item["creation_wday"];
+                new_entry += "]&nbsp;" + item["creation_time"];
                 new_entry += "&nbsp;-&nbsp;" + item["owner_lastname"] + ",&nbsp;";
                 new_entry += item["owner_firstname"] + "&nbsp;-&nbsp;";
                 new_entry += item["owner_function"] + "</legend>";

@@ -24,6 +24,14 @@ function get_verlauf_default_text ($user_dbid = 0) {
     }
 }
 
+function get_wday($datetimestr) {
+    $weekdays_short = array('So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa');
+    list($datestr, $dummy) = split(' ', $datetimestr);
+    list($year, $month, $day) = split('-', $datestr) ;
+    $dateobj = getdate(mktime(0,0,0, $month, $day, $year));
+    return $weekdays_short[$dateobj['wday']];
+}
+
 /*
  * Authentication
  */
@@ -92,6 +100,7 @@ if (count($error) == 0){
                 'text' => $row['text'],
                 'creation_date' => datetime_to_de($row['creation_datetime'], "date"),
                 'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
+                'creation_wday' => get_wday($row['creation_datetime']),
                 'owner_firstname' => get_username_by_id($row['owner'], "first"),
                 'owner_lastname' => get_username_by_id($row['owner'], "last"),
                 'owner_function' => get_function_by_userid($row['owner']),
