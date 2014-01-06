@@ -6,6 +6,7 @@ $(document).ready(function() {
     var adminuserTable;
 
     var patlistTable_Stationselect = $("#dT_SelectFilter1").val();
+    var patlistTable_OnlyCurCases = ($("#dT_FilterOnlyCurrentCases").is(':checked')) ? "1" : "0";
     var registerTable_yearselect = $('#dT_YearFilter').val();
 
     var UG_ADMIN = 1;
@@ -35,6 +36,13 @@ $(document).ready(function() {
         // Fokus von Auswahlbox weg, geht nur über Umweg über inputfield
         $("#dT_FilterTextBox_patlist").focus().blur(); 
         patlistTable_Stationselect = $(this).val();
+        patlistTable.fnDraw();
+    });
+
+    // PatListTable Only Current Cases Checkbox Event
+    $("#dT_FilterOnlyCurrentCases").change(function(){
+        $("#dT_FilterTextBox_patlist").focus().blur();
+        patlistTable_OnlyCurCases = ($("#dT_FilterOnlyCurrentCases").is(':checked')) ? "1" : "0";
         patlistTable.fnDraw();
     });
 
@@ -382,10 +390,16 @@ $(document).ready(function() {
             "iDisplayLength": 25,
             "sAjaxSource"   : "ajax_get_badolist.php",
             "fnServerData"  : function (sSource, aoData, fnCallback) {
-                aoData.push({
-                    "name" : "selstation",
-                    "value": patlistTable_Stationselect
-                });
+                aoData.push(
+                    {
+                        "name" : "selstation",
+                        "value": patlistTable_Stationselect
+                    },
+                    {
+                        "name" : "onlycurrentcases",
+                        "value": patlistTable_OnlyCurCases
+                    }
+                );
                 $.getJSON( sSource, aoData, function (json) {
                     if (json.sError != undefined) {
                         window.location.href = "index.php";
