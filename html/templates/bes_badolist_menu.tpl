@@ -8,11 +8,11 @@
   <div align="left">
     <br/>
     {if $bado_btn==1}
-    <div align="center"><input type="button" id="pmenu_badoedit_{$bado_type}" name="pmenu_badoedit_{$bado_type}" value="BaDo bearbeiten"/></div>
+    <div align="center"><input type="button" id="pmenu_badoedit_{$bado_type}" name="pmenu_badoedit_{$bado_type}" value="BasisDokumentation"/></div>
     {/if}
     {if $verlauf_btn==1}
     <br/>
-    <div align="center"><input type="button" id="pmenu_verlaufedit" name="pmenu_verlaufedit" value="Therapieverlauf bearbeiten"/></div>
+    <div align="center"><input type="button" id="pmenu_verlaufedit" name="pmenu_verlaufedit" value="Therapieverlauf"/></div>
     {/if}
     <br/><br/><hr/>
     <p align="center">Administrative Einstellungen</p>
