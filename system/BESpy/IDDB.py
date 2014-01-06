@@ -72,7 +72,10 @@ class Case(object):
                 where CASES_ID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseID)
-            self.__CaseNodeID = SQLCursor.fetchone().nodes_ID
+            try:
+                self.__CaseNodeID = SQLCursor.fetchone().nodes_ID
+            except:
+                pass
 
         if self.__CaseNodeID != '':
             ## get CaseEHRID by CaseNodeID
@@ -81,7 +84,10 @@ class Case(object):
                 where ID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseNodeID)
-            self.__CaseEHRID = SQLCursor.fetchone().ehrid
+            try:
+                self.__CaseEHRID = SQLCursor.fetchone().ehrid
+            except:
+                pass
 
             ## get CaseNodeChildID by CaseNodeID
             sqlquery = """
@@ -89,7 +95,10 @@ class Case(object):
                 where PARENTID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseNodeID)
-            self.__CaseNodeChildID = SQLCursor.fetchone().ID
+            try:
+                self.__CaseNodeChildID = SQLCursor.fetchone().ID
+            except:
+                pass
         SQLConn.close()
 
     def getPsychPV(self):
