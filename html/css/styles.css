@@ -1,5 +1,11 @@
-body,table,td,tr,div,p,pre,h1,h2,h3,h4,ul {font-family:Arial,Sans-Serif; font-weight:normal;text-decoration:none;}
-body,td,div,p,pre,ul,input,button,submit,select {font-size: 12px;}
+body,table,td,tr,div,p,pre,h1,h2,h3,h4,ul {
+    font-family:Arial,Sans-Serif;
+    font-weight:normal;
+    text-decoration:none;
+}
+body,td,div,p,pre,ul,input,button,submit,select {
+    font-size: 12px;
+    }
 
 p,h1,h2,h3 {padding:0px;margin:0px;}
 li         {margin:2px 0px 0px 0px;}
@@ -208,15 +214,26 @@ input.timeinput {width:3em;}
   color: #000000;
 }
 
-#verlauf_body fieldset.entry div.content *{
-  font-family: sans-serif,Arial,Helvetica,Tahoma,Verdana;
-  font-size: 13px;
-  text-align: left;
-  color: #000000;
+#verlauf_body fieldset.entry div.content {
+  z-index: 9999;
+  color:#000000;
 }
 
-#verlauf_body fieldset.entry div.deleted *{
-  color: #888888;
+#verlauf_body fieldset.entry div.content *{
+  font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+  font-size: 13px;
+  text-align: left;
+  line-height: 1.6em;
+}
+#verlauf_body fieldset.entry div.content p{
+  margin: 1em 0px 0px 0px;
+}
+
+#verlauf_body fieldset.entry div.deleted {
+  filter:alpha(opacity=50);
+  -moz-opacity:0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
 }
 
 #verlauf_body fieldset.entry, div.updateinfo {
