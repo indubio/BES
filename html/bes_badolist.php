@@ -53,7 +53,8 @@ if ($_SESSION["userlevel"] == 3) {
 $dummyarray_i[] = "99";
 $dummyarray_k[] = "alle";
 
-$query = "SELECT * FROM f_psy_stationen ORDER BY `option` ASC";
+$query = "SELECT * FROM f_psy_stationen WHERE `active` = 1 "
+    ."ORDER BY `view_order` ASC";
 $result = mysql_query($query);
 $num_psy = mysql_num_rows($result);
 for ($i = 0; $i < $num_psy; $i++) {
@@ -62,7 +63,8 @@ for ($i = 0; $i < $num_psy; $i++) {
     $dummyarray_k[] = $row['option'];
 }
 mysql_free_result($result);
-$query = "SELECT * FROM f_psy_ambulanzen ORDER BY `option` ASC";
+$query = "SELECT * FROM f_psy_ambulanzen WHERE `active` = 1 "
+    ."ORDER BY `view_order` ASC";
 $result = mysql_query($query);
 $num_psy = mysql_num_rows($result);
 for ($i = 0; $i < $num_psy; $i++) {
