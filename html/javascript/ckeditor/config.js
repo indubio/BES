@@ -41,5 +41,6 @@ config.extraPlugins = 'jqueryspellchecker';
 config.contentsCss =['javascript/ckeditor/contents.css', 'css/jquery.spellchecker.css']
 
 config.templates_replaceContent = false ;
+config.templates_files = ['javascript/ckeditor/plugins/templates/templates/bes_default.js']
 
 };
