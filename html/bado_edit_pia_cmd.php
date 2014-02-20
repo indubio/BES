@@ -1,39 +1,21 @@
 <?php
 include ('bes_init.php');
 
-function check_pia_bado($i_values, $i_dbdata) {
-    $o_msgs=array();
-    $o_error_msgs=array();
-
+function check_pia_mdata($i_values, $i_bdata) {
+    $o_msgs = array();
+    $o_error_msgs = array();
     /* Liegen alle Daten vor */
     $needed_values = array(
         "piabef_wohnort" => "Auswahl zum Wohnort fehlt",
-        "piabef_migration" => "Auswahl zm Migrationshintergrund fehlt",
         "piabef_familienstand" => "Auswahl zum Familienstand fehlt",
         "piabef_wohnsituation" => "Auswahl zur Wohnsituation fehlt",
         "piabef_wohngemeinschaft" => "Auswahl zu \"Lebt mit..\" fehlt",
         "piabef_berufsbildung" => "Auswahl zur Berufsbildung fehlt",
         "piabef_einkuenfte" => "Auswahl zu Einkünfte fehlt",
         "piabef_zusatzbetreuung1" => "Auswahl zur Zusatzbetreuung fehlt",
-        "piabef_zuweisung" => "Auswahl zur Zuweisung fehlt",
+        "piabef_migration" => "Auswahl zm Migrationshintergrund fehlt",
         "piabef_behandler" => "Auswahl zum Behandler fehlt"
     );
-
-    /* Verlaufsdaten einfordern */
-    if ($i_dbdata['badotyp'] == 2) {
-        $needed_values['piabef_symptomatik'] = "Auswahl zur Symptomatik fehlt";
-    }
-
-    /* Entlassdaten gewählt */
-    if ($i_values['piabef_cb_entlassung'] == 1) {
-        $needed_values['piabef_entlassmodus'] = "Entlassung gewählt: Auswahl zum Entlassmodus fehlt";
-        $needed_values['piabef_weiterbehandlung1'] = "Entlassung gewählt: Auswahl zur Weiterbehandlung fehlt";
-        if ($i_values['piabef_weiterbehandlung1']== 3 or
-            $i_values['piabef_weiterbehandlung1']== 3 or
-            $i_values['piabef_weiterbehandlung1']== 3) {
-            $needed_values['piabef_weiterbehandlung_evb'] = "Entlassung gewählt: Auswahl zur Weiterbehandlung EvB, aber in welches Zentrum fehlt";
-        }
-    }
     while (list($nv_key,$nv_value) = each($needed_values)){
         if ( isset($i_values[$nv_key]) ) {
             if ($i_values[$nv_key] == -1) {
@@ -41,26 +23,13 @@ function check_pia_bado($i_values, $i_dbdata) {
             }
         } else { $o_msgs[] = $nv_value ;}
     }
-
     /* Daten nicht von Selectboxen */
     if ($i_values['piabef_migration'] == 2 and $i_values['piabef_migration_txt'] == "") {
         $o_msgs[] = "Migrationshintergrund gewählt, ohne Angabe welcher";
     }
-    if ($i_values['piabef_cb_akrisen'] == 1 and $i_values['piabef_cb_akrisen_txt'] == "") {
-        $o_msgs[] = "Andere Krisen gewählt, ohne Angabe welche";
-    }
     if ($i_values['piabef_krankheitsbeginn'] == "") {
         $o_msgs[] = "Jahr Beginn der Erkrankung nicht ausgefüllt";
     }
-    if ($i_values['piabef_psydiag1']=="") {
-        $o_msgs[] = "Keine psychiatrische Diagnose engegeben";
-    }
-    if ($i_values['piabef_cb_entlassung']==1){
-        if (strlen($i_values['piabef_entlassdatum']) != 10) {
-            $o_msgs[] = "Entlassung gewählt: Entlassdatum fehlt";
-        }
-    }
-
     $dummy = explode(".", $i_dbdata['geburtsdatum']);
     $geburtsjahr = $dummy[2];
     $cur_year = (int)date("Y");
@@ -76,40 +45,39 @@ function check_pia_bado($i_values, $i_dbdata) {
             $o_msgs[] = "Beginn der Erkrankung liegt vor dem Geburtsjahr";
         }
     }
-    if ($i_values['piabef_klinik_first'] != "") {
-        if ((int)$i_values['piabef_klinik_first'] > $cur_year)  {
-            $o_msgs[] = "Erster stationärer Aufenthalt in der Zukunft angegeben";
-        }
-        if ((int)$i_values['piabef_klinik_first'] < $year_limit) {
-            $o_msgs[] = "Erster stationärer Aufenthalt darf nicht vor 1900 liegen";
-        }
-    }
-    if ($i_values['piabef_klinik_last'] != "") {
-        if ((int)$i_values['piabef_klinik_last'] > $cur_year) {
-            $o_msgs[] = "Letzter stationärer Aufenthalt in der Zukunft angegeben";
-        }
-        if ((int)$i_values['piabef_klinik_last'] < $year_limit){
-            $o_msgs[]="Letzter stationärer Aufenthalt darf nicht vor 1900 liegen";
-        }
-    }
+    return array ($o_error_msgs, $o_msgs);
+}
 
-    if ((int)$i_values['piabef_num_statbehandlung'] > 0 and $i_values['piabef_klinik_first'] == '') {
-        $o_msgs[] = "Anzahl stationäre Behandlungen angegeben, dann Erster stationärer Aufenthalt nötig";
+function check_pia_entlassung($i_values, $i_bdata) {
+    $o_msgs = array();
+    $o_error_msgs = array();
+    /* Entlassdaten gewählt */
+//    if ($i_values['piabef_cb_entlassung'] == 1) {
+        $needed_values['piabef_entlassmodus'] = "Entlassung gewählt: Auswahl zum Entlassmodus fehlt";
+        $needed_values['piabef_weiterbehandlung1'] = "Entlassung gewählt: Auswahl zur Weiterbehandlung fehlt";
+        if ($i_values['piabef_weiterbehandlung1']== 3 or
+            $i_values['piabef_weiterbehandlung1']== 3 or
+            $i_values['piabef_weiterbehandlung1']== 3) {
+            $needed_values['piabef_weiterbehandlung_evb'] = "Entlassung gewählt: Auswahl zur Weiterbehandlung EvB, aber welche Klinik fehlt";
+        }
+//    }
+//    if ($i_values['piabef_cb_entlassung']==1){
+        if (strlen($i_values['piabef_entlassdatum']) != 10) {
+            $o_msgs[] = "Entlassung gewählt: Entlassdatum fehlt";
+        }
+//    }
+    while (list($nv_key,$nv_value) = each($needed_values)){
+        if ( isset($i_values[$nv_key]) ) {
+            if ($i_values[$nv_key] == -1) {
+                $o_msgs[] = $nv_value ;
+            }
+        } else { $o_msgs[] = $nv_value ;}
     }
-    if ((int)$i_values['piabef_num_statbehandlung'] > 0 and $i_values['piabef_klinik_last'] == '') {
-        $o_msgs[] = "Anzahl stationäre Behandlungen angegeben, dann Letzter stationärer Aufenthalt nötig";
-    }
-
-/*
- *      piabef_num_statbehandlung
- *      piabef_klinik_first
- *      piabef_klinik_last
- */
     return array ($o_error_msgs, $o_msgs);
 }
 
 function save_pia_bado ($i_values) {
-    $o_msg=array();
+    $o_msg = array();
     // Daten bearbeiten
     // mgl disabled Elemente mit Daten füllen
     if (!(isset($i_values['piabef_weiterbehandlung2']))) {
@@ -122,9 +90,9 @@ function save_pia_bado ($i_values) {
     if (!(isset($i_values['piabef_migration_txt']))) {
         $i_values['piabef_migration_txt'] = "";
     }
-    if (!(isset($i_values['piabef_akrise_txt']))) {
-        $i_values['piabef_akrise_txt'] = "";
-    }
+//    if (!(isset($i_values['piabef_akrise_txt']))) {
+//        $i_values['piabef_akrise_txt'] = "";
+//    }
     if (!(isset($i_values['piabef_weiterbehandlung_evb']))) {
         $i_values['piabef_weiterbehandlung_evb'] = -1;
     }
@@ -132,10 +100,10 @@ function save_pia_bado ($i_values) {
     if ($i_values['piabef_migration'] != 2) {
         $i_values['migration_txt'] = "";
     }
-    // wenn nicht andere Krise, dann Textfeld leer
-    if ($i_values['piabef_cb_akrisen'] !=1) {
-        $i_values['piabef_cb_akrisen_txt'] = "";
-    }
+//    // wenn nicht andere Krise, dann Textfeld leer
+//    if ($i_values['piabef_cb_akrisen'] !=1) {
+//        $i_values['piabef_cb_akrisen_txt'] = "";
+//    }
 
     // wenn nicht Weiterbehandlung EvB, dann textfeld leer
     if ($i_values['piabef_weiterbehandlung1'] != 3 and
@@ -201,27 +169,33 @@ function save_pia_bado ($i_values) {
     mysql_free_result($result_mhcountry);
 
     // Diagnosen upcase und sortieren
-    $i_values['piabef_psydiag1'] = strtoupper($i_values['piabef_psydiag1']);
-    $i_values['piabef_psydiag2'] = strtoupper($i_values['piabef_psydiag2']);
-    $i_values['piabef_somdiag1'] = strtoupper($i_values['piabef_somdiag1']);
-    $i_values['piabef_somdiag2'] = strtoupper($i_values['piabef_somdiag2']);
-    if ($i_values['piabef_psydiag1'] == "" and $i_values['piabef_psydiag2'] !="") {
-        $i_values['piabef_psydiag1'] = $i_values['piabef_psydiag2'];
-        $i_values['piabef_psydiag2'] = "";
-    }
-    if ($i_values['piabef_somdiag1'] == "" and $i_values['piabef_somdiag2'] != "") {
-        $i_values['piabef_somdiag1'] = $i_values['piabef_somdiag2'];
-        $i_values['piabef_somdiag2']="";
-    }
+//    $i_values['piabef_psydiag1'] = strtoupper($i_values['piabef_psydiag1']);
+//    $i_values['piabef_psydiag2'] = strtoupper($i_values['piabef_psydiag2']);
+//    $i_values['piabef_somdiag1'] = strtoupper($i_values['piabef_somdiag1']);
+//    $i_values['piabef_somdiag2'] = strtoupper($i_values['piabef_somdiag2']);
+//    if ($i_values['piabef_psydiag1'] == "" and $i_values['piabef_psydiag2'] !="") {
+//        $i_values['piabef_psydiag1'] = $i_values['piabef_psydiag2'];
+//        $i_values['piabef_psydiag2'] = "";
+//    }
+//    if ($i_values['piabef_somdiag1'] == "" and $i_values['piabef_somdiag2'] != "") {
+//        $i_values['piabef_somdiag1'] = $i_values['piabef_somdiag2'];
+//        $i_values['piabef_somdiag2']="";
+//    }
 
     // Doppeldiagnosen sortieren falls nötig
     // F2 vor F1
-    if ($i_values['piabef_psydiag1'] != "" and $i_values['piabef_psydiag2'] != "") {
-        if (substr($i_values['piabef_psydiag1'],1,1) == "1" and substr($i_values['piabef_psydiag2'],1,1) == "2") {
-            $dummy = $i_values['piabef_psydiag1'];
-            $i_values['piabef_psydiag1'] = $i_values['piabef_psydiag2'];
-            $i_values['piabef_psydiag2'] = $dummy;
-        }
+//    if ($i_values['piabef_psydiag1'] != "" and $i_values['piabef_psydiag2'] != "") {
+//        if (substr($i_values['piabef_psydiag1'],1,1) == "1" and substr($i_values['piabef_psydiag2'],1,1) == "2") {
+//            $dummy = $i_values['piabef_psydiag1'];
+//            $i_values['piabef_psydiag1'] = $i_values['piabef_psydiag2'];
+//            $i_values['piabef_psydiag2'] = $dummy;
+//        }
+//    }
+
+
+    list ($error_msgs, $incorrect_msgs) = check_pia_mdata($i_values, $db_daten);
+    if (count($incorrect_msgs) > 0) {
+        $i_values['piabef_cb_mdata'] = 0;
     }
 
     // Daten in die DB
@@ -240,29 +214,31 @@ function save_pia_bado ($i_values) {
         "wohngemeinschaft" => "piabef_wohngemeinschaft",
         "zuweisung" => "piabef_zuweisung",
         "krankheitsbeginn" => "piabef_krankheitsbeginn",
-        "klinik_first" => "piabef_klinik_first",
-        "klinik_last" => "piabef_klinik_last",
-        "num_stat_behandlung" => "piabef_num_statbehandlung",
+//        "klinik_first" => "piabef_klinik_first",
+//        "klinik_last" => "piabef_klinik_last",
+//        "num_stat_behandlung" => "piabef_num_statbehandlung",
         "anamnesedaten_zwang" => "piabef_cb_zwang",
-        "anamnesedaten_skrisen" => "piabef_cb_skrisen",
-        "anamnesedaten_akrisen" => "piabef_cb_akrisen",
-        "anamnesedaten_akrisen_txt" => "piabef_cb_akrisen_txt",
-        "anamnesedaten_bausweis" => "piabef_cb_bausweis",
+//        "anamnesedaten_skrisen" => "piabef_cb_skrisen",
+//        "anamnesedaten_akrisen" => "piabef_cb_akrisen",
+//        "anamnesedaten_akrisen_txt" => "piabef_cb_akrisen_txt",
+//        "anamnesedaten_bausweis" => "piabef_cb_bausweis",
         "anamnesedaten_betreuung" => "piabef_cb_gbetreuung",
         "anamnesedaten_num_sv" => "piabef_num_sv",
-        "psydiag1" => "piabef_psydiag1",
-        "psydiag2" => "piabef_psydiag2",
-        "somdiag1" => "piabef_somdiag1",
-        "somdiag2" => "piabef_somdiag2",
-        "verlauf_symptomatik" => "piabef_symptomatik",
-        "verlauf_statbehandlung_quartal" => "piabef_cb_statbehandlungquartal",
+//        "psydiag1" => "piabef_psydiag1",
+//        "psydiag2" => "piabef_psydiag2",
+//        "somdiag1" => "piabef_somdiag1",
+//        "somdiag2" => "piabef_somdiag2",
+//        "verlauf_symptomatik" => "piabef_symptomatik",
+//        "verlauf_statbehandlung_quartal" => "piabef_cb_statbehandlungquartal",
         "weiterbehandlung1" => "piabef_weiterbehandlung1",
         "weiterbehandlung2" => "piabef_weiterbehandlung2",
         "weiterbehandlung3" => "piabef_weiterbehandlung3",
         "weiterbehandlung_evb" => "piabef_weiterbehandlung_evb",
         "entlasscheckb" => "piabef_cb_entlassung",
         "entlassmodus" => "piabef_entlassmodus",
-        "entlassdatum" => "piabef_entlassdatum");
+        "entlassdatum" => "piabef_entlassdatum",
+        "mdata_complete" => "piabef_cb_mdata"
+        );
     $query = "UPDATE `fall_pia` SET ";
     while (list($nv_key,$nv_value) = each($to_update)) {
         $query .= "`".$nv_key."`='".$i_values[$nv_value]."', ";
@@ -303,9 +279,20 @@ $db_daten = mysql_fetch_array($result);
 mysql_free_result($result);
 
 if (count($error_msgs) == 0) {
-    // check bado
+    /*
+     * check bado
+     */
     if ($_POST['ajax_pia_cmd'] == "check") {
-        list ($error_msgs,$incorrect_msgs) = check_pia_bado($_POST, $db_daten);
+        /* Stammdaten werden immer überprüft */
+        list ($error_msgs, $incorrect_msgs) = check_pia_mdata($_POST, $db_daten);
+
+        /* check Entlassung, wenn nötig */
+        if ($_POST['piabef_cb_entlassung'] == 1) {
+            list ($e_error_msgs, $e_incorrect_msgs) = check_pia_entlassung($_POST, $db_daten);
+            $error_msgs = array_merge($error_msgs, $e_error_msgs);
+            $incorrect_msgs = array_merge($incorrect_msgs,$e_incorrect_msgs);
+        }
+
         if (count($error_msgs) == 0) {
             if (count($incorrect_msgs) == 0) {
                 $success_msg = "Die BaDo Daten wurden überprüft und sind vollständig.";
@@ -317,9 +304,20 @@ if (count($error_msgs) == 0) {
             }
         }
     }
-    // save bado
+
+    /*
+     * save bado
+     */
     if ($_POST['ajax_pia_cmd'] == "save") {
-        $error_msgs = save_pia_bado($_POST);
+        /* Stammdaten prüfen, wenn als vollständig deklariert */
+        if ($_POST['piabef_cb_mdata'] == 1) {
+            list ($error_msgs, $incorrect_msgs) = check_pia_mdata($_POST, $db_daten);
+            if (count($incorrect_msgs) != 0){
+                $_POST['piabef_cb_mdata'] = 0;
+                $error_msgs[] = "Stammdaten nicht vollständig";
+            }
+        }
+        $error_msgs = array_merge($error_msgs, save_pia_bado($_POST));
         if (count($error_msgs) == 0) {
             $success_msg = "Die BaDo Daten wurden erfolgreich gespeichert.";
             $btn_close_window = 1;
@@ -328,18 +326,28 @@ if (count($error_msgs) == 0) {
     }
     // close bado
     if ($_POST['ajax_pia_cmd'] == "close") {
+        $incorrect_msgs = array();
         $error_msgs = save_pia_bado($_POST);
         if (count($error_msgs) == 0) {
-            list ($error_msgs, $incorrect_msgs) = check_pia_bado($_POST, $db_daten);
+            if ($_POST['piabef_cb_mdata'] != 1) {
+                $incorrect_msgs[] = "Stammdaten als vollständig kennzeichnen";
+            }
+            if ($_POST['piabef_cb_entlassung'] != 1) {
+                $incorrect_msgs[] = "Entlassdaten fehlen";
+            }
+            list ($m_error_msgs, $m_incorrect_msgs) = check_pia_mdata($_POST, $db_daten);
+            list ($e_error_msgs, $e_incorrect_msgs) = check_pia_entlassung($_POST, $db_daten);
+            $error_msgs = array_merge($error_msgs, $m_error_msgs, $e_error_msgs);
+            $incorrect_msgs = array_merge($incorrect_msgs, $m_incorrect_msgs, $e_incorrect_msgs);
             if (count($error_msgs) == 0) {
                 if (count($incorrect_msgs) == 0) {
                     $query = "UPDATE `fall_pia` SET "
                         ."`closed_time`='".date("Y-m-d H:i:s")."', "
                         ."`geschlossen`='1' "
                         ."WHERE `ID`='".$_POST['piabef_fall_dbid']."'";
-                    if (!($result = mysql_query($query))){
-                        $error_msgs[] = "Datenbank Fehler: ".mysql_error();
-                    }
+//                    if (!($result = mysql_query($query))){
+//                        $error_msgs[] = "Datenbank Fehler: ".mysql_error();
+//                    }
                     if (count($error_msgs) == 0) {
                         $success_msg = "Die BaDo wurde abgeschlossen.";
                         $btn_back_badolist = 1;
@@ -375,26 +383,27 @@ if($_POST['ajax_pia_cmd'] == "getstammdata") {
         "zusatzbetreuung1"=>"piabef_zusatzbetreuung1",
         "zusatzbetreuung2"=>"piabef_zusatzbetreuung2",
         "wohngemeinschaft"=>"piabef_wohngemeinschaft",
-        "zuweisung"=>"piabef_zuweisung",
+//        "zuweisung"=>"piabef_zuweisung",
         "krankheitsbeginn"=>"piabef_krankheitsbeginn",
-        "klinik_first"=>"piabef_klinik_first",
-        "klinik_last"=>"piabef_klinik_last",
+//        "klinik_first"=>"piabef_klinik_first",
+//        "klinik_last"=>"piabef_klinik_last",
         "num_stat_behandlung"=>"piabef_num_statbehandlung",
         "anamnesedaten_zwang"=>"piabef_cb_zwang",
-        "anamnesedaten_skrisen"=>"piabef_cb_skrisen",
-        "anamnesedaten_akrisen"=>"piabef_cb_akrisen",
-        "anamnesedaten_akrisen_txt"=>"piabef_cb_akrisen_txt",
-        "anamnesedaten_bausweis"=>"piabef_cb_bausweis",
+//        "anamnesedaten_skrisen"=>"piabef_cb_skrisen",
+//        "anamnesedaten_akrisen"=>"piabef_cb_akrisen",
+//        "anamnesedaten_akrisen_txt"=>"piabef_cb_akrisen_txt",
+//        "anamnesedaten_bausweis"=>"piabef_cb_bausweis",
         "anamnesedaten_betreuung"=>"piabef_cb_gbetreuung",
         "anamnesedaten_num_sv"=>"piabef_num_sv",
-        "psydiag1"=>"piabef_psydiag1",
-        "psydiag2"=>"piabef_psydiag2",
-        "somdiag1"=>"piabef_somdiag1",
-        "somdiag2"=>"piabef_somdiag2",
+//        "psydiag1"=>"piabef_psydiag1",
+//        "psydiag2"=>"piabef_psydiag2",
+//        "somdiag1"=>"piabef_somdiag1",
+//        "somdiag2"=>"piabef_somdiag2",
         "weiterbehandlung1"=>"piabef_weiterbehandlung1",
         "weiterbehandlung2"=>"piabef_weiterbehandlung2",
         "weiterbehandlung3"=>"piabef_weiterbehandlung3",
-        "weiterbehandlung_evb"=>"piabef_weiterbehandlung_evb"
+        "weiterbehandlung_evb"=>"piabef_weiterbehandlung_evb",
+        "mdata_complete"=>"piabef_cb_mdata"
     );
     // Daten aufbereiten
     $json_data_array = array();

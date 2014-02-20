@@ -35,9 +35,11 @@ if (isset($_GET['fall_dbid_pia'])) {
 }
 
 // Selectboxen erstellen
-$selectboxen = array("wohnort", "pia_migration", "familienstand", "berufsbildung", "einkuenfte",
-                     "wohnsituation", "pia_zusatzbetreuung", "pia_wohngemeinschaft", "pia_zuweisung",
-                     "pia_symptomatik", "weiterbehandlung", "kliniken_evb", "emodus");
+$selectboxen = array(
+    "pia_familienstand", "pia_wohnort", "pia_wohnsituation", "pia_wohngemeinschaft", "pia_berufsbildung",
+    "pia_einkuenfte", "pia_zusatzbetreuung", "pia_migration", "pia_weiterbehandlung", "kliniken_evb",
+    "emodus");
+
 foreach ($selectboxen as $value) {
     if ($value == "weiterbehandlung"){
         create_select($value, array(6));
@@ -87,7 +89,7 @@ if ($num_fall == 1){
         "psydiag1" =>"piabef_psydiag1", "psydiag2" =>"piabef_psydiag2", "somdiag1" =>"piabef_somdiag1", "somdiag2" =>"piabef_somdiag2",
         "verlauf_symptomatik" =>"piabef_symptomatik", "verlauf_statbehandlung_quartal" =>"piabef_cb_statbehandlungquartal",
         "weiterbehandlung1" =>"piabef_weiterbehandlung1", "weiterbehandlung2" =>"piabef_weiterbehandlung2", "weiterbehandlung3" =>"piabef_weiterbehandlung3",
-        "weiterbehandlung_evb" =>"piabef_weiterbehandlung_evb", "entlassmodus" =>"piabef_entlassmodus", "entlasscheckb" =>"piabef_cb_entlassung"
+        "weiterbehandlung_evb" =>"piabef_weiterbehandlung_evb", "entlassmodus" =>"piabef_entlassmodus", "entlasscheckb" =>"piabef_cb_entlassung", "mdata_complete" =>"piabef_cb_mdata"
     );
     while (list($db_key,$html_key) = each($db_to_html)){
         switch ($db_key) {
