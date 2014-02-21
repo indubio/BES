@@ -500,6 +500,7 @@ div.box {
 td.hl_aufnahme {background-color: #01DF01;}
 td.hl_entlassung {background-color: #2E2EFE;}
 td.hl_reopen {background-color: #FF0000;}
+td.hl_incomplete {background-color: #FF0000;}
 
 tr.odd:hover td.hl_aufnahme, tr.even:hover td.hl_aufnahme,
 tr.odd:hover td.hl_entlassung, tr.even:hover td.hl_entlassung,

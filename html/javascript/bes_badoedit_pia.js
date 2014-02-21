@@ -7,7 +7,7 @@ function collect_pia_bado_formdata(){
     var fn_tocollect = new Array(
         "piabef_fall_dbid", "piabef_symptomatik", "piabef_cb_statbehandlungquartal",
         "piabef_cb_entlassung", "piabef_entlassdatum", "piabef_entlassmodus",
-        "piabef_weiterbehandlung1", "piabef_weiterbehandlung2",	"piabef_weiterbehandlung3",
+        "piabef_weiterbehandlung1", "piabef_weiterbehandlung2", "piabef_weiterbehandlung3",
         "piabef_weiterbehandlung_evb", "piabef_familienstand", "piabef_wohnort",
         "piabef_wohnsituation", "piabef_wohngemeinschaft", "piabef_berufsbildung",
         "piabef_einkuenfte", "piabef_migration", "piabef_migration_txt", "piabef_zusatzbetreuung1",
@@ -15,7 +15,8 @@ function collect_pia_bado_formdata(){
         "piabef_num_statbehandlung", "piabef_klinik_first", "piabef_klinik_last",
         "piabef_num_sv", "piabef_cb_skrisen", "piabef_cb_akrisen", "piabef_cb_akrisen_txt",
         "piabef_cb_zwang", "piabef_cb_bausweis", "piabef_cb_gbetreuung", "piabef_psydiag1",
-        "piabef_psydiag2", "piabef_somdiag1", "piabef_somdiag2", "piabef_behandler"
+        "piabef_psydiag2", "piabef_somdiag1", "piabef_somdiag2", "piabef_behandler",
+        "piabef_cb_mdata"
     );
     fn_formdata = {};
     $.each(fn_tocollect, function(index, value) {

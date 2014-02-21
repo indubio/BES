@@ -63,10 +63,10 @@ if ( isset( $_GET['iSortCol_0'] ) ) {
 
 /*
  * Filtering
- */ 
+ */
 $sWheretotal1 = "WHERE (geschlossen=0 OR (geschlossen=1 AND entlassungsdatum='')) "
     ."AND (datamigration!=1) AND (`cancelled`=0)";
-$sWheretotal2 = "WHERE `geschlossen`='0' AND (`badotyp`='1' OR `badotyp`='2')";
+$sWheretotal2 = "WHERE `hide_case`='0' AND `geschlossen`='0'";
 
 /*
  * Stationsnutzer nur aktuelle Fälle oder
@@ -136,6 +136,7 @@ $sQuery  = "(SELECT '1' as `u_db_tbl`, `ID` as `u_ID`, "
     ."`datamigration` as `u_datamigration`,"
     ."`reopen` as `u_reopen`,"
     ."'0' as `u_badotyp`,"
+    ."'0' as `u_mdata_complete`,"
     ."`aufnahmedatum` as `u_aufnahmedatum`,"
     ."`entlassungsdatum` as `u_entlassungsdatum`,"
     ."`aufnahmenummer` as `u_aufnahmenummer`,"
@@ -152,6 +153,7 @@ $sQuery  = "(SELECT '1' as `u_db_tbl`, `ID` as `u_ID`, "
     ."'0' as `u_datamigration`,"
     ."'0' as `u_reopen`,"
     ."`badotyp` as `u_badotyp`,"
+    ."`mdata_complete` as `u_mdata_complete`,"
     ."`aufnahmedatum` as `u_aufnahmedatum`,"
     ."`entlassdatum` as `u_entlassungsdatum`,"
     ."`soarian_aufnahmenummer` as `u_aufnahmenummer`,"
@@ -198,9 +200,10 @@ while ( $aRow = mysql_fetch_array( $rResult ) ){
         }
     }
     if ($aRow['u_db_tbl'] == 2){
-        if ($aRow['u_badotyp'] == 1) { $statusdummy = "S"; }
-        if ($aRow['u_badotyp'] == 2) { $statusdummy = "V"; }
+        if ($aRow['u_mdata_complete'] != 1) {$statusdummy = "U"; }
+        if ($aRow['u_entlassdatum'] != "") { $statusdummy = "E"; }
     }
+
     $sOutput .= '"'.$statusdummy.'",';
     /* Spaltendaten */
     $aRow['u_familienname'] = htmlspecialchars($aRow['u_familienname'], ENT_NOQUOTES, 'UTF-8');

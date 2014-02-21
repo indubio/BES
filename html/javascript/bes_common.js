@@ -411,6 +411,7 @@ $(document).ready(function() {
                 if ( aData[0] == "A" ){$('td:eq(0)', nRow).addClass('hl_aufnahme');}
                 if ( aData[0] == "E" ){$('td:eq(0)', nRow).addClass('hl_entlassung');}
                 if ( aData[0] == "R" ){$('td:eq(0)', nRow).addClass('hl_reopen');}
+                if ( aData[0] == "U" ){$('td:eq(0)', nRow).addClass('hl_incomplete');}
                 return nRow;
             },
             "fnDrawCallback": fnpatlistTablePostProcessing,
