@@ -11,10 +11,8 @@ Auswahl:&nbsp;<select id="dT_SelectFilter1" name="station" >{html_options values
 {/if}
 
 <input type="text" id="dT_FilterTextBox_patlist" name="dT_FilterTextBox_patlist" class="searchbox" value=""/>
-{if $user_level==UG_ADMIN or $user_level==UG_BEHANDLER}
 <br />
-<input type="checkbox" id="dT_FilterOnlyCurrentCases" name="dT_FilterOnlyCurrentCases" /><label for="dT_FilterOnlyCurrentCases">&nbsp;Nur aktuelle Fälle</label>
-{/if}
+<input type="checkbox" id="dT_FilterOnlyCurrentCases" name="dT_FilterOnlyCurrentCases" checked="checked"/><label for="dT_FilterOnlyCurrentCases">&nbsp;Nur aktuelle Fälle</label>
 </div>
 <div class="dataTables_paginate"></div><br/>
 <table class="display ie6hl" cellspacing="1" cellpadding="5" id="patlist">
