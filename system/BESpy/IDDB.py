@@ -31,9 +31,25 @@ class PsychStatus(object):
         self.IntensiveCareReasons = []
         self.IntegratedCare = False
         self.ParentsSettingCare = False
+        self.Hardship = False
+        self.HardshipReasons = []
+        self.NoStation = False
+        self.HalfDay = False
         self.Finished = False
     def __str__(self):
         return " - ".join((str(self.Date), self.StatusStr))
+
+class BI_Score(object):
+    """Behandlungsintensität Object"""
+    def __init__(self):
+        self.Date = ''
+        self.Finished = False
+        self.SomaScore = 0
+        self.PsyScore = 0
+        self.SocialScore = 0
+        self.TotalScore = 0
+    def __str__(self):
+        return " - ".join((str(self.Date), str(self.TotalScore)))
 
 class Case(object):
     def __init__(self, connection_str, soarian_nr):
@@ -211,6 +227,7 @@ class Case(object):
                     where PARENTID=?
                     """
                 IntensiveCareNode = ''
+                Hardship = ''
                 for node_row in NodeChildsSQLCursor.execute(sqlquery, node.ID):
                     sqlquery = """
                         select * from PROPERTIES
@@ -227,8 +244,29 @@ class Case(object):
                         if nodeprop.PROPERTYNAME == 'ParentsSetting':
                             if nodeprop.PROPERTYVALUE == 'true':
                                 newPsychStatus.ParentsSettingCare = True
+                        if nodeprop.PROPERTYNAME == 'Hardship':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.Hardship = True
+                        if nodeprop.PROPERTYNAME == 'Hardship1':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.HardshipReasons.append('1')
+                        if nodeprop.PROPERTYNAME == 'Hardship2':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.HardshipReasons.append('2')
+                        if nodeprop.PROPERTYNAME == 'Hardship3':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.HardshipReasons.append('3')
+                        if nodeprop.PROPERTYNAME == 'Hardship4':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.HardshipReasons.append('4')
                         if nodeprop.PROPERTYNAME == 'Value':
                             newPsychStatus.Status = nodeprop.PROPERTYVALUE
+                        if nodeprop.PROPERTYNAME == 'NoStation':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.NoStation = True
+                        if nodeprop.PROPERTYNAME == 'HalfDay':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.HalfDay = True
                 if IntensiveCareNode != '':
                     sqlquery = """
                         select * from NODES
@@ -252,10 +290,22 @@ class Case(object):
                     newPsychStatus.StatusStr = "PSYK"
                 if newPsychStatus.Status == "2":
                     newPsychStatus.StatusStr = "PSOK"
+                if newPsychStatus.Status == "5":
+                    newPsychStatus.StatusStr = "QE"
                 if newPsychStatus.IntegratedCare:
                     newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"+"))
                 if newPsychStatus.ParentsSettingCare:
                     newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"*"))
+                if newPsychStatus.Hardship:
+                    newPsychStatus.StatusStr = "".join((
+                        newPsychStatus.StatusStr,
+                        "!",
+                        str(len(newPsychStatus.HardshipReasons))
+                    ))
+                if newPsychStatus.NoStation:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"?"))
+                if newPsychStatus.HalfDay:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"?"))
                 PsychStatusList.append(newPsychStatus)
                 del newPsychStatus
             # close SQL connections and cursors
@@ -324,6 +374,70 @@ class Case(object):
             CodesSQLCursor.close()
             CodesSQLConn.close()
         return ProceduresList
+
+    def getBIScore(self):
+        """
+        Liefert eine Liste aller Einträge zur Behandlungsintensität zurück,
+        die nach Datum sortiert ist
+        """
+        BIScoreList = []
+        if self.__CaseNodeChildID != '':
+            # init SQL connections and cursors
+            NodesSQLConn = pyodbc.connect(self.__connection_str)
+            NodesSQLCursor = NodesSQLConn.cursor()
+            NodeChildsSQLConn = pyodbc.connect(self.__connection_str)
+            NodeChildsSQLCursor = NodeChildsSQLConn.cursor()
+            PropertiesSQLConn = pyodbc.connect(self.__connection_str)
+            PropertiesSQLCursor = PropertiesSQLConn.cursor()
+            ## fetch all CareIntensityERW2013 Nodes
+            sqlquery = """
+                select ID from NODES
+                where NODETYPEID='16'
+                and PARENTID=?
+                """
+            for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
+                sqlquery = """
+                    select * from PROPERTIES
+                    where NODEID=?
+                    """
+                newBIScore = BI_Score()
+                for property in PropertiesSQLCursor.execute(sqlquery, node.ID):
+                    if property.PROPERTYNAME == "SomaScore":
+                        newBIScore.SomaScore = int(property.PROPERTYVALUE)
+                    if property.PROPERTYNAME == 'PsyScore':
+                        newBIScore.PsyScore = int(property.PROPERTYVALUE)
+                    if property.PROPERTYNAME == 'SocialScore':
+                        newBIScore.SocialScore = int(property.PROPERTYVALUE)
+                    if property.PROPERTYNAME == 'totalScore':
+                        newBIScore.TotalScore = int(property.PROPERTYVALUE)
+                    if property.PROPERTYNAME == 'Finished':
+                        if property.PROPERTYVALUE == 'true':
+                            newBIScore.Finished = True
+                    if property.PROPERTYNAME == 'Date':
+                        newBIScore.Date = datetime.datetime.strptime(
+                            property.PROPERTYVALUE.split('T')[0],
+                            "%Y-%m-%d").date()
+                BIScoreList.append(newBIScore)
+                del newBIScore
+            # close SQL connections and cursors
+            NodesSQLCursor.close()
+            NodesSQLConn.close()
+            NodeChildsSQLCursor.close()
+            NodeChildsSQLConn.close()
+            PropertiesSQLCursor.close()
+            PropertiesSQLConn.close()
+            BIScoreList.sort(key = lambda x: x.Date)
+        return BIScoreList
+
+    def getLastBIScore(self):
+        """
+        Liefert den letzten Score der Betreuungsintensität als string zurück
+        """
+        returnCode = ''
+        BIScoreList = self.getBIScore()
+        if len(BIScoreList) > 0:
+            returnCode = str(BIScoreList[-1].TotalScore)
+        return returnCode
 
 class connection(object):
     """ID Datenbank Objekt"""
