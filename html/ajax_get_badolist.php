@@ -69,10 +69,9 @@ $sWheretotal1 = "WHERE (geschlossen=0 OR (geschlossen=1 AND entlassungsdatum='')
 $sWheretotal2 = "WHERE `hide_case`='0' AND `geschlossen`='0'";
 
 /*
- * Stationsnutzer nur aktuelle Fälle oder
  * Checkbox Nur akuelle Fälle ist gewählt
  */
-if ($_SESSION['userlevel'] == UG_STATION OR $_GET['onlycurrentcases'] == '1') {
+if ($_GET['onlycurrentcases'] == '1') {
     $sWheretotal1 .= " AND `entlassungsdatum` = '' ";
     $sWheretotal2 .= " AND `entlassdatum` = '' ";
 }
