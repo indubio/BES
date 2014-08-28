@@ -18,9 +18,14 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check
  */
-if (mywaf($_GET)) { $error[] = "Variablenfehler #1"; }
-if (mywaf($_POST)){ $error[] = "Variablenfehler #2"; }
-
+/* DIRTY WORKAROUND
+ * Musste rausgenommen werden, da sonst Behandler in der Liste der PIA nicht gesetzt
+ * werden können
+ * DBID wird in DB der stationären Fälle geprüft und liefert ggf. ein FALSE
+ * Anpassung muss noch erfolgen
+ * if (mywaf($_GET)) { $error[] = "Variablenfehler #1"; }
+ * if (mywaf($_POST)){ $error[] = "Variablenfehler #2"; }
+ */
 if (count($error) == 0) {
     /*
      * DELETE Fall
