@@ -185,6 +185,20 @@ CREATE TABLE IF NOT EXISTS `f_betreuung` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `f_conversation`
+--
+
+CREATE TABLE IF NOT EXISTS `f_conversation` (
+  `ID` int(11) NOT NULL,
+  `option` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `active` tinyint(4) NOT NULL,
+  `view_order` int(11) NOT NULL,
+  KEY `ID` (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `f_einkuenfte`
 --
 
@@ -721,6 +735,12 @@ CREATE TABLE IF NOT EXISTS `verlauf` (
   `creation_datetime` datetime NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   `owner` int(11) NOT NULL DEFAULT '0',
+  `conversation_typ` int(11) NOT NULL DEFAULT '-1',
+  `conversation_duration` int(11) NOT NULL DEFAULT '0',
+  `conv_prof_num_doc` int(11) NOT NULL DEFAULT '0',
+  `conv_prof_num_psych` int(11) NOT NULL DEFAULT '0',
+  `conv_prof_num_care` int(11) NOT NULL DEFAULT '0',
+  `conv_prof_num_special` int(11) NOT NULL DEFAULT '0',
   `update_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `refer_id` int(11) NOT NULL DEFAULT '0',

@@ -24,6 +24,25 @@ function get_verlauf(caseDBID) {
             // add jump mark first entry
             verlaufcontainer.append("<span id=\"firstentry_jump_loc\" name=\"firstentry_jump_loc\">&nbsp;</span>");
             $.each(data['entries'], function(index, item) {
+                // gen OPS Info Text
+                var ops_info_txt = "";
+                if (item['conversation_typ'] != false) {
+                    ops_info_txt += item['conversation_typ'];
+                    ops_info_txt += ",&nbsp;"+item['conversation_duration']+"&nbsp;min.;&nbsp;"
+                    if (item['conv_num_doc'] > 0){
+                        ops_info_txt += item['conv_num_doc']+"x Ärzte; &nbsp;"
+                    }
+                    if (item['conv_num_psych'] > 0){
+                        ops_info_txt += item['conv_num_psych']+"x Psychol.; &nbsp;"
+                    }
+                    if (item['conv_num_care'] > 0){
+                        ops_info_txt += item['conv_num_care']+"x Pflege; &nbsp;"
+                    }
+                    if (item['conv_num_special'] > 0){
+                        ops_info_txt += item['conv_num_special']+"x Spezial; &nbsp;"
+                    }
+                };
+                // gen new entry
                 var new_entry = "";
                 new_entry += "<fieldset class=\"entry\">";
                 new_entry += "<legend>";
@@ -48,6 +67,7 @@ function get_verlauf(caseDBID) {
                 new_entry += "&nbsp;-&nbsp;" + item["owner_lastname"] + ",&nbsp;";
                 new_entry += item["owner_firstname"] + "&nbsp;-&nbsp;";
                 new_entry += item["owner_function"] + "</legend>";
+                new_entry += "<div id=\"opsinfo\">"+ops_info_txt+"</div>";
                 new_entry += "<div id=\""+caseDBID + "_" + item["dbid"];
                 new_entry += "\" class=\"content" + deleted_class + "\">";
                 new_entry += item["text"] + "</div>";
@@ -96,10 +116,15 @@ function get_verlauf(caseDBID) {
 function edit_entry_dlg (caseDBID, entryDBID){
     var entry_editor;
     var entry_date_dom;
-    var entry_date_time;
+    var entry_time_dom;
+    var conversation_typ_dom;
+    var conversation_duration_dom;
+    var conv_num_doc_dom;
+    var conv_num_psych_dom;
+    var conv_num_care_dom;
+    var conv_num_special_dom;
     var loader_content = "";
     var error_content = "";
-    var edit_content = "";
 
     loader_content += "<div align=\"center\" style=\"width: 300px; height: 100px\">";
     loader_content += "Daten werden geladen...<br />";
@@ -114,29 +139,6 @@ function edit_entry_dlg (caseDBID, entryDBID){
     error_content += "<form id=\"entry_dlg_form\" name=\"entry_dlg_form\">";
     error_content += "<input id=\"cancel_btn\" name=\"cancel_btn\" type=\"button\" value=\"Abbruch\"/>";
     error_content += "</form></div>";
-
-    edit_content += "<div align=\"left\" style=\"width: 800px; height: 500px\">";
-    edit_content += "<form id=\"entry_dlg_form\" name=\"entry_dlg_form\">";
-    edit_content += "<table><tr><td>"
-    edit_content += "<label for=\"entry_date\">Datum: </label><br />";
-    edit_content += "<input id=\"entry_date\" name=\"entry_date\" class=\"verlauf_dlg_dt\" style=\"width:6em;\"><br />";
-    edit_content += "</td><td>"
-    edit_content += "<label for=\"entry_time\">Uhrzeit: </label><br />";
-    edit_content += "<input id=\"entry_time\" name=\"entry_time\" class=\"verlauf_dlg_dt\" style=\"width:3.5em;\"><br />";
-    edit_content += "</td></tr></table>"
-    edit_content += "<br />";
-    edit_content += "<div align=\"center\" id=\"entry_text\" name=\"entry_text\"></div>";
-    edit_content += "<br />";
-    edit_content += "<table width=\"100%\"><tr>";
-    edit_content += "<td align=\"left\" width=\"33%\"><input id=\"cancel_btn\" name=\"cancel_btn\" type=\"button\" value=\"Abbruch\" class=\"verlauf_dlg_btn\"/></td>";
-    edit_content += "<td align=\"center\" width=\"34%\"><input id=\"delete_btn\" name=\"delete_btn\" type=\"button\" value=\"Löschen\" class=\"verlauf_dlg_btn\"/></td>";
-    edit_content += "<td align=\"right\" width=\"33%\"><input id=\"save_btn\" name=\"save_btn\" type=\"button\" value=\"SPEICHERN\" class=\"verlauf_dlg_btn_save\"/></td>";
-    edit_content += "</tr></table>";
-    edit_content += "<br />";
-    edit_content += "<p id=\"error_msg\" class=\"verlauf_dlg_error_msg\">&nbsp</p>";
-    edit_content += "<br />";
-    edit_content += "</form></div>";
-
     entryDlgBoxy = new Boxy(loader_content, {
         title       : "Eintrag bearbeiten",
         modal       : true,
@@ -194,6 +196,12 @@ function edit_entry_dlg (caseDBID, entryDBID){
                         'eventdate'  : entry_date_dom.val(),
                         'eventtime'  : entry_time_dom.val(),
                         'eventtext'  : entry_editor.getData(),
+                        'conversation_typ' : conversation_typ_dom.val(),
+                        'conversation_duration' : conversation_duration_dom.val(),
+                        'conv_num_doc' : conv_num_doc_dom.val(),
+                        'conv_num_psych' : conv_num_psych_dom.val(),
+                        'conv_num_care' : conv_num_care_dom.val(),
+                        'conv_num_special' : conv_num_special_dom.val(),
                         'eventdbid'  : entryDBID,
                         'casedbid'   : caseDBID
                     },
@@ -225,22 +233,25 @@ function edit_entry_dlg (caseDBID, entryDBID){
         dataType: "json",
         data    : post_data_str,
         success : function(data) {
-            entryDlgBoxy.setContent(edit_content).center();
+            entryDlgBoxy.setContent(data['dlg_content']).center();
             entry_date_dom = $('#entry_dlg_form #entry_date');
             entry_time_dom = $('#entry_dlg_form #entry_time');
-            entry_date_dom.val(data['date']);
+            conversation_typ_dom = $('#entry_dlg_form #conversation_typ');
+            conversation_duration_dom = $('#entry_dlg_form #conversation_duration');
+            conv_num_doc_dom = $('#entry_dlg_form #conv_num_doc');
+            conv_num_psych_dom = $('#entry_dlg_form #conv_num_psych');
+            conv_num_care_dom = $('#entry_dlg_form #conv_num_care');
+            conv_num_special_dom = $('#entry_dlg_form #conv_num_special');
             entry_date_dom.dateEntry({
                 spinnerImage: '',
                 dateFormat: 'dmy.'
             });
-            entry_time_dom.val(data['time']);
             entry_time_dom.timeEntry({
                 spinnerImage: '',
                 show24Hours: true,
                 separator: ':'
             });
             $('#entry_dlg_form #entry_text').each(function() {
-                $(this).html(data['content']);
                 entry_editor = CKEDITOR.replace(this);
             });
         },
