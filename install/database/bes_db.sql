@@ -620,6 +620,7 @@ CREATE TABLE IF NOT EXISTS `fall_pia` (
   `mdata_complete` tinyint(1) DEFAULT '0' COMMENT 'Stammdaten volständig',
   `hide_case` tinyint(1) DEFAULT '0',
   `last_contact` date DEFAULT NULL,
+  `cancelled` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

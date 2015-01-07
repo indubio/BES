@@ -66,7 +66,7 @@ if ( isset( $_GET['iSortCol_0'] ) ) {
  */
 $sWheretotal1 = "WHERE (geschlossen=0 OR (geschlossen=1 AND entlassungsdatum='')) "
     ."AND (datamigration!=1) AND (`cancelled`=0)";
-$sWheretotal2 = "WHERE `hide_case`='0' AND `geschlossen`='0'";
+$sWheretotal2 = "WHERE `hide_case`='0' AND `geschlossen`='0' AND `cancelled`='0'";
 
 /*
  * Checkbox Nur akuelle Fälle ist gewählt

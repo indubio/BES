@@ -512,11 +512,11 @@ function exportMySqlToCsv_PIA ($db_year) {
 	);
 	if ($db_year != "-1") {
 		$sql_query  = "select * from `fall_pia` WHERE ";
-		$sql_query .= "`geschlossen`!=0 ";
+		$sql_query .= "`geschlossen`!=0 AND `cancelled`='0' ";
 		$sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')>='".$db_year."-01-01' ";
 		$sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')<='".$db_year."-12-31'";
 	} else {
-		$sql_query = "select * from `fall_pia` WHERE `geschlossen`!=0";
+		$sql_query = "select * from `fall_pia` WHERE `geschlossen`!=0 AND `cancelled`='0'";
 	}
 	return generate_csv($to_export, $sql_query);
 }
