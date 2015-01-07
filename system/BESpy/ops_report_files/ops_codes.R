@@ -170,6 +170,41 @@ ops_codes <- c(ops_codes,
     "9-643.0", "9-643.1", "9-643.2", "9-643.3", "9-643.4", "9-643.5",
     "9-643.6", "9-643.7"
     )
+# Erbringung von Behandlungsmaßnahmen im stationsersetzenden Umfeld
+# und als halbtägige tagesklinische Behandlung bei Erwachsenen
+ops_codes <- c(ops_codes,
+    "9-644.0", "9-644.1", "9-644.2"
+    )
+# Indizierter komplexer Entlassungsaufwand bei psychischen und psycho-
+# somatischen Störungen und Verhaltensstörungen bei Erwachsenen
+# 2014
+ops_codes y- c(ops_codes,
+    "9-645.00", "9-645.01", "9-645.02", "9-645.10", "9-645.11",
+    "9-645.12"
+    )
+# 2015
+ops_codes y- c(ops_codes,
+    "9-645.03", "9-645.04", "9-645.05", "9-645.13", "9-645.14",
+    "9-645.15"
+    )
+# Erhöhter Aufwand bei drohender oder bestehender psychosozialer Notlage
+# bei Erwachsenen
+ops_codes <- c(ops_codes,
+    "9-646.0", "9-646.1", "9-646.2", "9-646.3"
+    )
+# Spezifische qualifizierte Entzugsbehandlung Abhängigkeitskranker bei
+# Erwachsenen
+ops_codes <- c(ops_codes,
+    "9-647.0", "9-647.1", "9-647.2", "9-647.3", "9-647.4", "9-647.5",
+    "9-647.6", "9-647.7", "9-647.8", "9-647.9", "9-647.a", "9-647.b",
+    "9-647.c", "9-647.d", "9-647.e", "9-647.f", "9-647.g", "9-647.h",
+    "9-647.j", "9-647.k", "9-647.l", "9-647.m", "9-647.n", "9-647.p"
+    "9-647.q", "9-647.r", "9-647.s", "9-647.t", "9-647.u"
+    )
+# Supervisionsaufwand
+ops_codes <- c(ops_codes,
+    "9-648.00", "9-648.01", "9-648.10", "9-648.11"
+    ) 
 ## Pseudo OPS
 ops_codes <- c(ops_codes,
     "9-980.0", "9-980.1", "9-980.2", "9-980.3", "9-980.4", "9-980.5"
