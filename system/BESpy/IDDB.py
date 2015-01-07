@@ -35,6 +35,7 @@ class PsychStatus(object):
         self.HardshipReasons = []
         self.NoStation = False
         self.HalfDay = False
+        self.QE = False
         self.Finished = False
     def __str__(self):
         return " - ".join((str(self.Date), self.StatusStr))
@@ -244,6 +245,15 @@ class Case(object):
                         if nodeprop.PROPERTYNAME == 'ParentsSetting':
                             if nodeprop.PROPERTYVALUE == 'true':
                                 newPsychStatus.ParentsSettingCare = True
+                        if nodeprop.PROPERTYNAME == 'NoStation':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.NoStation = True
+                        if nodeprop.PROPERTYNAME == 'HalfDay':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.HalfDay = True
+                        if nodeprop.PROPERTYName == 'ExtraWithdrawlTreatment':
+                            if nodeprop.PROPERTYVALUE == 'true':
+                                newPsychStatus.QE = True
                         if nodeprop.PROPERTYNAME == 'Hardship':
                             if nodeprop.PROPERTYVALUE == 'true':
                                 newPsychStatus.Hardship = True
@@ -259,14 +269,10 @@ class Case(object):
                         if nodeprop.PROPERTYNAME == 'Hardship4':
                             if nodeprop.PROPERTYVALUE == 'true':
                                 newPsychStatus.HardshipReasons.append('4')
+
                         if nodeprop.PROPERTYNAME == 'Value':
                             newPsychStatus.Status = nodeprop.PROPERTYVALUE
-                        if nodeprop.PROPERTYNAME == 'NoStation':
-                            if nodeprop.PROPERTYVALUE == 'true':
-                                newPsychStatus.NoStation = True
-                        if nodeprop.PROPERTYNAME == 'HalfDay':
-                            if nodeprop.PROPERTYVALUE == 'true':
-                                newPsychStatus.HalfDay = True
+
                 if IntensiveCareNode != '':
                     sqlquery = """
                         select * from NODES
@@ -296,17 +302,19 @@ class Case(object):
                     newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"+"))
                 if newPsychStatus.ParentsSettingCare:
                     newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"*"))
+                if newPsychStatus.QE:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"%"))
+                if newPsychStatus.NoStation:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"?"))
+                if newPsychStatus.HalfDay:
+                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"?"))
+                PsychStatusList.append(newPsychStatus)
                 if newPsychStatus.Hardship:
                     newPsychStatus.StatusStr = "".join((
                         newPsychStatus.StatusStr,
                         "!",
                         str(len(newPsychStatus.HardshipReasons))
                     ))
-                if newPsychStatus.NoStation:
-                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"?"))
-                if newPsychStatus.HalfDay:
-                    newPsychStatus.StatusStr = "".join((newPsychStatus.StatusStr,"?"))
-                PsychStatusList.append(newPsychStatus)
                 del newPsychStatus
             # close SQL connections and cursors
             PropertiesSQLCursor.close()
