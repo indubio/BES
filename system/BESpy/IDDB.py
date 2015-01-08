@@ -251,7 +251,7 @@ class Case(object):
                         if nodeprop.PROPERTYNAME == 'HalfDay':
                             if nodeprop.PROPERTYVALUE == 'true':
                                 newPsychStatus.HalfDay = True
-                        if nodeprop.PROPERTYName == 'ExtraWithdrawlTreatment':
+                        if nodeprop.PROPERTYNAME == 'ExtraWithdrawlTreatment':
                             if nodeprop.PROPERTYVALUE == 'true':
                                 newPsychStatus.QE = True
                         if nodeprop.PROPERTYNAME == 'Hardship':
