@@ -485,6 +485,9 @@ class connection(object):
             ''
         ])
 
+    def con(self):
+        return pyodbc.connect(self.__connection_str)
+
     def case(self, soarian_nr):
         """
         generiert ein Case Objekt, über das fallbezogene Daten abgefragt
