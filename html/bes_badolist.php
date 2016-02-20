@@ -69,7 +69,7 @@ $result = mysql_query($query);
 $num_psy = mysql_num_rows($result);
 for ($i = 0; $i < $num_psy; $i++) {
     $row = mysql_fetch_array($result);
-    $dummyarray_i[] = $row['ID']+10;
+    $dummyarray_i[] = $row['ID']+50;
     $dummyarray_k[] = $row['option'];
 }
 mysql_free_result($result);

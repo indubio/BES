@@ -97,9 +97,9 @@ if ($selectedstation == 0 or $selectedstation == 99) {
     }
 } else {
     /* station select */
-    if ($selectedstation >= 10) {
+    if ($selectedstation >= 50) {
         $sWheretotal1 .=" AND (1=2)"; // schließt alle aus der STAT FallDB aus
-        $sWheretotal2 .=" AND (pia_id=".($selectedstation-10).")";
+        $sWheretotal2 .=" AND (pia_id=".($selectedstation-50).")";
     } else {
         $sWheretotal1 .=" AND (station_c=".$selectedstation.")";
         $sWheretotal2 .=" AND (1=2)"; // schließt alle aus der PIA FallDB aus
