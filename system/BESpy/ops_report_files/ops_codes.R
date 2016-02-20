@@ -178,12 +178,12 @@ ops_codes <- c(ops_codes,
 # Indizierter komplexer Entlassungsaufwand bei psychischen und psycho-
 # somatischen Störungen und Verhaltensstörungen bei Erwachsenen
 # 2014
-ops_codes y- c(ops_codes,
+ops_codes <- c(ops_codes,
     "9-645.00", "9-645.01", "9-645.02", "9-645.10", "9-645.11",
     "9-645.12"
     )
 # 2015
-ops_codes y- c(ops_codes,
+ops_codes <- c(ops_codes,
     "9-645.03", "9-645.04", "9-645.05", "9-645.13", "9-645.14",
     "9-645.15"
     )
@@ -198,7 +198,7 @@ ops_codes <- c(ops_codes,
     "9-647.0", "9-647.1", "9-647.2", "9-647.3", "9-647.4", "9-647.5",
     "9-647.6", "9-647.7", "9-647.8", "9-647.9", "9-647.a", "9-647.b",
     "9-647.c", "9-647.d", "9-647.e", "9-647.f", "9-647.g", "9-647.h",
-    "9-647.j", "9-647.k", "9-647.l", "9-647.m", "9-647.n", "9-647.p"
+    "9-647.j", "9-647.k", "9-647.l", "9-647.m", "9-647.n", "9-647.p",
     "9-647.q", "9-647.r", "9-647.s", "9-647.t", "9-647.u"
     )
 # Supervisionsaufwand
