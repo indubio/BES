@@ -1,0 +1,16 @@
+% !TEX root = _main.tex
+\begin{titlepage}
+  \begin{figure}[htbp]
+    \raggedleft
+    \includegraphics[width=5cm]{evb_logo.pdf}
+  \end{figure}
+  \begin{center}
+    \huge{\textbf{OPS-Report}}\\[1cm]
+    \Large{Klinik für Psychiatrie, Psychotherapie und Psychosomatik\\am Klinikum Ernst von Bergmann} \\[1cm]
+    \Large{\today} \\[1cm]
+  \end{center}
+  \hrule
+\begin{normalsize}
+  \tableofcontents
+\end{normalsize}
+\end{titlepage}

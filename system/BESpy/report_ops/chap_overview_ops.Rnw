@@ -1,0 +1,43 @@
+% !TEX root = _main.tex
+\clearpage
+\section{Übersicht OPS-Codes}
+In der folgenden Tabelle, finden sich alle in der ID-Datenbank abgelegten OPS-Codes.\\
+Um die Anzahl der Zeilen auf ein übersichtliches Maß zu reduzieren, wurden nur die ersten 4 Stellen des OPS-Codes als Differenzierungsmerkmal herangezogen.
+<<opsoverview>>==
+  outtable <- xtable(
+    x = xtabs(~ OPS.Code.4stellig + factor(format(PsychOPSCodes$Datum, format="%Y")), data=PsychOPSCodes)
+    , caption = "Anzahl OPS-Codes (4stellig) nach Erbringungsjahr"
+  )
+
+addtorow          <- list()
+addtorow$pos      <- list()
+addtorow$pos[[1]] <- c(0)
+addtorow$command  <- c(
+  paste(
+    "\\hline \n"
+    , "\\endhead \n"
+    , "\\hline \n"
+    , "\\multicolumn{7}{r}{"
+    , "{\\footnotesize Tabelle wird auf der folgenden Seite fortgesetzt}"
+    , "} \n"
+    , "\\endfoot \n"
+    , "\\endlastfoot \n"
+    , sep=""
+  )
+)
+
+print(
+  outtable
+  , table.placement = "H"
+  , caption.placement = "top"
+  , include.rownames = TRUE
+  , include.colnames = TRUE
+  , tabular.environment = "longtable"
+  , floating = FALSE
+  
+  , latex.environment="flushleft"
+  , add.to.row = addtorow
+  , hline.after = c(-1)
+)
+rm(outtable)
+@

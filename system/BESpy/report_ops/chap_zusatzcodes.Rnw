@@ -1,0 +1,78 @@
+% !TEX root = _main.tex
+\clearpage
+\section{Zusatzcodes}
+In den folgenden Tabellen finden sich die Häufigkeit der Vorkommen der im OPS-Katalog als Zusatzinformationen beschriebenen OPS-Codes.
+<<>>=
+codes_erw <- c(
+  "9-640", "Erhöhter Betreuungsaufwand bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen",
+  "9-641", "Kriseninterventionelle Behandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen",
+  "9-642", "Integrierte klinische-psychosomatisch-psychotherapeutische Komplexbehandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen",
+  "9-643", "Psychiatrisch-psychotherapeutische Behandlung im besonderen Setting (Mutter/Vater-Kind-Setting)",
+  "9-644", "Erbringung von Behandlungsmaßnahmen im stationsersetzenden Umfeld und als halbtägige tagesklinische Behandlung bei Erwachsenen",
+  "9-645", "Indizierter komplexer Entlassungsaufwand bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen",
+  "9-646", "Erhöhter Aufwand bei drohender oder bestehender psychosozialen Notlage bei Erwachsenen",
+  "9-647", "spezifische qualifizierte Entzugsbehandlung Abhängigkeitskranker bei Erwachsenen",
+  "9-648", "Erhöhter therapieprozessorientierter patienbezogener Supervisionsaufwand bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Erwachsenen"
+)
+
+codes_kjp <- c(
+  "9-690", "Kriseninterventionelle Behandlung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Kindern und Jugendlichen",
+  "9-691", "Erbringung von Behandlungsmaßnahmen im stationsersetzenden Umfeld und als halbtägige tagesklinische Behandlung bei Kindern und Jugendlichen",
+  "9-692", "Indizierter komplexer Entlassungsaufwand bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Kindern und Jugendlichen",
+  "9-693", "Intensive Beaufsichtigung mit Überwachung in einer Kleinstgruppe oder Einzelbetreuung bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Kindern und Jugendlichen",
+  "9-694", "Spezifische Behandlung im besonderen Setting bei substanzbedingten Störungen bei Kindern und Jugendlichen",
+  "9-695", "Erhöhter therapieprozessorientierter patientenbezogener Supervisionsaufwand bei psychischen und psychosomatischen Störungen und Verhaltensstörungen bei Kindern und Jugendlichen"
+)
+@
+
+<<>>=
+### 2 Tabellen
+for (psydep in range("erw", "kjp")){
+  if (psydep == "erw"){
+    zusatzcodesDT <- as.data.frame(matrix (codes_erw, ncol=2, byrow = TRUE))
+    tablecaption = "Anzahl Zusatzcodes Erwachsenenpsychiatrie"
+  }
+  if (psydep == "kjp"){
+    zusatzcodesDT <- as.data.frame(matrix (codes_kjp, ncol=2, byrow = TRUE))
+    tablecaption = "Anzahl Zusatzcodes Kinder- und Jugendpsychiatrie"
+  }
+  colnames(zusatzcodesDT) <- c("Code","Beschreibung")
+  ### data selection
+  fn_data <- subset(PsychOPSCodes, PsychOPSCodes$OPS.Code.4stellig %in% zusatzcodesDT[,"Code"])
+  ### frequency table
+  fn_freqDT <- as.data.frame.matrix(
+    xtabs(~ OPS.Code.4stellig + factor(format(fn_data$Datum, format="%Y")), data=fn_data)
+  )
+  ### rownames as column
+  fn_code <- row.names(fn_freqDT)
+  fn_freqDT <- cbind (fn_freqDT, fn_code)
+  ### merge with "Beschreibung"
+  fn_outDT <- merge(x = zusatzcodesDT, y = fn_freqDT, by.x="Code", by.y="fn_code", all.x=TRUE)
+  ### table styling
+  fn_outDT[is.na(fn_outDT)] <- 0
+  fn_tblaligns <- c("c","c","X")
+  for (i in seq(3, ncol(fn_outDT))){fn_tblaligns <- c(fn_tblaligns, "r")}
+  rm(i)
+  rws <- seq(0, (nrow(fn_outDT)-1), by = 2)
+  col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+  
+  print(
+    xtable(
+      fn_outDT
+      , caption = tablecaption
+      , align = fn_tblaligns
+      , digits = 0
+
+    )
+    , include.rownames = FALSE
+    , add.to.row = list(pos = as.list(rws), command = col)
+    , tabular.environment ='tabularx'
+    , width = "\\linewidth"
+    , caption.placement = "top"
+    , table.placement = "H"
+    , latex.environment ="flushleft"
+  )
+  rm(rws, col)
+  rm(fn_freqDT, fn_outDT, fn_code)  
+}
+@

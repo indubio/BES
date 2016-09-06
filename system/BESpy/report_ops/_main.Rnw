@@ -1,0 +1,121 @@
+<<initpart, include=FALSE, cache=FALSE>>=
+source("initpart.R")
+#source("import_csv.R")
+source("import_bescsv.R")
+source("Behandlungsstatus_init.R")
+opts_chunk$set(results = 'asis')
+opts_chunk$set(echo = FALSE)
+@
+\documentclass[
+    titlepage, ngerman,
+    oneside,
+    fontsize=10pt,
+    paper=a4,
+    BCOR=8.25mm
+]{scrartcl}
+\usepackage[
+    paper=a4paper,
+    left=25mm,
+    right=15mm,
+    top=20mm,
+    bottom=20mm
+]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{colortbl, xcolor}
+\usepackage[automark,headsepline,footsepline]{scrpage2}
+\usepackage{hyphenat} % Silbentrennung
+\usepackage[justification=raggedright,singlelinecheck=false]{caption}
+\usepackage{float} % H zur Positionierung nutzen
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\clearscrheadings
+\ohead{\headmark}
+\ifoot{OPS Report}
+\cfoot{\today}
+\ofoot{\thepage}
+\setheadtopline{1pt}
+\setheadsepline{1pt}
+\setfootsepline{1pt}
+
+\setlength{\LTleft}{0pt} % set longtable alignment LEFT
+
+\usepackage[
+  bookmarks=true,
+  bookmarksopen=true,
+  bookmarksnumbered=false,
+  pdfstartpage=1,
+  pdfstartview=Fit,
+  pdfview=FitB,
+  pdfborder={0 0 0},
+  linkcolor=black,
+  citecolor=black,
+  filecolor=black,
+  urlcolor=black,
+  pdftitle={OPS-Report},
+  pdfauthor={indUbio aka Steffen Eichhorn},
+  pdfsubject={OPS Reporting},
+  pdfkeywords={},
+]{hyperref}
+
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{helvet}
+
+% Bild- und Tabellenbezeichnungen
+\addtokomafont{caption}{\sffamily}
+\setkomafont{captionlabel}{\sffamily}
+
+% Table of Contents Depth
+\setcounter{tocdepth}{1}
+
+\begin{document}
+
+<<titlepage, child='chap_titlepage.Rnw'>>=
+@
+\input{chap_vorwort}
+
+<<titlepage, child='chap_zusatzcodes.Rnw'>>=
+@
+
+<<, include=FALSE>>=
+### max Limit für die Graphen der Therapieeinheiten ermitteln
+# PSY Wards
+c <- aggregate(Therapieeinheiten ~ E.G + Kalenderwoche + Station,
+               subset(PsychOPSCodes, PsychOPSCodes$Station %in% c(psy_wards)),
+               sum)
+max.y.lim.psy <- max(c$Therapieeinheiten) + 10
+
+# PSY TK
+c <- aggregate(Therapieeinheiten ~ E.G + Kalenderwoche + Station,
+               subset(PsychOPSCodes, PsychOPSCodes$Station %in% c(psy_tk)),
+               sum)
+max.y.lim.psytk <- max(c$Therapieeinheiten) + 10
+
+# PSY KJPP
+c <- aggregate(Therapieeinheiten ~ E.G + Kalenderwoche + Station,
+               subset(PsychOPSCodes, PsychOPSCodes$Station %in% c(psy_kjpp)),
+               sum)
+max.y.lim.kjpp <- max(c$Therapieeinheiten) + 10
+rm(c)
+@
+
+<<therapy_stats, include=FALSE>>==
+out <- ""
+for (ward in c(psy_wards, psy_tk, psy_kjpp)) {
+  out <- c(out, knit_child('ward_page.Rnw'))
+}
+@
+\Sexpr{paste(out, collapse = '\n')}
+%\input{titlepage}
+<<, child='chap_overview_ops.Rnw'>>=
+@
+\clearpage
+\section{Systeminformation}
+<<,results='markup'>>=
+sessionInfo()
+@
+
+\end{document}

@@ -1,0 +1,126 @@
+\clearpage
+\section{Station: \Sexpr{ward}}
+\subsection{Behandlungsstatus}
+<<, include=FALSE>>=
+c <-  1
+dummy <- PsychOPSCodes
+dummy <- subset(dummy, 
+    dummy$Station == ward &
+    !is.na(dummy$Therapieeinheiten) &
+    format(dummy$Datum, format="%Y") == currentyear
+)
+
+c <- aggregate(Therapieeinheiten ~ E.G + Kalenderwoche + Profession + Station,
+               dummy,
+               sum)
+
+d <- aggregate(Therapieeinheiten ~ E.G + Profession,
+               c,
+               mean)
+
+max.y.lim <- 1000
+if (ward %in% psy_wards) {max.y.lim <- max.y.lim.psy}
+if (ward %in% psy_tk) {max.y.lim <- max.y.lim.psytk}
+if (ward %in% psy_kjpp) {max.y.lim <- max.y.lim.kjpp}
+
+@
+
+<<, echo=FALSE, fig.height=4, fig.cap="", fig.pos="H">>=
+OPSBehandlungsstatus$Datum.Year <- format(OPSBehandlungsstatus$Datum, format="%Y")
+ggplot(data = subset(OPSBehandlungsstatus, 
+                     OPSBehandlungsstatus$Station == ward &
+                     OPSBehandlungsstatus$Datum.Year == currentyear),
+       aes(x = Datum, fill = OPS.Code.3stellig)) + 
+  geom_bar(width=1) +
+  scale_fill_brewer(palette = "Set1") +
+  ggtitle(paste("OPS-Behandlungsstatus ", currentyear, ": ",ward , "\n",sep="")) +
+  ylab("Anzahl Patienten") +
+  theme(legend.position="bottom")
+@
+<<,>>=
+num_month <- 9
+startdate <- as.Date(paste(format(today(), "%Y-%m"),"01",sep="-")) - months(num_month- 1)
+fn_sub <- subset(OPSBehandlungsstatus, 
+    OPSBehandlungsstatus$Station == ward &
+    OPSBehandlungsstatus$Datum > startdate
+    )
+fn_sub$YearMon <- format(fn_sub$Datum, format = "%Y/%m")
+fn_proptbl <- round(prop.table(table(fn_sub$OPS.Code.3stellig, fn_sub$YearMon), 2)*100, 2)
+fn_tblaligns = rep("r", ncol(fn_proptbl)+1)
+fn_tblaligns[1] <- "l"
+outtable <- xtable(
+  replace(fn_proptbl, TRUE, sprintf("%6.2f%%", fn_proptbl))
+  , caption = paste(
+    "Behandlungsstatus - Prozentuale Verteilung: "
+    , ward
+    , sep="")
+#  , digits = 2
+  , align = fn_tblaligns
+)
+print(outtable
+  , caption.placement = "top"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+@
+\vspace{2em}
+9-60: Regelbehandlung bei Erwachsenen\\
+9-61: Intensivbehandlung bei Erwachsenen\\
+9-62: Psychotherapeutische Komplexbehandlung bei Erwachsenen\\
+9-63: Psychosomatisch-psychotherapeutische Komplexbehandlung bei Erwachsenen\\
+9-65: Regelbehandlung bei Kindern\\
+9-66: Regelbehandlung bei Jugendlichen\\
+9-67: Intensivbehandlung bei Kindern und Jugendlichen\\
+9-68: Behandlung im besonderen Setting (Eltern-Kind-Setting)\\
+
+\subsection{Therapieeinheiten}
+<<, echo=FALSE, fig.height=6, fig.cap="", fig.pos="H">>=
+ggplot(data = c, aes(x = Kalenderwoche, y = Therapieeinheiten, fill = Profession)) + 
+  geom_bar(stat="identity") + 
+  ylim(0, max.y.lim) +
+  facet_grid(E.G ~ .) +
+  scale_fill_brewer(palette = "Set1") +
+  ggtitle(paste("Therapieeinheiten ", currentyear, ": ", ward, "\n ",sep="")) +
+  theme(legend.position="bottom")
+@
+
+<<>>=
+#outtable <- xtable(
+#  addmargins(xtabs(Therapieeinheiten ~ E.G + Profession, data = d), FUN = list(Summe = sum), quiet = #TRUE),
+#  caption = "Durchschnittlich erbrachte Therapieeinheiten in einer Kalenderwoche",
+#  digits = 2
+#)
+#print(outtable, caption.placement = "top")
+
+c.full <- expand.grid(
+  E.G = c("Einzeltherapie", "Gruppentherapie"),
+  Kalenderwoche = seq(0,max(as.integer(c$Kalenderwoche))),
+  Profession = levels(dummy$Profession),
+  Therapieeinheiten = 0
+)
+
+c.full <- merge(
+  x=c.full,
+  y=subset(c, c$Therapieeinheiten != 0),
+  by=c("E.G", "Profession", "Kalenderwoche"),
+  all.x = TRUE
+)
+c.full[!is.na(c.full$Therapieeinheiten.y),"Therapieeinheiten.x"] <- c.full[!is.na(c.full$Therapieeinheiten.y),"Therapieeinheiten.y"]
+
+d <- aggregate(Therapieeinheiten.x ~ E.G + Profession,
+               c.full,
+               mean)
+outtable <- xtable(
+  addmargins(xtabs(Therapieeinheiten.x ~ E.G + Profession, data = d), FUN = list(Summe = sum), quiet = TRUE),
+  caption = paste(
+    "Durchschnittlich erbrachte Therapieeinheiten pro Kalenderwoche: ",
+    ward,
+    sep=""),
+  digits = 2
+)
+print(outtable, caption.placement = "top",table.placement = "H", latex.environment="flushleft")
+@
+
+<<, include=FALSE>>=
+  rm(dummy, c, d, outtable)
+@
