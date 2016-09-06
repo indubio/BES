@@ -11,6 +11,7 @@ Description   : abstrahiert den Zugriff auf Daten aus der SQL-Datenbank vom ID S
 import os.path
 import pyodbc
 import datetime
+import csv
 
 class PsychPV(object):
     """"PsychPV Object"""
@@ -494,6 +495,93 @@ class connection(object):
         werden können
         """
         return Case(self.__connection_str, soarian_nr)
+
+    def getCases(self):
+        """
+        liefert die Case-Tabelle zurück
+        """
+        SQLConn = pyodbc.connect(self.__connection_str)
+        SQLCursor = SQLConn.cursor()
+        sqlquery = """
+            SELECT CID, WARD, ADMHOSPITAL, SEPHOSPITAL from CASES
+            WHERE APSYCH = 1
+            """
+        SQLCursor.execute(sqlquery)
+        try:
+            casesID = SQLCursor.fetchall()
+        except:
+            pass
+        SQLCursor.close()
+        SQLConn.close()
+        return casesID
+
+    def Export_OPS_Codes(self, filename):
+        """
+        exportiert alle OPS-Codes, gleich der Daten-Exportfunktion im SpezialPsych Programm
+        """
+        returnstatus = False
+        SQLConn = pyodbc.connect(self.__connection_str)
+        SQLCursor = SQLConn.cursor()
+        sqlquery = """
+            SELECT
+                Procedures.PDATE as 'Datum',
+                Codes.VALUE as 'OPS_Code',
+                Procedures.NAME as 'OPS_Name',
+                Cases.CID as 'Fall_Nr',
+                Patients.PID as 'Patienten_Nr',
+                Cases.WARD as 'Station',
+                Cases.ADMHOSPITAL as 'Aufnahmedatum',
+                CASES.SEPHOSPITAL as 'Entlassdatum'
+            FROM
+                "id_scorer"."dbo"."PROCEDURES" Procedures
+                JOIN "id_scorer"."dbo"."PROCEDURES_CODES" Procedures2Codes ON Procedures2Codes.PROCEDURES_ID = Procedures.ID
+                JOIN "id_scorer"."dbo"."CODES" Codes ON Codes.ID = Procedures2Codes.codes_ID
+                JOIN "id_scorer"."dbo"."CASES" Cases ON Cases.ID = Procedures.CID
+                JOIN "id_scorer"."dbo"."PATIENTS" Patients ON Patients.ID = CASES.PID
+            WHERE Cases.APSYCH = 1
+            ORDER BY Procedures.PDATE
+            """
+        SQLCursor.execute(sqlquery)
+        try:
+            f_csv = open(filename, 'wt')
+            csvwriter = csv.writer(f_csv, delimiter = ';', doublequote = True, quoting=csv.QUOTE_ALL)
+            csvwriter.writerow([
+                "Patienten.Nr", "Fall.Nr", "Datum", "Zeit", "OPS.Code",
+                "Aufnahmedatum", "Entlassdatum", "Station"
+            ])
+
+            for i in SQLCursor.fetchall():
+                codedatum = ""
+                aufnahmedatum = ""
+                entlassdatum = ""
+
+                if i.Datum.date() == datetime.date(1899, 12, 30):
+                    codedatum = ""
+                else:
+                    codedatum = str(i.Datum.date())
+
+                if i.Aufnahmedatum.date() == datetime.date(1899, 12, 30):
+                    aufnahmedatum = ""
+                else:
+                    aufnahmedatum = str(i.Aufnahmedatum.date())
+
+                if i.Entlassdatum.date() == datetime.date(1899, 12, 30):
+                    entlassdatum = ""
+                else:
+                    entlassdatum = str(i.Entlassdatum.date())
+
+                csvwriter.writerow([
+                    i.Patienten_Nr, i.Fall_Nr, codedatum, i.Datum.time(),
+                    i.OPS_Code, aufnahmedatum, entlassdatum, i.Station
+                ])
+
+            f_csv.close()
+            returnstatus = True
+        except:
+            print sys.exc_info()[0]
+        SQLCursor.close()
+        SQLConn.close()
+        return returnstatus
 
 if __name__ == '__main__':
     pass
