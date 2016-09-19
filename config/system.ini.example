@@ -18,6 +18,13 @@ host = ""
 port = ""
 dc = ""
 
+[SOASQLSP]
+user = ""
+pass = ""
+host = ""
+port = ""
+database = ""
+
 [soap]
 user = ""
 pass = ""
