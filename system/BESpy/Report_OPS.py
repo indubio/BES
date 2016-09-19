@@ -94,7 +94,7 @@ def main(progoptions):
     repprop  = BESsystem.ReportProperties('OPS-Report v2')
     TO = repprop.recipient()
     CC = repprop.recipients_CC()
-    CC = []
+#    CC = []   # cc leer zum Testen
     FROM = repprop.sender()
     msg = email.MIMEMultipart.MIMEMultipart()
     msg['Content-Type'] = "text; charset=utf-8"
