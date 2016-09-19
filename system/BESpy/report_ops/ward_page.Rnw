@@ -1,6 +1,6 @@
 \clearpage
-\section{Station: \Sexpr{ward}}
-\subsection{Behandlungsstatus}
+\subsection{Station: \Sexpr{ward}}
+\subsubsection{Behandlungsstatus}
 <<, include=FALSE>>=
 c <-  1
 dummy <- PsychOPSCodes
@@ -73,7 +73,7 @@ print(outtable
 9-67: Intensivbehandlung bei Kindern und Jugendlichen\\
 9-68: Behandlung im besonderen Setting (Eltern-Kind-Setting)\\
 
-\subsection{Therapieeinheiten}
+\subsubsection{Therapieeinheiten}
 <<, echo=FALSE, fig.height=6, fig.cap="", fig.pos="H">>=
 ggplot(data = c, aes(x = Kalenderwoche, y = Therapieeinheiten, fill = Profession)) + 
   geom_bar(stat="identity") + 

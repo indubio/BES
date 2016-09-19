@@ -69,7 +69,7 @@ opts_chunk$set(echo = FALSE)
 \setkomafont{captionlabel}{\sffamily}
 
 % Table of Contents Depth
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 
 \begin{document}
 
@@ -77,7 +77,7 @@ opts_chunk$set(echo = FALSE)
 @
 \input{chap_vorwort}
 
-<<titlepage, child='chap_zusatzcodes.Rnw'>>=
+<<page_zusatzcodes, child='chap_zusatzcodes.Rnw'>>=
 @
 
 <<, include=FALSE>>=
@@ -101,7 +101,7 @@ c <- aggregate(Therapieeinheiten ~ E.G + Kalenderwoche + Station,
 max.y.lim.kjpp <- max(c$Therapieeinheiten) + 10
 rm(c)
 @
-
+\section{Stationen}
 <<therapy_stats, include=FALSE>>==
 out <- ""
 for (ward in c(psy_wards, psy_tk, psy_kjpp)) {
