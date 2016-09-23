@@ -1,4 +1,4 @@
-\clearpage
+\ihead{\Sexpr{ward}}
 \subsection{Station: \Sexpr{ward}}
 \subsubsection{Behandlungsstatus}
 <<, include=FALSE>>=
@@ -124,3 +124,45 @@ print(outtable, caption.placement = "top",table.placement = "H", latex.environme
 <<, include=FALSE>>=
   rm(dummy, c, d, outtable)
 @
+\subsubsection{Intensive Betreuung}
+<<, echo=FALSE, fig.height=6, fig.cap="", fig.pos="H">>=
+empty_c <- data.frame(
+  Datum = c(as.Date(today)),
+  DauerMinutes.typ = "1on1",
+  DauerMinutes.min = 0
+)
+c <- tryCatch(aggregate(DauerMinutes.min ~ Datum + DauerMinutes.typ,
+               subset(PsychOPSCodes, PsychOPSCodes$Station == ward),
+               sum),
+      error = function(cond) {return (empty_c)},
+      warning = function (cond) {return (empty_c)},
+      finally = {}
+      
+)
+c$Jahr <- format(c$Datum, format="%Y")
+c$Tag <- as.numeric(format(c$Datum,format= "%j"))
+
+ggplot(data = subset(c, c$Jahr %in% c(as.character(as.numeric(currentyear)-1), currentyear)),
+       aes(x = Tag, y = DauerMinutes.min, fill = DauerMinutes.typ)) + 
+  geom_bar(stat="identity") + 
+  facet_grid(Jahr ~ .) + 
+  xlim(1, 366) +
+  scale_fill_brewer(palette = "Set1") +
+  geom_vline(
+    xintercept = as.numeric(format(today, format = "%j")),
+    color = "black",
+    size = 2,
+    alpha = 0.2
+    ) +
+  ggtitle(paste("Intensive Betreuung: ", ward,"\n ",sep = "")) +
+  ylab("Dauer in Minuten (Minimum)") +
+  theme(
+    axis.title = element_text(size = 10),
+    legend.title = element_text(size = 10)
+    ) +
+  theme(legend.position = "bottom") +
+  guides(fill=guide_legend(title = "Betreuungs-/ Aufwandsart"))
+rm(c)
+@
+\clearpage
+\ihead{}

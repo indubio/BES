@@ -1,4 +1,5 @@
 <<initpart, include=FALSE, cache=FALSE>>=
+script.starttime = Sys.time()
 source("initpart.R")
 #source("import_csv.R")
 source("import_bescsv.R")
@@ -30,6 +31,7 @@ opts_chunk$set(echo = FALSE)
 \usepackage{hyphenat} % Silbentrennung
 \usepackage[justification=raggedright,singlelinecheck=false]{caption}
 \usepackage{float} % H zur Positionierung nutzen
+
 \pagestyle{scrheadings}
 \clearscrheadfoot
 \clearscrheadings
@@ -101,7 +103,14 @@ c <- aggregate(Therapieeinheiten ~ E.G + Kalenderwoche + Station,
 max.y.lim.kjpp <- max(c$Therapieeinheiten) + 10
 rm(c)
 @
-\section{Stationen}
+\clearpage
+\section{Behandlungseinheiten}
+In diesem Kapitel finden sich für jeden Behandlungseinheit die Auswertung zum Behandlungsstatus, zu den Therapieeinheiten, sowie in Bereich intensive Betreuung dokumentierten Leistungen.\\
+
+Der Behandlungsstatus beinhalten nur die Codes 9-60, 9-61, 9-62 und 9-63 der Erwachsenenpsychiatrie, sowie die Codes <<9-65>>, <<9-66>>, <<9-67>> und <<9-68>> der Kinder- und Jugendpsychiatrie. Diese Codes werden nicht täglich generiert. Bis 2016 einmal pro Woche, seit 2016 nur noch bei Änderung. Der Tagesbezug wurde durch Wiederholung des letzten Behandlungsstatuscodes hergestellt.\\
+
+Für die Ermittlung der Therapieeinheiten wurden die Codes aus dem Bereich <<9-649>> (ErwPSY) und <<9-696>> (KJPSY) genutzt. Die 1:1- oder Kleinstgruppenbetreuung ist hierbei exklusiv. Die durschnittlich erbrachten Therapieeinheiten entsprechen dem arithmetische Mittel. Bei nicht vorhandenem Code (berufsgruppenspezifisch) ist diese Kalenderwoche mit dem Wert 0 in die Berechnung eingegangen.\\
+\clearpage
 <<therapy_stats, include=FALSE>>==
 out <- ""
 for (ward in c(psy_wards, psy_tk, psy_kjpp)) {
@@ -109,11 +118,14 @@ for (ward in c(psy_wards, psy_tk, psy_kjpp)) {
 }
 @
 \Sexpr{paste(out, collapse = '\n')}
-%\input{titlepage}
+
 <<, child='chap_overview_ops.Rnw'>>=
 @
 \clearpage
+
 \section{Systeminformation}
+Für die Erstellung dieses Berichtes wurde ausschließlich Open-Source-Software eingesetzt.\\
+Ausführungszeit (R-Script): \Sexpr{round(Sys.time() - script.starttime)} Sekunden\\
 <<,results='markup'>>=
 sessionInfo()
 @

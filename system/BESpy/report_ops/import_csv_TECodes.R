@@ -58,7 +58,3 @@ PsychOPSCodes[PsychOPSCodes$OPS.Code.major %in% TECode.Basis, "Therapieeinheiten
 PsychOPSCodes[PsychOPSCodes$OPS.Code.major %in% TECode.Basis, "Profession"] <- dummy$Profession
 PsychOPSCodes[PsychOPSCodes$OPS.Code.major %in% TECode.Basis, "E.G"] <- dummy$E.G
 rm(dummy)
-
-### Faktorisieren und gleichzeitige Sortieren
-PsychOPSCodes$Profession <- factor(PsychOPSCodes$Profession, professions)
-PsychOPSCodes$E.G <- factor(PsychOPSCodes$E.G, c("Einzeltherapie", "Gruppentherapie"))

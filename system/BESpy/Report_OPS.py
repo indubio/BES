@@ -42,17 +42,22 @@ def main(progoptions):
     ## copy files to temp
     report_files = (
         {'src': 'Behandlungsstatus_init.R', 'dest': 'Behandlungsstatus_init.R'},
+        {'src': 'calc_9_640.R', 'dest': 'calc_9_640.R'},
+        {'src': 'calc_9_641.R', 'dest': 'calc_9_641.R'},
+        {'src': 'calc_9_645.R', 'dest': 'calc_9_645.R'},
+        {'src': 'calc_9_690.R', 'dest': 'calc_9_690.R'},
+        {'src': 'calc_9_692.R', 'dest': 'calc_9_692.R'},
+        {'src': 'calc_9_693.R', 'dest': 'calc_9_693.R'},
+        {'src': 'chap_overview_ops.Rnw', 'dest': 'chap_overview_ops.Rnw'},
+        {'src': 'chap_titlepage.Rnw', 'dest': 'chap_titlepage.Rnw'},
+        {'src': 'chap_vorwort.tex', 'dest': 'chap_vorwort.tex'},
+        {'src': 'chap_zusatzcodes.Rnw', 'dest': 'chap_zusatzcodes.Rnw'},
         {'src': 'evb_logo.pdf', 'dest': 'evb_logo.pdf'},
         {'src': 'import_bescsv.R', 'dest': 'import_bescsv.R'},
         {'src': 'import_csv_OneonOneCodes.R', 'dest': 'import_csv_OneonOneCodes.R'},
-        {'src': 'import_csv.R', 'dest': 'import_csv.R'},
         {'src': 'import_csv_TECodes.R', 'dest': 'import_csv_TECodes.R'},
         {'src': 'initpart.R', 'dest': 'initpart.R'},
         {'src': '_main.Rnw', 'dest': 'OPS_Report.Rnw'},
-        {'src': 'chap_titlepage.Rnw', 'dest': 'chap_titlepage.Rnw'},
-        {'src': 'chap_overview_ops.Rnw', 'dest': 'chap_overview_ops.Rnw'},
-        {'src': 'chap_vorwort.tex', 'dest': 'chap_vorwort.tex'},
-        {'src': 'chap_zusatzcodes.Rnw', 'dest': 'chap_zusatzcodes.Rnw'},
         {'src': 'ward_page.Rnw', 'dest': 'ward_page.Rnw'}
     )
 

@@ -1,13 +1,21 @@
 % !TEX root = _main.tex
 \begin{titlepage}
   \begin{figure}[htbp]
-    \raggedleft
-    \includegraphics[width=5cm]{evb_logo.pdf}
+    \begin{minipage}[t]{10cm}
+      \vspace{1cm}
+      \Large{Klinik für Psychiatrie, Psychotherapie\\und Psychosomatik}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{5cm}
+      \vspace{0pt}
+      \raggedleft
+      \includegraphics[width=5cm]{evb_logo.pdf}
+    \end{minipage}
   \end{figure}
   \begin{center}
+    \vspace{1.5cm}
     \huge{\textbf{OPS-Report}}\\[1cm]
-    \Large{Klinik für Psychiatrie, Psychotherapie und Psychosomatik\\am Klinikum Ernst von Bergmann} \\[1cm]
-    \Large{\today} \\[1cm]
+    \Large{\today}\\[1cm]
   \end{center}
   \hrule
 \begin{normalsize}

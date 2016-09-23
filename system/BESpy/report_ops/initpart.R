@@ -3,6 +3,7 @@ library(ggplot2)
 library(xtable)
 library(plyr)
 library(lubridate)
+library(data.table)
 
 ###########
 ### function trim
@@ -18,11 +19,9 @@ monthlabel <- c("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
 
 professions <- c("Ärzte", "Psychologen", "Pflegefachpersonen", "Spezialtherapeuten")
 
-
 psy_wards <- c("PSY1", "PSY2", "PSY3", "PSY4",
                "PSY5", "PSYSO1")
 
 psy_tk    <- c("TPS1", "TPS2", "TPS3", "TPSYSO1")
 
 psy_kjpp  <- c("KJPSY1", "KJPSY2", "KJPSY3")
-
