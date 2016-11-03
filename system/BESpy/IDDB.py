@@ -531,7 +531,7 @@ class connection(object):
                 Patients.PID as 'Patienten_Nr',
                 Cases.WARD as 'Station',
                 Cases.ADMHOSPITAL as 'Aufnahmedatum',
-                CASES.SEPHOSPITAL as 'Entlassdatum'
+                Cases.SEPHOSPITAL as 'Entlassdatum'
             FROM
                 "id_scorer"."dbo"."PROCEDURES" Procedures
                 JOIN "id_scorer"."dbo"."PROCEDURES_CODES" Procedures2Codes ON Procedures2Codes.PROCEDURES_ID = Procedures.ID
