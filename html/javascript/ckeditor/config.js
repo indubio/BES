@@ -13,12 +13,13 @@ config.toolbar = 'MyToolbar';
 config.toolbar_MyToolbar =
 [
 ['Undo','Redo','-','Templates'],
+['Cut','Copy','Paste'],
 ['RemoveFormat','Bold','Italic','Strike','Underline','Subscript','Superscript',
  'TextColor','BGColor'],
-['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+['JustifyLeft','JustifyCenter','JustifyRight'],
 ['NumberedList','BulletedList','-','Outdent','Indent','-','SpecialChar'],
-['jQuerySpellChecker','-','Maximize','-','About']
-
+//['jQuerySpellChecker','-','Maximize','-','About']
+['Maximize','-','About']
 //['NewPage','Preview'],
 //['Cut','Copy','Paste','PasteText','PasteFromWord','-','Scayt'],
 //['-','Find','Replace','-','SelectAll','RemoveFormat'],
@@ -36,11 +37,15 @@ config.height = 300;
 
 config.removePlugins = 'elementspath';
 
-config.extraPlugins = 'jqueryspellchecker';
+//config.extraPlugins = 'jqueryspellchecker';
 
-config.contentsCss =['javascript/ckeditor/contents.css', 'css/jquery.spellchecker.css']
+//config.contentsCss =['javascript/ckeditor/contents.css', 'css/jquery.spellchecker.css']
+config.contentsCss =['javascript/ckeditor/contents.css']
 
 config.templates_replaceContent = false ;
 config.templates_files = ['javascript/ckeditor/plugins/templates/templates/bes_default.js']
 
+config.disableNativeSpellChecker = false;
+config.removePlugins = 'scayt,menubutton,contextmenu';
+config.browserContextMenuOnCtrl = true;
 };
