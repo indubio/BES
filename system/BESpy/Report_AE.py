@@ -35,6 +35,8 @@ def main(progoptions):
     cursor = mysql.cursor()
     sql = "set character set utf8"
     cursor.execute(sql)
+    sql = "SET sql_mode='NO_AUTO_CREATE_USER';"
+    cursor.execute(sql)
 
     #date_lastreport = datetime.strptime('2016-06-13', '%Y-%m-%d')
     get_date = str(date.today() + relativedelta(days=-1))
