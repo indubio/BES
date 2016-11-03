@@ -3,18 +3,18 @@ include ('bes_init.php');
 $error = array();
 $json = array();
 
-function get_verlauf_default_text ($user_dbid = 0) {
+function get_verlauf_default_text ($conn, $user_dbid = 0) {
     $query = "SELECT function FROM `user` WHERE `ID`='".$user_dbid."'";
-    $result = mysql_query($query);
-    if (mysql_num_rows($result) == 1) {
-        $userdata = mysql_fetch_array($result);
-        mysql_free_result($result);
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result) == 1) {
+        $userdata = mysqli_fetch_array($result);
+        mysqli_free_result($result);
         if ($userdata['function'] > 0) {
             $query  = "SELECT verlauf_default FROM `userfunction` ";
             $query .= "WHERE `ID`='".$userdata['function']."'";
-            $result = mysql_query($query);
-            $functiondata = mysql_fetch_array($result);
-            mysql_free_result($result);
+            $result = mysqli_query($conn, $query);
+            $functiondata = mysqli_fetch_array($result);
+            mysqli_free_result($result);
             return $functiondata['verlauf_default'];
         } else {
             return "";
@@ -26,8 +26,8 @@ function get_verlauf_default_text ($user_dbid = 0) {
 
 function get_wday($datetimestr) {
     $weekdays_short = array('So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa');
-    list($datestr, $dummy) = split(' ', $datetimestr);
-    list($year, $month, $day) = split('-', $datestr) ;
+    list($datestr, $dummy) = explode(' ', $datetimestr);
+    list($year, $month, $day) = explode('-', $datestr) ;
     $dateobj = getdate(mktime(0,0,0, $month, $day, $year));
     return $weekdays_short[$dateobj['wday']];
 }
@@ -42,11 +42,16 @@ if (auth($_SESSION['userlevel'],PAGE_VERLAUFEDIT) !=1){
 if(get_magic_quotes_gpc()){
     $_POST = array_map('stripslashes', $_POST);
 }
-$_POST = array_map('mysql_real_escape_string',$_POST);
+
+//$_POST = array_map('mysql_real_escape_string', $_POST);
+foreach($_POST as $var => $val){
+    $_POST[$var] = mysqli_real_escape_string($conn, $val);
+}
+
 
 // WAF Variablen Check
-//if (mywaf($_GET)) {$error[]="Variablenfehler #1";}
-//if (mywaf($_POST)){$error[]="Variablenfehler #2";}
+//if (mywaf($conn, $_GET)) {$error[]="Variablenfehler #1";}
+//if (mywaf($conn, $_POST)){$error[]="Variablenfehler #2";}
 
 if (count($error) == 0){
 /*
@@ -55,7 +60,7 @@ if (count($error) == 0){
     if ($_POST['verlauf_cmd']=="get_entry"){
         // default values
         $current_datetime = new DateTime();
-        $sel_conversation_typ = create_select("conversation_typ");
+        $sel_conversation_typ = create_select($conn, "conversation_typ");
         $duration_array = array('');
         for ($i = 5; $i < 301; $i += 5) {
             $duration_array[] = $i;
@@ -73,7 +78,7 @@ if (count($error) == 0){
         $json = array(
             'date' => $current_datetime->format('d.m.Y'),
             'time' => $current_datetime->format('H:i'),
-            'content' => get_verlauf_default_text($_SESSION['userid']),
+            'content' => get_verlauf_default_text($conn, $_SESSION['userid']),
             'update_date' => "",
             'update_time' => "",
             'dlg_content' => "",
@@ -89,8 +94,8 @@ if (count($error) == 0){
          */
         $query  = "SELECT * FROM `verlauf`";
         $query .= " WHERE `ID`='".$_POST['verlauf_dbid']."'";
-        $result = mysql_query($query);
-        while ($row = mysql_fetch_assoc($result)) {
+        $result = mysqli_query($conn, $query);
+        while ($row = mysqli_fetch_assoc($result)) {
             $json = array(
                 'date' => datetime_to_de($row['creation_datetime'], "date"),
                 'time' => datetime_to_de($row['creation_datetime'], "time"),
@@ -127,13 +132,13 @@ if (count($error) == 0){
             $query .= " and `deleted`='0'";
         }
         $query .= " ORDER BY creation_datetime desc";
-        $result = mysql_query($query);
+        $result = mysqli_query($conn, $query);
         $verlauf = array();
-        while ($row = mysql_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result)) {
             $verlauf_entry = array(
                 'dbid' => $row['ID'],
                 'text' => $row['text'],
-                'conversation_typ' => idtostr($row['conversation_typ'], "f_conversation_typ"),
+                'conversation_typ' => idtostr($conn, $row['conversation_typ'], "f_conversation_typ"),
                 'conversation_duration' => $row['conversation_duration'],
                 'conv_num_doc' => $row['conv_prof_num_doc'],
                 'conv_num_psych' => $row['conv_prof_num_psych'],
@@ -142,9 +147,9 @@ if (count($error) == 0){
                 'creation_date' => datetime_to_de($row['creation_datetime'], "date"),
                 'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
                 'creation_wday' => get_wday($row['creation_datetime']),
-                'owner_firstname' => get_username_by_id($row['owner'], "first"),
-                'owner_lastname' => get_username_by_id($row['owner'], "last"),
-                'owner_function' => get_function_by_userid($row['owner']),
+                'owner_firstname' => get_username_by_id($conn, $row['owner'], "first"),
+                'owner_lastname' => get_username_by_id($conn, $row['owner'], "last"),
+                'owner_function' => get_function_by_userid($conn,$row['owner']),
                 'update_date' => datetime_to_de($row['update_timestamp'], "date"),
                 'update_time' => datetime_to_de($row['update_timestamp'], "time"),
                 'editable' => 0,
@@ -161,7 +166,7 @@ if (count($error) == 0){
             }
             $verlauf[] = $verlauf_entry;
         }
-        mysql_free_result($result);
+        mysqli_free_result($result);
         $json['entries'] = $verlauf;
     }
 /*
@@ -198,10 +203,10 @@ if (count($error) == 0){
         if ($_POST['eventdbid'] != '0'){
             $query = "SELECT * ".
                 "FROM `verlauf` WHERE `ID`='".$_POST['eventdbid']."'";
-            $result = mysql_query($query);
-            $num_entry = mysql_num_rows($result);
+            $result = mysqli_query($conn, $query);
+            $num_entry = mysqli_num_rows($result);
             if ($num_entry == 1){
-                $old_entry = mysql_fetch_array($result);
+                $old_entry = mysqli_fetch_array($result);
                 $new_entry['refer_id'] = $old_entry['ID'];
             } else {
                 $error[] = "Verlauf ID fehlerhaft";
@@ -242,16 +247,17 @@ if (count($error) == 0){
                 ."','".$new_entry['refer_id']
                 ."','".$new_entry['session_id']
                 ."')";
-            if (!($result = mysql_query($query))){
-                $error[] = "DB Error";
+            if (!($result = mysqli_query($conn, $query))){
+                //$error[] = "DB Error";
+                $error[] = mysqli_error($conn)."aaa".$new_entry['conversation_duration']."aaa";
             }
-            $new_dbid = mysql_insert_id();
+            $new_dbid = mysqli_insert_id($conn);
             $json['dbid'] = $new_dbid;
             // set old entry "deprecated"
             if ($_POST['eventdbid'] != '0'){
                 $query = "UPDATE `verlauf` SET `deprecated`='1' "
                     ."WHERE `ID`='".$_POST['eventdbid']."'";
-                $result = mysql_query($query);
+                $result = mysqli_query($conn, $query);
             }
             $json['action'] = 'new entry';
         }
@@ -263,7 +269,7 @@ if (count($error) == 0){
         if ($_POST['eventdbid'] != '0'){
             $query  = "UPDATE `verlauf` SET `deleted`='1' ";
             $query .= "WHERE `ID`='".$_POST['eventdbid']."'";
-            $result = mysql_query($query);
+            $result = mysqli_query($conn, $query);
         } else {
             $error[] = "Kein Eintrag übergeben";
         }
@@ -275,7 +281,7 @@ if (count($error) == 0){
         if ($_POST['eventdbid'] != '0'){
             $query  = "UPDATE `verlauf` SET `deleted`='0' ";
             $query .= "WHERE `ID`='".$_POST['eventdbid']."'";
-            $result = mysql_query($query);
+            $result = mysqli_query($conn, $query);
         } else {
             $error[] = "Kein Eintrag übergeben";
         }

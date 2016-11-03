@@ -10,11 +10,11 @@ function gen_selectview($posx,$ln,$boxname)
 {
   global $pdf;
   $query = "SELECT * FROM f_".$boxname." ORDER BY ID ASC";
-  //mysql_query('set character set utf8;');
-  $result = mysql_query($query);
-  $num = mysql_num_rows($result);
+  //mysqli_query($conn, 'set character set utf8;');
+  $result = mysqli_query($query);
+  $num = mysqli_num_rows($result);
   for ($i=0; $i < $num; $i++){
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     if ($row['ID']<10){$id_nr="0".$row['ID'];} else {$id_nr=$row['ID'];}
     if ($posx!=0){$pdf->SetX($posx);}
     $output=$row['option'];
@@ -30,7 +30,7 @@ function gen_selectview($posx,$ln,$boxname)
       $pdf->Write($ln,utf8_decode($output."\n"));
     }
   }
-  mysql_free_result($result);
+  mysqli_free_result($result);
 }
 
 $fontsize=10;

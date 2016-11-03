@@ -10,7 +10,7 @@ if ($_SESSION['logedin'] !=1 ){
  * Session ID aus DB entfernen
  */
 $query = "UPDATE `user` SET `sessionid`='' WHERE `ID`='".$_SESSION["userid"]."'";
-if (!($result = mysql_query($query))){
+if (!($result = mysqli_query($conn, $query))){
 	message_die(GENERAL_ERROR, "Datenbank Fehler","Fehler"); 
 	die;
 }

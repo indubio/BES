@@ -18,14 +18,14 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check
  */
-if (mywaf($_GET)) {$error[] = "Variablenfehler #1";}
-if (mywaf($_POST)){$error[] = "Variablenfehler #2";}
+if (mywaf($conn, $_GET)) {$error[] = "Variablenfehler #1";}
+if (mywaf($conn, $_POST)){$error[] = "Variablenfehler #2";}
 
 if (count($error) == 0) {
 	$query = "SELECT * FROM tooltips WHERE `ID`='".$_POST['ajax_tt_id']."'";
-	if (($result = mysql_query($query))) {
-		if (mysql_num_rows($result) == 1) {
-			$row = mysql_fetch_array($result);
+	if (($result = mysqli_query($conn, $query))) {
+		if (mysqli_num_rows($result) == 1) {
+			$row = mysqli_fetch_array($result);
 		} else { $error[] = "Datenbank Fehler 1"; }
 	} else { $error[]="Datenbank Fehler 2"; }
 }

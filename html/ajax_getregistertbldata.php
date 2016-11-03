@@ -28,8 +28,8 @@ $aColumns = explode(",",$_GET['sColumns']);
  */
 $sLimit = "";
 if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' ) {
-	$sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
-		mysql_real_escape_string( $_GET['iDisplayLength'] );
+	$sLimit = "LIMIT ".mysqli_real_escape_string($conn, $_GET['iDisplayStart'] ).", ".
+		mysqli_real_escape_string($conn, $_GET['iDisplayLength'] );
 }
 
 /*
@@ -38,7 +38,7 @@ if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' ) {
 if ( isset( $_GET['iSortCol_0'] ) ) {
 	$sOrder = "ORDER BY  ";
 	for ( $i = 0 ; $i < intval( $_GET['iSortingCols'] ) ; $i++ ) {
-		switch ($aColumns[mysql_real_escape_string( $_GET['iSortCol_'.$i] )]) {
+		switch ($aColumns[mysqli_real_escape_string($conn, $_GET['iSortCol_'.$i] )]) {
 			case "geburtsdatum":
 				$sOrder .= "str_to_date(geburtsdatum,'%d.%m.%Y') ";
 				break;
@@ -49,10 +49,10 @@ if ( isset( $_GET['iSortCol_0'] ) ) {
 				$sOrder .= "str_to_date(entlassungsdatum,'%d.%m.%Y') ";
 				break;
 			default:
-				$sOrder .= $aColumns[mysql_real_escape_string( $_GET['iSortCol_'.$i] )];
+				$sOrder .= $aColumns[mysqli_real_escape_string($conn, $_GET['iSortCol_'.$i] )];
 				break;
 		}
-		$sOrder .= " ".mysql_real_escape_string( $_GET['sSortDir_'.$i] ) .", ";
+		$sOrder .= " ".mysqli_real_escape_string($conn, $_GET['sSortDir_'.$i] ) .", ";
 	}
 	$sOrder = substr_replace( $sOrder, "", -2 );
 }
@@ -75,13 +75,13 @@ if ( $_GET['sSearch'] != "" ) {
 	} else {
 		$sWhere .= " AND ";
 	}
-	$sWhere .= " ( t1.familienname LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-		."t1.vorname LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-		."t1.geburtsdatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-		."t1.aufnahmenummer LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-		."t1.badoid LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-		."t1.aufnahmedatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-		."t1.entlassungsdatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%')";
+	$sWhere .= " ( t1.familienname LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+		."t1.vorname LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+		."t1.geburtsdatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+		."t1.aufnahmenummer LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+		."t1.badoid LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+		."t1.aufnahmedatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+		."t1.entlassungsdatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%')";
 }
 
 /*
@@ -95,18 +95,18 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS t1.*, "
 	."LEFT JOIN f_psy_stationen t3 ON t1.station_c=t3.ID " 
 	."$sWhere $sOrder $sLimit";
 
-$rResult = mysql_query( $sQuery) or die(mysql_error());
+$rResult = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
 
 /* Data set length after filtering */
 $sQuery = "SELECT FOUND_ROWS()";
-$rResultFilterTotal = mysql_query( $sQuery) or die(mysql_error());
-$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+$rResultFilterTotal = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
+$aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
 $iFilteredTotal = $aResultFilterTotal[0];
 
 /* Total data set length */
 $sQuery = "SELECT COUNT('ID') FROM fall $sWheretotal";
-$rResultTotal = mysql_query( $sQuery) or die(mysql_error());
-$aResultTotal = mysql_fetch_array($rResultTotal);
+$rResultTotal = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
+$aResultTotal = mysqli_fetch_array($rResultTotal);
 $iTotal = $aResultTotal[0];
 
 /*
@@ -118,7 +118,7 @@ $sOutput = '{'
 	.'"iTotalDisplayRecords": '.$iFilteredTotal.', '
 	.'"aaData": [ ';
 
-while ( $aRow = mysql_fetch_array( $rResult ) ) {
+while ( $aRow = mysqli_fetch_array( $rResult ) ) {
 	$sOutput .= "[";
 	// Spaltendaten
 	if ($aRow['geburtsdatum'] == ''){

@@ -11,11 +11,11 @@ $q = strtolower($_GET["q"]);
 
 if (!$q) return;
 
-$q = mysql_real_escape_string($q);
+$q = mysqli_real_escape_string($conn, $q);
 $query = "SELECT * FROM `country_de` WHERE `Name` LIKE '%".$q."%'";
-$res = mysql_query($query);
+$res = mysqli_query($conn, $query);
 
-while ($row = mysql_fetch_object($res)) {
-	echo $row->Name."\n"; 
+while ($row = mysqli_fetch_object($res)) {
+	echo $row->Name."\n";
 }
 ?>

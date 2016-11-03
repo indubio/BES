@@ -19,18 +19,18 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check
  */
-if (mywaf($_GET)) { exit; }
-if (mywaf($_POST)){ exit; }
+if (mywaf($conn, $_GET)) { exit; }
+if (mywaf($conn, $_POST)){ exit; }
 
 $error = array();
 if ($_GET['export_dbpia'] == 1) {
-	$output = exportMysqlToCsv_PIA($_GET["export_dbyear"]);
+	$output = exportMysqlToCsv_PIA($conn, $_GET["export_dbyear"]);
 } else {
-	$output = exportMysqlToCsv_IP($_GET["export_dbyear"]);
+	$output = exportMysqlToCsv_IP($conn, $_GET["export_dbyear"]);
 }
 
 $dirname = "export/".session_id();
-$filename = "badodb_".date(Ymd_Hi).".csv";
+$filename = "badodb_".date("Ymd_Hi").".csv";
 if( ! is_dir($dirname) ) {
 	mkdir($dirname, 0777);
 	chmod($dirname, 0775);

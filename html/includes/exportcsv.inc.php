@@ -25,21 +25,21 @@ function convert_SDiagnose ($diagnose) {
 	return $diagnose;
 }
 
-function to_text ($value, $db, $col) {
+function to_text ($conn, $value, $tbl, $col) {
 	$return_value = "";
-	$local_q = "SELECT * FROM `" . $db . "` WHERE `ID`='" . $value . "'";
-	$local_r = mysql_query($local_q);
-	if (mysql_num_rows($local_r) == 1) {
-		$fetch = mysql_fetch_array($local_r);
+	$local_q = "SELECT * FROM `" . $tbl . "` WHERE `ID`='" . $value . "'";
+	$local_r = mysqli_query($conn, $local_q);
+	if (mysqli_num_rows($local_r) == 1) {
+		$fetch = mysqli_fetch_array($local_r);
 		$return_value = $fetch[$col];
 	} else {
 		$return_value = "";
 	}
-	mysql_free_result($local_r);
+	mysqli_free_result($local_r);
 	return $return_value;
 }
 
-function generate_csv ($export_description, $sql_query) {
+function generate_csv ($conn, $export_description, $sql_query) {
 	$csv_terminated = "\n";
 	$csv_separator = ";";
 	$csv_enclosed = '"';
@@ -58,10 +58,14 @@ function generate_csv ($export_description, $sql_query) {
 	}
 	$out .= $csv_terminated;
 	// data
-	$result = mysql_query($sql_query);
-	while ($row = mysql_fetch_array($result)) {
+	$result = mysqli_query($conn, $sql_query);
+	while ($row = mysqli_fetch_array($result)) {
 		for ($i = 0; $i < count($export_description); $i++) {
-			$data_str = $row[$export_description[$i]["db_col"]];
+			if (!isset($row[$export_description[$i]["db_col"]])) {
+			    $data_str ="";
+			} else {
+			    $data_str = $row[$export_description[$i]["db_col"]];
+			}
 			if (!array_key_exists("conversion", $export_description[$i])) {
 				$export_description[$i]["conversion"] = "none"; 
 			}
@@ -71,6 +75,7 @@ function generate_csv ($export_description, $sql_query) {
 						$export_description[$i]["1on1tbl_col"] = "option";
 					}
 					$data_str = to_text(
+					    $conn,
 						$data_str,
 						$export_description[$i]["1on1tbl"],
 						$export_description[$i]["1on1tbl_col"]
@@ -114,7 +119,7 @@ function generate_csv ($export_description, $sql_query) {
 
 
 
-function exportMySqlToCsv_IP ($db_year) {
+function exportMySqlToCsv_IP ($conn, $db_year) {
 	$to_export = array(
 		array("head_name" => "badoID", 
 				"db_col" => "badoid",
@@ -318,10 +323,10 @@ function exportMySqlToCsv_IP ($db_year) {
 		$sql_query  = "select * from `fall` WHERE ";
 		$sql_query .= "`geschlossen`!=0 AND `cancelled`=0";
 	}
-	return generate_csv($to_export, $sql_query);
+	return generate_csv($conn, $to_export, $sql_query);
 }
 
-function exportMySqlToCsv_PIA ($db_year) {
+function exportMySqlToCsv_PIA ($conn, $db_year) {
 	$to_export = array(
 		array("head_name" => "BaDo Typ",
 			"db_col" => "badotyp"
@@ -518,6 +523,6 @@ function exportMySqlToCsv_PIA ($db_year) {
 	} else {
 		$sql_query = "select * from `fall_pia` WHERE `geschlossen`!=0 AND `cancelled`='0'";
 	}
-	return generate_csv($to_export, $sql_query);
+	return generate_csv($conn, $to_export, $sql_query);
 }
 ?>

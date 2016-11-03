@@ -32,8 +32,8 @@ $aColumns = array(
  */
 $sLimit = "";
 if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' ) {
-    $sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
-        mysql_real_escape_string( $_GET['iDisplayLength'] );
+    $sLimit = "LIMIT ".mysqli_real_escape_string($conn, $_GET['iDisplayStart'] ).", ".
+        mysqli_real_escape_string($conn, $_GET['iDisplayLength'] );
 }
 
 /*
@@ -42,7 +42,7 @@ if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' ) {
 if ( isset( $_GET['iSortCol_0'] ) ) {
     $sOrder = "ORDER BY  ";
     for ( $i = 0 ; $i < intval( $_GET['iSortingCols'] ); $i++ ) {
-        switch (fnColumnToField(mysql_real_escape_string( $_GET['iSortCol_'.$i] ))) {
+        switch (fnColumnToField(mysqli_real_escape_string($conn, $_GET['iSortCol_'.$i] ))) {
             case "u_geburtsdatum":
                 $sOrder .= "str_to_date(u_geburtsdatum,'%d.%m.%Y') ";
                 break;
@@ -53,10 +53,10 @@ if ( isset( $_GET['iSortCol_0'] ) ) {
                 $sOrder .= "str_to_date(u_entlassungsdatum,'%d.%m.%Y') ";
                 break;
             default:
-                $sOrder .= fnColumnToField(mysql_real_escape_string( $_GET['iSortCol_'.$i] ));
+                $sOrder .= fnColumnToField(mysqli_real_escape_string($conn, $_GET['iSortCol_'.$i] ));
                 break;
         }
-        $sOrder .= " ".mysql_real_escape_string( $_GET['sSortDir_'.$i] ) .", ";
+        $sOrder .= " ".mysqli_real_escape_string($conn, $_GET['sSortDir_'.$i] ) .", ";
     }
     $sOrder = substr_replace( $sOrder, "", -2 );
 }
@@ -109,16 +109,16 @@ if ($selectedstation == 0 or $selectedstation == 99) {
 $sWhere1 = $sWheretotal1;
 $sWhere2 = $sWheretotal2;
 if ( $_GET['sSearch'] != "" ) {
-    $sWhere1 .= " AND ( familienname LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."vorname LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."geburtsdatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."aufnahmenummer LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."aufnahmedatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%')";
-    $sWhere2 .= " AND ( familienname LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."vorname LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."geburtsdatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."soarian_aufnahmenummer LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR "
-        ."aufnahmedatum LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%')";
+    $sWhere1 .= " AND ( familienname LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."vorname LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."geburtsdatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."aufnahmenummer LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."aufnahmedatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%')";
+    $sWhere2 .= " AND ( familienname LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."vorname LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."geburtsdatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."soarian_aufnahmenummer LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR "
+        ."aufnahmedatum LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%')";
 }
 
 /*
@@ -160,20 +160,20 @@ $sQuery  = "(SELECT '1' as `u_db_tbl`, `ID` as `u_ID`, "
     ."`entlassdatum` as `u_entlassdatum`"
     ." from fall_pia $sWhere2) $sOrder $sLimit";
 
-$rResult = mysql_query( $sQuery) or die(mysql_error());
+$rResult = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
 
 /* Data set length after filtering */
 $sQuery = "SELECT FOUND_ROWS()";
-$rResultFilterTotal = mysql_query( $sQuery) or die(mysql_error());
-$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+$rResultFilterTotal = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
+$aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
 $iFilteredTotal = $aResultFilterTotal[0];
 
 /* Total data set length */
 $sQuery = "SELECT sum(num_ids) FROM ((SELECT COUNT('ID') as num_ids FROM "
     ."fall $sWheretotal1) UNION (SELECT COUNT('ID') as num_ids FROM "
     ."fall_pia $sWheretotal2)) AS countsubset";
-$rResultTotal = mysql_query( $sQuery) or die(mysql_error());
-$aResultTotal = mysql_fetch_array($rResultTotal);
+$rResultTotal = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
+$aResultTotal = mysqli_fetch_array($rResultTotal);
 $iTotal = $aResultTotal[0];
 
 /*
@@ -184,7 +184,7 @@ $sOutput .= '"sEcho": '.intval($_GET['sEcho']).', ';
 $sOutput .= '"iTotalRecords": '.$iTotal.', ';
 $sOutput .= '"iTotalDisplayRecords": '.$iFilteredTotal.', ';
 $sOutput .= '"aaData": [ ';
-while ( $aRow = mysql_fetch_array( $rResult ) ){
+while ( $aRow = mysqli_fetch_array( $rResult ) ){
     $sOutput .= "[";
     /* Statusspalte */
     $statusdummy="&nbsp;";
@@ -210,16 +210,16 @@ while ( $aRow = mysql_fetch_array( $rResult ) ){
     if ($aRow['u_behandler'] == '-1') {
         $aRow['u_behandler_char'] = "&nbsp;";
     } else {
-        $aRow['u_behandler_char'] = idtostr($aRow['u_behandler'], "user", "username");
+        $aRow['u_behandler_char'] = idtostr($conn, $aRow['u_behandler'], "user", "username");
     }
     if ($aRow['u_station'] == '-1') {
         $aRow['u_station_char'] = "&nbsp;";
     } else {
         if ($aRow['u_db_tbl'] == 1) {
-            $aRow['u_station_char'] = idtostr($aRow['u_station'] ,"f_psy_stationen");
+            $aRow['u_station_char'] = idtostr($conn, $aRow['u_station'] ,"f_psy_stationen");
         }
         if ($aRow['u_db_tbl'] == 2) {
-            $aRow['u_station_char'] = idtostr($aRow['u_station'], "f_psy_ambulanzen");
+            $aRow['u_station_char'] = idtostr($conn, $aRow['u_station'], "f_psy_ambulanzen");
         }
     }
     if ($aRow['u_geburtsdatum'] == '') { $u_aRow['geburtsdatum'] = "unbekannt"; }

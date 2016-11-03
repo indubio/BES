@@ -20,15 +20,15 @@ if(get_magic_quotes_gpc()){
   $_POST=array_map('stripslashes',$_POST);
   $_GET=array_map('stripslashes',$_GET);
 }
-$_POST=array_map('mysql_real_escape_string',$_POST);
-$_GET=array_map('mysql_real_escape_string',$_GET);
+$_POST=array_map('mysqli_real_escape_string',$_POST);
+$_GET=array_map('mysqli_real_escape_string',$_GET);
 
 // WAF Variablen Check
-if (mywaf($_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
 
-if (mywaf($_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
 
@@ -41,12 +41,12 @@ if (($mode!='create') and ($mode!='submit')) {$mode='create';}
 if ($mode=='create'){
   //Stationsliste erstellen
   $query = "SELECT * FROM f_psy_stationen ORDER BY `option` ASC";
-  $result = mysql_query($query);
-  $num_psy = mysql_num_rows($result);
+  $result = mysqli_query($conn, $query);
+  $num_psy = mysqli_num_rows($result);
   $dummyarray_i=array();
   $dummyarray_k=array();
   for ($i=0; $i < $num_psy; $i++){
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     array_push($dummyarray_i,$row[ID]);
     array_push($dummyarray_k,$row[option]);
   }
@@ -92,9 +92,9 @@ if ($mode=='submit'){
         $submit['aufnahmenummer']="";
       } else {
         $query = "SELECT * FROM fall WHERE `aufnahmenummer`='".$submit['aufnahmenummer']."'";
-        $result = mysql_query($query);
-        if (mysql_num_rows($result)!=0){array_push($error_msgs,"Die Aufnahmenummer ist im System schon vorhanden. Bitte prüfen Sie ob bereits eine Aufnahme vorliegt.");}
-        mysql_free_result($result);
+        $result = mysqli_query($conn, $query);
+        if (mysqli_num_rows($result)!=0){array_push($error_msgs,"Die Aufnahmenummer ist im System schon vorhanden. Bitte prüfen Sie ob bereits eine Aufnahme vorliegt.");}
+        mysqli_free_result($result);
       }
     }
   }
@@ -128,8 +128,8 @@ if ($mode=='submit'){
       "','".$submit['aufnahmedatum'].
       "','".$submit['aufnahmezeit'].
       "')";
-    //mysql_query('set character set utf8;');
-    if ($result = mysql_query($query)){
+    //mysqli_query($conn, 'set character set utf8;');
+    if ($result = mysqli_query($conn, $query)){
       message_die(GENERAL_MESSAGE,"Ihre Daten wurden erfolgreich übertragen","Datenübertragung");
     } else {
       message_die(GENERAL_ERROR,"Datenübertragung fehlgeschlagen","Fehler");
@@ -138,12 +138,12 @@ if ($mode=='submit'){
     // Pruefung fehlgeschlagen
     //Stationsliste erstellen
     $query = "SELECT * FROM f_psy_stationen ORDER BY `option` ASC";
-    $result = mysql_query($query);
-    $num_psy = mysql_num_rows($result);
+    $result = mysqli_query($conn, $query);
+    $num_psy = mysqli_num_rows($result);
     $dummyarray_i=array();
     $dummyarray_k=array();
     for ($i=0; $i < $num_psy; $i++){
-      $row = mysql_fetch_array($result);
+      $row = mysqli_fetch_array($result);
       array_push($dummyarray_i,$row[ID]);
       array_push($dummyarray_k,$row[option]);
     }

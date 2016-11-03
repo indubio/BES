@@ -19,10 +19,10 @@ $_POST = escape_and_clear($_POST);
 $_GET = escape_and_clear($_GET);
 
 // WAF Variablen Check
-if (mywaf($_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
-if (mywaf($_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
 
@@ -33,6 +33,8 @@ if (($mode != "edit") and ($mode != "submit")) {
 }
 
 $fall_dbid = $_GET['fall_dbid'];
+
+$errorlog=0;
 
 if ($mode == "submit") {
 	$submit = array();
@@ -97,24 +99,24 @@ if ($mode == "submit") {
 		$weekday = date("w", mktime(0, 0, 0, $explodedummy[1], $explodedummy[0], $explodedummy[2]));
 		if ($weekday == 0 or $weekday == 6) {$fall_atag_art = 3;} else {$fall_atag_art = 1;} // Wochenende oder Arbeitswoche
 		$query_ft = "SELECT * FROM feiertage WHERE `datum`='".$explodedummy[2]."-".$explodedummy[1]."-".$explodedummy[0]."'";
-		$result_ft = mysql_query($query_ft);
-		$num_ft = mysql_num_rows($result_ft);
+		$result_ft = mysqli_query($conn, $query_ft);
+		$num_ft = mysqli_num_rows($result_ft);
 		if ($num_ft != 0) {$fall_atag_art = 2;}  // is Feiertag
 	} else {$fall_atag_art =- 1;}
 
 	// Migrationshintergrund standartisieren
 	$query_mhcountry = "SELECT * FROM `country_de` WHERE `uc_name`='".mb_strtoupper($submit['migration_anderer'])."'";
-	$result_mhcountry = mysql_query($query_mhcountry);
-	$num_mhcountry = mysql_num_rows($result_mhcountry);
+	$result_mhcountry = mysqli_query($conn, $query_mhcountry);
+	$num_mhcountry = mysqli_num_rows($result_mhcountry);
 	if ($num_mhcountry == 1) {
-		$row_mhcountry = mysql_fetch_array($result_mhcountry);
-		$submit['migration_anderer'] = mysql_real_escape_string($row_mhcountry['Name']);
+		$row_mhcountry = mysqli_fetch_array($result_mhcountry);
+		$submit['migration_anderer'] = mysqli_real_escape_string($row_mhcountry['Name']);
 		$submit['migration_anderer_id'] = $row_mhcountry['ID'];
 	} else {
 		$submit['migration_anderer'] = "";
 		$submit['migration_anderer_id'] = "-1";
 	}
-	mysql_free_result($result_mhcountry);
+	mysqli_free_result($result_mhcountry);
 
 	// Doppeldiagnosen sortieren falls nötig
 	// F2 vor F1
@@ -165,19 +167,19 @@ if ($mode == "submit") {
 		"`cur_msg`='".$submit['cur_msg']."' ".
 		"WHERE `ID`='".$submit['fall_dbid']."'";
 
-	if (!($result = mysql_query($query))) {message_die(GENERAL_ERROR, "Datenbank Fehler".mysql_error(), "Fehler");}
+	if (!($result = mysqli_query($conn, $query))) {message_die(GENERAL_ERROR, "Datenbank Fehler".mysqli_error($conn), "Fehler");}
 	if ($submit['submitmode'] == "save") {message_die(GENERAL_MESSAGE, "Ihre Daten wurden erfolgreich übertragen", "Datenübertragung");}
 
 	// Daten prüfen & Protokoll erstellen
 	// unveränderte Daten aus der DB holen
 	$query = "SELECT * FROM fall WHERE `ID`='".$submit['fall_dbid']."'";
-	$result = mysql_query($query);
-	$num_fall = mysql_num_rows($result);
+	$result = mysqli_query($conn, $query);
+	$num_fall = mysqli_num_rows($result);
 	if ($num_fall == 1) {
-		$db_falldaten = mysql_fetch_array($result);
-		mysql_free_result($result);
+		$db_falldaten = mysqli_fetch_array($result);
+		mysqli_free_result($result);
 	} else {
-		message_die(GENERAL_ERROR, "Datenbank Fehler 105: ".mysql_error(), "Fehler");
+		message_die(GENERAL_ERROR, "Datenbank Fehler 105: ".mysqli_error($conn), "Fehler");
 	}
 	// Liegen alle Daten vor?
 	$error_msgs = array();
@@ -251,14 +253,14 @@ if ($mode == "submit") {
 	// Ende Abschlussprüfung
 	if (count($error_msgs) == 0  and $submit['submitmode'] == "close") {
 		$query = "SELECT * FROM fall WHERE `ID`='".$submit['fall_dbid']."'";
-		$result = mysql_query($query);
-		$num_fall = mysql_num_rows($result);
+		$result = mysqli_query($conn, $query);
+		$num_fall = mysqli_num_rows($result);
 		if ($num_fall == 1) {
-			$row = mysql_fetch_array($result);
-			mysql_free_result($result);
+			$row = mysqli_fetch_array($result);
+			mysqli_free_result($result);
 			// ggf. Messagelog setzen
 			if ($submit['cur_msg']!=""){
-				$new_log_entry=date("Y-m-d")." ".date("H:i")." von ".idtostr($submit['behandler'],"user","username").":\n".
+				$new_log_entry=date("Y-m-d")." ".date("H:i")." von ".idtostr($conn, $submit['behandler'],"user","username").":\n".
 					$submit['cur_msg']."\n\n--------------------\n\n".$row['msg_log'];
 			} else {
 				$new_log_entry=$row['msg_log'];
@@ -266,9 +268,9 @@ if ($mode == "submit") {
 			$query = "UPDATE `fall` SET ".
 				"`geschlossen`='1', `cur_msg`='', ".
 				"`closed_time`='".date("Y-m-d H:i:s")."', ".
-				"`msg_log`='".mysql_real_escape_string($new_log_entry)."' ".
+				"`msg_log`='".mysqli_real_escape_string($conn, $new_log_entry)."' ".
 				"WHERE `ID`='".$submit['fall_dbid']."'";
-			if (!($result = mysql_query($query))) {
+			if (!($result = mysqli_query($conn, $query))) {
 				message_die(GENERAL_ERROR, "Datenbank Fehler", "Fehler");
 			} else {
 				message_die(GENERAL_MESSAGE, "Ihre Daten wurden erfolgreich überprüft und der Statistik hinzugefügt", "Datenübertragung");
@@ -290,15 +292,15 @@ if ($mode == "edit") {
 		"einkuenfte", "wohnsituation", "einweisung", "kliniken_evb", "begleitung", "amodus",
 		"aufenthalt_art", "rechtsstatus", "unterbringungsdauer", "emodus", "weiterbehandlung",
 		"suizid_sv", "betreuung");
-	foreach ($selectboxen as $value) { create_select($value); }
+	foreach ($selectboxen as $value) { create_select($conn, $value); }
 
 	// Falldaten holen und zuweisen
 	$query = "SELECT * FROM fall WHERE `ID`='".$fall_dbid."'";
-	$result = mysql_query($query);
-	$num_fall = mysql_num_rows($result);
+	$result = mysqli_query($conn, $query);
+	$num_fall = mysqli_num_rows($result);
 	if ($num_fall == 1) {
-		$row = mysql_fetch_array($result);
-		mysql_free_result($result);
+		$row = mysqli_fetch_array($result);
+		mysqli_free_result($result);
 		$fallvalues = array(
 			"wohnort_a", "wohnort_e", "migration", "familienstand", "berufsbildung", "einkuenfte",
 			"wohnsituation_a", "wohnsituation_e", "einweisung", "einweisung_evb", "begleitung1",
@@ -335,9 +337,9 @@ if ($mode == "edit") {
 		$smarty -> assign('fall_msg_log', nl2br(htmlspecialchars($row['msg_log'], ENT_NOQUOTES, 'UTF-8')));
 		// Info Strings
 		$smarty -> assign('fall_person_info', $row['aufnahmenummer']." ".htmlspecialchars($row['familienname'], ENT_NOQUOTES, 'UTF-8').", ".htmlspecialchars($row['vorname'], ENT_NOQUOTES, 'UTF-8')." geb. ".$row['geburtsdatum']);
-		$smarty -> assign('fall_aufnahme_info', idtostr($row['station_a'],"f_psy_stationen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
+		$smarty -> assign('fall_aufnahme_info', idtostr($conn, $row['station_a'],"f_psy_stationen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
 		if ($row['entlassungsdatum'] != "") {
-			$smarty -> assign('fall_entlass_info', idtostr($row['station_e'], "f_psy_stationen")." am ".$row['entlassungsdatum']." um ".$row['entlassungszeit']);
+			$smarty -> assign('fall_entlass_info', idtostr($conn, $row['station_e'], "f_psy_stationen")." am ".$row['entlassungsdatum']." um ".$row['entlassungszeit']);
 		} else {
 			$smarty -> assign('fall_entlass_info', 'noch nicht entlassen');
 		}
@@ -353,20 +355,20 @@ if ($mode == "edit") {
 	}
 	// alte Episoden finden
 	$query = "SELECT * FROM `fall` WHERE CONCAT(`familienname`,`vorname`,`geburtsdatum`)='".$person_fingerprint."' AND  str_to_date(`aufnahmedatum`,'%d.%m.%Y')<str_to_date('".$fall_aufnahmedatum."','%d.%m.%Y') ORDER BY str_to_date(`aufnahmedatum`,'%d.%m.%Y') DESC";
-	$result = mysql_query($query);
-	$num = mysql_num_rows($result);
+	$result = mysqli_query($conn, $query);
+	$num = mysqli_num_rows($result);
 	$smarty -> assign('num_voraufenthalte', $num);
 
 	// Behandlerliste erstellen -> erst die der aktuellen Station und dann der Rest
 	$query = "SELECT * FROM `user` WHERE `arzt`='1' and `active`='1' ORDER BY `username` ASC";
-	$result = mysql_query($query);
-	$num = mysql_num_rows($result);
+	$result = mysqli_query($conn, $query);
+	$num = mysqli_num_rows($result);
 	$dummyarray_i_cur = array();
 	$dummyarray_k_cur = array();
 	$dummyarray_i_all = array();
 	$dummyarray_k_all = array();
 	for ($i = 0; $i < $num; $i++) {
-		$row = mysql_fetch_array($result);
+		$row = mysqli_fetch_array($result);
 		if ($row['stationsid'] == $current_station) {
 			$dummyarray_i_cur[] = $row['ID'];
 			$dummyarray_k_cur[] = $row['username'];
@@ -375,7 +377,7 @@ if ($mode == "edit") {
 			$dummyarray_k_all[] = $row['username'];
 		}
 	}
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	$smarty -> assign('behandler_values', array_merge($dummyarray_i_cur, $dummyarray_i_all));
 	$smarty -> assign('behandler_options', array_merge($dummyarray_k_cur, $dummyarray_k_all));
@@ -384,7 +386,7 @@ if ($mode == "edit") {
     	$smarty -> assign('badocheckok', $errorlog);
     	$smarty -> assign('errormsgs', $error_msgs);
 	}
-	user_activity(session_id(),$row['ID']);
+	//user_activity($conn, session_id(),$row['ID']);
 	$smarty -> display('bado_edit.tpl');
 }
 ?>

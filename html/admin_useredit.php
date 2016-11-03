@@ -17,8 +17,8 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check 
  */
-if (mywaf($_GET)) { exit; }
-if (mywaf($_POST)){ $error[] = "Variablen Fehler"; }
+if (mywaf($conn, $_GET)) { exit; }
+if (mywaf($conn, $_POST)){ $error[] = "Variablen Fehler"; }
 
 
 // Selectbox Element generieren
@@ -27,12 +27,12 @@ if (mywaf($_POST)){ $error[] = "Variablen Fehler"; }
 $dummyarray_i = array();
 $dummyarray_k = array();
 $query = "SELECT * FROM `usergroups` ORDER BY ID ASC";
-$result = mysql_query($query);
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
     array_push($dummyarray_i, $row['ID']);
     array_push($dummyarray_k, $row['viewname']);
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 $smarty -> assign('usergroups_values', $dummyarray_i);
 $smarty -> assign('usergroups_options', $dummyarray_k);
 
@@ -40,13 +40,12 @@ $smarty -> assign('usergroups_options', $dummyarray_k);
 $dummyarray_i = array("-1");
 $dummyarray_k = array("keine");
 $query = "SELECT * FROM `f_psy_stationen` ORDER BY ID ASC";
-//mysql_query('set character set utf8;');
-$result = mysql_query($query);
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
     array_push($dummyarray_i, $row['ID']);
     array_push($dummyarray_k, $row['option']);
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 $smarty -> assign('stations_values', $dummyarray_i);
 $smarty -> assign('stations_options', $dummyarray_k);
 
@@ -58,12 +57,12 @@ $smarty -> assign('usergender_options', array("&nbsp;", "männlich", "weiblich")
 $dummyarray_i = array("0");
 $dummyarray_k = array("&nbsp;");
 $query = "SELECT * FROM `userfunction` ORDER BY `order` ASC";
-$result = mysql_query($query);
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
     array_push($dummyarray_i, $row['ID']);
     array_push($dummyarray_k, $row['male']);
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 $smarty -> assign('userfunction_values', $dummyarray_i);
 $smarty -> assign('userfunction_options', $dummyarray_k);
 
@@ -95,21 +94,21 @@ if(!empty($_POST)) {
         }
         // add oder edit (1) username schon vorhanden (2) username mit anderer id schon vorhanden
         $query = "SELECT * FROM user WHERE `username`='".$_POST['username']."'";
-        $result = mysql_query($query);
-        $num_user = mysql_num_rows($result);
+        $result = mysqli_query($conn, $query);
+        $num_user = mysqli_num_rows($result);
         if ($_POST['userdbid'] == "" and $num_user !=0 ){
             $error[] = "Systemname bereits vergeben";
         }
         if ($_POST['userdbid'] != "") {
             if ($num_user != 0) {
-                $row = mysql_fetch_array($result);
+                $row = mysqli_fetch_array($result);
                 if ($row['ID'] != $_POST['userdbid']) {
                     $error[] = "Systemname bereits vergeben";
                 }
                 unset($row);
             }
         }
-        mysql_free_result($result);
+        mysqli_free_result($result);
         // Eingabecheck Ende
         if (count($error) == 0) {
             if ($_POST['userdbid'] == "") {
@@ -166,7 +165,7 @@ if(!empty($_POST)) {
                     "', `r_verlauf_ro`='".$_POST['r_verlauf_ro'].
                     "' WHERE `ID`='".$_POST['userdbid']."'";
             }
-            if (!($result = mysql_query($query))) {
+            if (!($result = mysqli_query($conn, $query))) {
                 $error[] = "Datenbank Fehler";
             }
         }
@@ -211,11 +210,11 @@ if (!isset($_GET['userdbid'])) {
     $smarty -> assign('user_arzt', "1");
 } else {
     $query = "SELECT * FROM user WHERE `ID`='".$_GET['userdbid']."'";
-    $result = mysql_query($query);
-    $num_fall = mysql_num_rows($result);
+    $result = mysqli_query($conn, $query);
+    $num_fall = mysqli_num_rows($result);
     if ($num_fall == 1) {
-        $row = mysql_fetch_array($result);
-        mysql_free_result($result);
+        $row = mysqli_fetch_array($result);
+        mysqli_free_result($result);
         $smarty -> assign('user_username', htmlspecialchars($row['username'], ENT_NOQUOTES, 'UTF-8'));
         $smarty -> assign('user_password', htmlspecialchars($row['password'], ENT_NOQUOTES, 'UTF-8'));
         $smarty -> assign('user_familienname', htmlspecialchars($row['familienname'], ENT_NOQUOTES, 'UTF-8'));

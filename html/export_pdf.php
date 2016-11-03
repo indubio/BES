@@ -19,8 +19,8 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check
  */
-if (mywaf($_GET)) { exit; }
-if (mywaf($_POST)){ exit; }
+if (mywaf($conn, $_GET)) { exit; }
+if (mywaf($conn, $_POST)){ exit; }
 
 $fall_dbids = array();
 
@@ -34,15 +34,15 @@ $error = array();
 for ($i = 0; $i < count($fall_dbids); $i++) {
 	if (ctype_digit($fall_dbids[$i])) {
 		$query = "SELECT * FROM `fall` WHERE `ID`='".$fall_dbids[$i]."' and `geschlossen`>'0'";
-		mysql_query('set character set utf8;');
-		$result = mysql_query($query);
-		$num = mysql_num_rows($result);
+		mysqli_query($conn, 'set character set utf8;');
+		$result = mysqli_query($conn, $query);
+		$num = mysqli_num_rows($result);
 		if ($num != 1) {
 			$error[] = "Fehler in den Parametern #1";
 			break; // bricht Iteration über die IDs ab
 		} else {
-			$row = mysql_fetch_object($result);
-			mysql_free_result($result);
+			$row = mysqli_fetch_object($result);
+			mysqli_free_result($result);
 			if ($row -> badoid == "") {
 				$error[] = "mindestens eine BADO ID fehlt";
 				break; // bricht Iteration über die IDs ab
@@ -57,15 +57,15 @@ for ($i = 0; $i < count($fall_dbids); $i++) {
 if (count($error) == 0) {
 	for ($i = 0; $i < count($fall_dbids); $i++) {
 		$updatequery = "UPDATE `fall` SET `pdfed`='1' WHERE `ID`='".$fall_dbids[$i]."'";
-		$updateresult = mysql_query($updatequery);
+		$updateresult = mysqli_query($conn, $updatequery);
 	}
 	$output = exportIDsPDF($fall_dbids);
 	$dirname = "export/".session_id();
 	if (count($fall_dbids) == 1) {
 		$query = "SELECT * FROM `fall` WHERE `ID`='".$fall_dbids[0]."' and `geschlossen`>'0'";
-		$result = mysql_query($query);
-		$row = mysql_fetch_object($result);
-		mysql_free_result($result);
+		$result = mysqli_query($conn, $query);
+		$row = mysqli_fetch_object($result);
+		mysqli_free_result($result);
 		$filename = "bado_".$row->badoid.".pdf";
 	} else {
 		$filename = "bado_".date(Ymd_Hi).".pdf";

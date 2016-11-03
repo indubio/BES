@@ -28,7 +28,7 @@ $smarty -> assign("version_minor", BES_VERSION_MINOR);
 
 if (isset($_SESSION['logedin']) and $_SESSION['logedin'] == 1){
 	$smarty -> assign("user_level",$_SESSION['userlevel']);
-	$smarty -> assign("user_name_and_group", $_SESSION['realname']." / ".idtostr($_SESSION['userlevel'], "usergroups", "viewname"));
+	$smarty -> assign("user_name_and_group", $_SESSION['realname']." / ".idtostr($conn, $_SESSION['userlevel'], "usergroups", "viewname"));
 } else {
 	$smarty -> assign("user_name_and_group","&nbsp;");
 }

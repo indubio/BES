@@ -20,7 +20,7 @@ function escape_and_clear ($input_var) {
     if (get_magic_quotes_gpc()) {
         $input_var = array_map('stripslashes', $input_var);
     }
-    $input_var = array_map('mysql_real_escape_string', $input_var);
+    //$input_var = array_map('mysqli_real_escape_string', $input_var);
     return $input_var;
 }
 
@@ -45,12 +45,12 @@ default     : return $de_datetime[0] . ' ' . $de_datetime[1];
 }
 
 /////////
-function get_username_by_id ($user_dbid = 0, $format = "short") {
+function get_username_by_id ($conn, $user_dbid = 0, $format = "short") {
     $query = "SELECT username, familienname, vorname FROM `user` WHERE `ID`='".$user_dbid."'";
-    $result = mysql_query($query);
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        mysql_free_result($result);
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result) == 1) {
+        $row = mysqli_fetch_assoc($result);
+        mysqli_free_result($result);
         switch ($format) {
             case "short" : return $row['username'];
             case "first" : return $row['vorname'];
@@ -63,17 +63,17 @@ function get_username_by_id ($user_dbid = 0, $format = "short") {
 }
 
 ////////
-function get_function_by_userid ($user_dbid = 0) {
+function get_function_by_userid ($conn, $user_dbid = 0) {
     $query = "SELECT geschlecht, function FROM `user` WHERE `ID`='".$user_dbid."'";
-    $result = mysql_query($query);
-    if (mysql_num_rows($result) == 1) {
-        $userdata = mysql_fetch_array($result);
-        mysql_free_result($result);
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result) == 1) {
+        $userdata = mysqli_fetch_array($result);
+        mysqli_free_result($result);
         if ($userdata['function'] > 0) {
             $query = "SELECT * FROM `userfunction` WHERE `ID`='".$userdata['function']."'";
-            $result = mysql_query($query);
-            $functiondata = mysql_fetch_array($result);
-            mysql_free_result($result);
+            $result = mysqli_query($conn, $query);
+            $functiondata = mysqli_fetch_array($result);
+            mysqli_free_result($result);
             if ($userdata['geschlecht'] < 2) {
                 return $functiondata['male'];
             } else {
@@ -108,21 +108,21 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 }
 
 /////////
-function create_select($boxname, $elements_to_skip = array()) {
+function create_select($conn, $boxname, $elements_to_skip = array()) {
     global $smarty;
     $query = "SELECT * FROM f_".$boxname." WHERE `active`=1 ORDER BY `view_order` ASC";
-    $result = mysql_query($query);
-    $num = mysql_num_rows($result);
+    $result = mysqli_query($conn, $query);
+    $num = mysqli_num_rows($result);
     $dummyarray_i = array("-1");
     $dummyarray_k = array("&nbsp;");
     for ($i = 0; $i < $num; $i++) {
-        $row = mysql_fetch_array($result);
+        $row = mysqli_fetch_array($result);
         if ( !in_array($row['ID'], $elements_to_skip) ){
             $dummyarray_i[]=$row['ID'];
             $dummyarray_k[]=$row['option'];
         }
     }
-    mysql_free_result($result);
+    mysqli_free_result($result);
     $smarty -> assign($boxname.'_values', $dummyarray_i);
     $smarty -> assign($boxname.'_options', $dummyarray_k);
 }
@@ -131,16 +131,16 @@ function create_select($boxname, $elements_to_skip = array()) {
 function create_view($boxname) {
     global $smarty;
     $query = "SELECT * FROM f_".$boxname." WHERE `active`=1 ORDER BY ID ASC";
-    $result = mysql_query($query);
-    $num = mysql_num_rows($result);
+    $result = mysqli_query($conn, $query);
+    $num = mysqli_num_rows($result);
     $dummyarray_i=array();
     $dummyarray_k=array();
     for ($i = 0; $i < $num; $i++) {
-        $row = mysql_fetch_array($result);
+        $row = mysqli_fetch_array($result);
         $dummyarray_i[]=$row['ID'];
         $dummyarray_k[]=$row['option'];
     }
-    mysql_free_result($result);
+    mysqli_free_result($result);
     $smarty -> assign($boxname.'_id', $dummyarray_i);
     $smarty -> assign($boxname.'_option', $dummyarray_k);
 }
@@ -188,16 +188,16 @@ function create_menu($userlevel = 0) {
 }
 
 /////////
-function idtostr($id=-1, $table="", $row="option") {
+function idtostr($dbconn="", $id=-1, $table="", $row="option") {
     if ($id == -1) {
         return false;
     }
     $query = "SELECT * FROM `".$table."` WHERE `ID`='".$id."'";
-    $result = mysql_query($query);
-    $num = mysql_num_rows($result);
+    $result = mysqli_query($dbconn, $query);
+    $num = mysqli_num_rows($result);
     if ($num == 1) {
-        $rowfetch = mysql_fetch_array($result);
-        mysql_free_result($result);
+        $rowfetch = mysqli_fetch_array($result);
+        mysqli_free_result($result);
         return $rowfetch[$row];
     } else {
         return false;
@@ -205,16 +205,14 @@ function idtostr($id=-1, $table="", $row="option") {
 }
 
 /////////
-function user_activity() {
-    $session_id = func_get_arg(0);
-    $fall_id = func_get_arg(1);
-    if (func_num_args == 1) {
+function user_activity($conn, $session_id = '', $fall_id = '') {
+    if (func_num_args() != 3) {
         $output = false;
     } else {
         $query = "UPDATE `user` SET ".
             "`lastactivity`='".$fall_id."'".
             "WHERE `sessionid`='".$session_id."'";
-        if (!($result = mysql_query($query))) {
+        if (!($result = mysqli_query($conn, $query))) {
             $output = false;
         } else {
             $output = true;
@@ -251,16 +249,17 @@ function auth($userlevel = 0 ,$page_id = 0) {
 }
 
 // Auth User
-function user_permission($userID = '', $rightRow = '') {
+function user_permission($conn, $userID = '', $rightRow = '') {
     $query = "SELECT * FROM `user` WHERE `ID`='".$userID."'";
-    if ($result = mysql_query($query)) {
-        $num = mysql_num_rows($result);
+    if ($result = mysqli_query($conn, $query)) {
+        $num = mysqli_num_rows($result);
         if ($num == 1) {
-            $rowfetch = mysql_fetch_array($result);
-            mysql_free_result($result);
+            $rowfetch = mysqli_fetch_array($result);
+            mysqli_free_result($result);
             return ($rowfetch[$rightRow] == 1 ? TRUE : FALSE);
         }
     }
     return FALSE;
 }
+
 ?>

@@ -29,10 +29,10 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check
  */
-if (mywaf($_GET)){
+if (mywaf($conn, $_GET)){
     $error_msgs[] = "Übergabeparameter sind manipuliert worden.";
 }
-if (mywaf($_POST)){
+if (mywaf($conn, $_POST)){
     $error_msgs[] = "Übergabeparameter sind manipuliert worden.";
 }
 
@@ -46,12 +46,12 @@ if (isset($_POST['fall_dbid_pia'])){
     $smarty->assign('bado_type','stat');
 }
 
-$result = mysql_query($query);
-$num_fall = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num_fall = mysqli_num_rows($result);
 
 if ($num_fall == 1){
-    $row = mysql_fetch_array($result);
-    mysql_free_result($result);
+    $row = mysqli_fetch_array($result);
+    mysqli_free_result($result);
     $bado_geschlossen = $row['geschlossen'];
     $smarty -> assign('dbid', $row['ID']);
     $smarty -> assign('station_selected', $row['station_c']);
@@ -74,14 +74,14 @@ if ($num_fall == 1){
 
 // Behandlerliste erstellen -> erst die der aktuellen Station und dann der Rest
 $query = "SELECT * FROM `user` WHERE `arzt`='1' and `active`='1' ORDER BY `username` ASC";
-$result = mysql_query($query);
-$num = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num = mysqli_num_rows($result);
 $dummyarray_i_cur = array(-1);
 $dummyarray_k_cur = array("&nbsp;");
 $dummyarray_i_all = array();
 $dummyarray_k_all = array();
 for ($i=0; $i < $num; $i++){
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     if ($row['stationsid'] == $current_station){
         $dummyarray_i_cur[] = $row['ID'];
         $dummyarray_k_cur[] = $row['username'];
@@ -90,22 +90,22 @@ for ($i=0; $i < $num; $i++){
         $dummyarray_k_all[] = $row['username'];
     }
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 $smarty -> assign('behandler_values', array_merge($dummyarray_i_cur, $dummyarray_i_all));
 $smarty -> assign('behandler_options', array_merge($dummyarray_k_cur, $dummyarray_k_all));
 
 // Stationsliste erstellen
 $query = "SELECT * FROM f_psy_stationen WHERE `active`=1 ORDER BY `view_order` ASC";
-$result = mysql_query($query);
-$num = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num = mysqli_num_rows($result);
 $dummyarray_i = array();
 $dummyarray_k = array();
 for ($i=0; $i < $num; $i++){
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     $dummyarray_i[] = $row['ID'];
     $dummyarray_k[] = $row['option'];
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 $smarty -> assign('station_values', $dummyarray_i);
 $smarty -> assign('station_options', $dummyarray_k);
 

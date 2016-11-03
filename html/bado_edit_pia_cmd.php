@@ -156,17 +156,17 @@ function save_pia_bado ($i_values) {
 
     // Migrationshintergrund standartisieren
     $query_mhcountry = "SELECT * FROM `country_de` WHERE `uc_name`='".mb_strtoupper($i_values['piabef_migration_txt'])."'";
-    $result_mhcountry = mysql_query($query_mhcountry);
-    $num_mhcountry = mysql_num_rows($result_mhcountry);
+    $result_mhcountry = mysqli_query($conn, $query_mhcountry);
+    $num_mhcountry = mysqli_num_rows($result_mhcountry);
     if ($num_mhcountry == 1) {
-        $row_mhcountry = mysql_fetch_array($result_mhcountry);
-        $i_values['piabef_migration_txt'] = mysql_real_escape_string($row_mhcountry['Name']);
+        $row_mhcountry = mysqli_fetch_array($result_mhcountry);
+        $i_values['piabef_migration_txt'] = mysqli_real_escape_string($conn, $row_mhcountry['Name']);
         $i_values['piabef_migration_id'] = $row_mhcountry['ID'];
     } else {
         $i_values['piabef_migration_txt'] = "";
         $i_values['piabef_migration_id'] = "-1";
     }
-    mysql_free_result($result_mhcountry);
+    mysqli_free_result($result_mhcountry);
 
     // Diagnosen upcase und sortieren
 //    $i_values['piabef_psydiag1'] = strtoupper($i_values['piabef_psydiag1']);
@@ -245,8 +245,8 @@ function save_pia_bado ($i_values) {
     }
     $query .= "`last_change`='".date("Y-m-d H:i:s")."' ";
     $query .= "WHERE `ID`='".$i_values['piabef_fall_dbid']."'";
-    if (!($result = mysql_query($query))) {
-        $o_msg[] = "Datenbank Fehler: ".mysql_error();
+    if (!($result = mysqli_query($query))) {
+        $o_msg[] = "Datenbank Fehler: ".mysqli_error($conn);
     }
     return $o_msg;
 }
@@ -270,13 +270,13 @@ $_POST = escape_and_clear ($_POST);
 $_GET = escape_and_clear ($_GET);
 
 /* WAF Variablen Check */
-if (mywaf($_GET)) {$error_msgs[] = "Datenfehler: Übergabeparameter nicht korrekt";}
-if (mywaf($_POST)){$error_msgs[] = "Datenfehler: Übergabeparameter nicht korrekt";}
+if (mywaf($conn, $_GET)) {$error_msgs[] = "Datenfehler: Übergabeparameter nicht korrekt";}
+if (mywaf($conn, $_POST)){$error_msgs[] = "Datenfehler: Übergabeparameter nicht korrekt";}
 
 $query = "SELECT * FROM fall_pia WHERE `ID`='".$_POST['piabef_fall_dbid']."'";
-$result = mysql_query($query);
-$db_daten = mysql_fetch_array($result);
-mysql_free_result($result);
+$result = mysqli_query($query);
+$db_daten = mysqli_fetch_array($result);
+mysqli_free_result($result);
 
 if (count($error_msgs) == 0) {
     /*
@@ -345,7 +345,7 @@ if (count($error_msgs) == 0) {
                         ."`closed_time`='".date("Y-m-d H:i:s")."', "
                         ."`geschlossen`='1' "
                         ."WHERE `ID`='".$_POST['piabef_fall_dbid']."'";
-//                    if (!($result = mysql_query($query))){
+//                    if (!($result = mysqli_query($conn, $query))){
 //                        $error_msgs[] = "Datenbank Fehler: ".mysql_error();
 //                    }
                     if (count($error_msgs) == 0) {
@@ -367,10 +367,10 @@ if($_POST['ajax_pia_cmd'] == "getstammdata") {
     // letzten Stammbogen finden und Daten holen
     $fingerprint=$db_daten['familienname'].$db_daten['vorname'].$db_daten['geburtsdatum'];
     $query = "SELECT * FROM `fall_pia` WHERE CONCAT(`familienname`,`vorname`,`geburtsdatum`)='".$fingerprint."' AND `badotyp`=1 ORDER BY str_to_date(`aufnahmedatum`,'%%d.%%m.%%Y') DESC";
-    $result = mysql_query($query);
-    $db_stammdaten = mysql_fetch_array($result);
+    $result = mysqli_query($conn, $query);
+    $db_stammdaten = mysqli_fetch_array($result);
     //print $db_stammdaten['aufnahmedatum'];
-    mysql_free_result($result);
+    mysqli_free_result($result);
     $values_to_transfer = array(
         "behandler"=>"piabef_behandler",
         "wohnort"=>"piabef_wohnort",

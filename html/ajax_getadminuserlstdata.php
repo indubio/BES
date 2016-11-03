@@ -28,8 +28,8 @@ $aColumns = explode(",", $_GET['sColumns']);
  */
 $sLimit = "";
 if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' ) {
-	$sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
-	mysql_real_escape_string( $_GET['iDisplayLength'] );
+	$sLimit = "LIMIT ".mysqli_real_escape_string($conn, $_GET['iDisplayStart'] ).", ".
+	mysqli_real_escape_string($conn, $_GET['iDisplayLength'] );
 }
 
 /*
@@ -38,8 +38,8 @@ if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' ) {
 if ( isset( $_GET['iSortCol_0'] ) ) {
 	$sOrder = "ORDER BY  ";
 	for ( $i = 0 ; $i < intval( $_GET['iSortingCols'] ) ; $i++ ) {
-		$sOrder .= $aColumns[mysql_real_escape_string( $_GET['iSortCol_'.$i] )]
-			." ".mysql_real_escape_string( $_GET['sSortDir_'.$i] ) .", ";
+		$sOrder .= $aColumns[mysqli_real_escape_string($conn, $_GET['iSortCol_'.$i] )]
+			." ".mysqli_real_escape_string($conn, $_GET['sSortDir_'.$i] ) .", ";
 	}
 	$sOrder = substr_replace( $sOrder, "", -2 );
 }
@@ -52,7 +52,7 @@ if ( $_GET['sSearch'] != "" ){
 	$sWhere = " WHERE ";
 	for ( $i = 0 ; $i < count($aColumns) ; $i++ ) {
 		if ($_GET['bSearchable_'.$i] == "true") {
-			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
+			$sWhere .= $aColumns[$i]." LIKE '%".mysqli_real_escape_string($conn, $_GET['sSearch'] )."%' OR ";
 		}
 	}
 	$sWhere = substr_replace( $sWhere, "", -3 );
@@ -68,18 +68,18 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS t1.*, "
 	."LEFT JOIN usergroups t2 ON t1.userlevel=t2.ID "
 	."LEFT JOIN f_psy_stationen t3 ON t1.stationsid=t3.ID "
 	."$sWhere $sOrder $sLimit";
-$rResult = mysql_query( $sQuery) or die(mysql_error());
+$rResult = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
 
 /* Data set length after filtering */
 $sQuery = "SELECT FOUND_ROWS()";
-$rResultFilterTotal = mysql_query( $sQuery) or die(mysql_error());
-$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+$rResultFilterTotal = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
+$aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
 $iFilteredTotal = $aResultFilterTotal[0];
 
 /* Total data set length */
 $sQuery = "SELECT COUNT('ID') FROM user";
-$rResultTotal = mysql_query( $sQuery) or die(mysql_error());
-$aResultTotal = mysql_fetch_array($rResultTotal);
+$rResultTotal = mysqli_query($conn, $sQuery) or die(mysqli_error($conn));
+$aResultTotal = mysqli_fetch_array($rResultTotal);
 $iTotal = $aResultTotal[0];
 
 /*
@@ -91,7 +91,7 @@ $sOutput = '{'
 	.'"iTotalDisplayRecords": '.$iFilteredTotal.', '
 	.'"aaData": [ ';
 
-while ( $aRow = mysql_fetch_array( $rResult ) ) {
+while ( $aRow = mysqli_fetch_array( $rResult ) ) {
 	$sOutput .= "[";
 	if ($aRow['stationsid'] == -1) {
 		$aRow['stationsid_c'] = "keine";

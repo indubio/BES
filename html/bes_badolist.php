@@ -27,8 +27,8 @@ $waf_error_msg = "Eine mögliche Manipulation der Übergabeparameter wurde "
     ."festgestellt und der Seitenaufruf unterbunden!<br/>"
     ."Wenden Sie sich bitte an einen Systembetreuer.";
 
-if (mywaf($_GET)) {message_die(GENERAL_ERROR, $waf_error_msg, "myWAF");}
-if (mywaf($_POST)){message_die(GENERAL_ERROR, $waf_error_msg, "myWAF");}
+if (mywaf($conn, $_GET)) {message_die(GENERAL_ERROR, $waf_error_msg, "myWAF");}
+if (mywaf($conn, $_POST)){message_die(GENERAL_ERROR, $waf_error_msg, "myWAF");}
 
 // Station per Get oder nach Userzuweisung
 if (isset($_GET['selstation'])) {
@@ -48,31 +48,31 @@ $dummyarray_i = array();
 $dummyarray_k = array();
 if ($_SESSION["userlevel"] == 3) {
     $dummyarray_i[] = "0";
-    $dummyarray_k[] = idtostr($_SESSION["userid"], "user", "username");
+    $dummyarray_k[] = idtostr($conn, $_SESSION["userid"], "user", "username");
 }
 $dummyarray_i[] = "99";
 $dummyarray_k[] = "alle";
 
 $query = "SELECT * FROM f_psy_stationen WHERE `active` = 1 "
     ."ORDER BY `view_order` ASC";
-$result = mysql_query($query);
-$num_psy = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num_psy = mysqli_num_rows($result);
 for ($i = 0; $i < $num_psy; $i++) {
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     $dummyarray_i[] = $row['ID'];
     $dummyarray_k[] = $row['option'];
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 $query = "SELECT * FROM f_psy_ambulanzen WHERE `active` = 1 "
     ."ORDER BY `view_order` ASC";
-$result = mysql_query($query);
-$num_psy = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num_psy = mysqli_num_rows($result);
 for ($i = 0; $i < $num_psy; $i++) {
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     $dummyarray_i[] = $row['ID']+50;
     $dummyarray_k[] = $row['option'];
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 $smarty -> assign('station_values', $dummyarray_i);
 $smarty -> assign('station_options', $dummyarray_k);

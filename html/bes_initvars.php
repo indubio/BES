@@ -28,11 +28,11 @@ define('PAGE_VERLAUF_EXPORT', 14);
 
 // User GROUP VARIABLEN definieren
 $query = "SELECT * FROM `usergroups` ORDER BY ID ASC";
-mysql_query('set character set utf8;');
-$result = mysql_query($query);
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+mysqli_query($conn, 'set character set utf8;');
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
 	define($row['name'], $row['ID']);
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 ?>

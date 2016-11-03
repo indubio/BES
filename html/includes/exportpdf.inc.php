@@ -5,11 +5,11 @@ function gen_selectview(&$pdf,$posx,$ln,$boxname,$addtext='',$select1='',$select
 {
 //  global $pdf;
   $query = "SELECT * FROM f_".$boxname." ORDER BY ID ASC";
-  //mysql_query('set character set utf8;');
-  $result = mysql_query($query);
-  $num = mysql_num_rows($result);
+  //mysqli_query($conn, 'set character set utf8;');
+  $result = mysqli_query($conn, $query);
+  $num = mysqli_num_rows($result);
   for ($i=0; $i < $num; $i++){
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     if ($row['ID']<10){$id_nr="0".$row['ID'];} else {$id_nr=$row['ID'];}
     if ($posx!=0){$pdf->SetX($posx);}
     $output=$row['option'];
@@ -25,10 +25,10 @@ function gen_selectview(&$pdf,$posx,$ln,$boxname,$addtext='',$select1='',$select
       $pdf->Write($ln,utf8_decode($output."\n"));
     }
   }
-  mysql_free_result($result);
+  mysqli_free_result($result);
 }
 
-function exportIDsPDF($ids=array())
+function exportIDsPDF($conn, $ids=array())
 {
   $fontsize=10;
   $fontsize2=11;
@@ -41,10 +41,10 @@ function exportIDsPDF($ids=array())
 
   foreach ($ids as $id) {
     $query = "SELECT * FROM `fall` WHERE `ID`='".$id."'";
-    $result = mysql_query($query);
-    $row=mysql_fetch_object($result);
+    $result = mysqli_query($conn, $query);
+    $row=mysqli_fetch_object($result);
     //$updatequery = "UPDATE `fall` SET `pdfed`='1' WHERE `ID`='".$id."'";
-    //if ($updateresult = mysql_query($updatequery)){
+    //if ($updateresult = mysqli_query($conn, $updatequery)){
     $badoid=$row->badoid;
 // Kopf Seite 1
     $pdf->AddPage();
@@ -253,7 +253,7 @@ function exportIDsPDF($ids=array())
     $pdf->SetX(112);
     $pdf->MultiCell(0,$ln,utf8_decode($row->msg_log),1);
   }
-  mysql_free_result($result);
+  mysqli_free_result($result);
 
   return $pdf->Output('','S');
 }

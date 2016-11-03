@@ -24,10 +24,10 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF
  */
-if (mywaf($_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
-if (mywaf($_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
 
@@ -47,10 +47,10 @@ if(!empty($_POST)) {
 	if($_POST['login_pass'] == ""){$errors[] = "Passwort fehlt.";}
 	if(count($errors) == 0) {
 		$query = "SELECT * FROM user WHERE username='".$_POST['login_user']."' and active='1' LIMIT 1";
-		$result = mysql_query($query);
-		$num = mysql_num_rows($result);
-		$row = mysql_fetch_array($result);
-		mysql_free_result($result);
+		$result = mysqli_query($conn, $query);
+		$num = mysqli_num_rows($result);
+		$row = mysqli_fetch_array($result);
+		mysqli_free_result($result);
 		if ($num == 1) {
 			// Login Retrys count up
 			$row["loginretries"]++;
@@ -67,6 +67,7 @@ if(!empty($_POST)) {
 				if ($row['ldaplogin'] == 1) {
 					//LDAP Password Check
 					$ldap = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+					//$bind_results = @ldap_bind($ldap, mb_convert_encoding($row['ldapusername'], 'UTF-8') . "@" . $ldapconfig['dc'], mb_convert_encoding($_POST['login_pass'],'UTF-8'));
 					$bind_results = @ldap_bind($ldap, utf8_decode($row['ldapusername']) . "@" . $ldapconfig['dc'], utf8_decode($_POST['login_pass']));
 					if (!$bind_results) {
 						$errors[] = "Anmeldung fehlgeschlagen (LDAP)";
@@ -107,7 +108,7 @@ if(!empty($_POST)) {
 						"`loginretries`='0',".
 						"`lastlogintry`='".date("Y-m-d H:i:s",time())."' ".
 						"WHERE `ID`='".$_SESSION["userid"]."'";
-					mysql_query($queryupdate);
+					mysqli_query($conn, $queryupdate);
 				}
 			}
 		} else {
@@ -117,11 +118,11 @@ if(!empty($_POST)) {
 			if ($aufnahmenr != "") {
 				// zur Aufnahmenummer die DB ID finden
 				$query = "SELECT * FROM fall WHERE `aufnahmenummer`='".$aufnahmenr."'";
-				$result = mysql_query($query);
-				$num_fall = mysql_num_rows($result);
+				$result = mysqli_query($conn, $query);
+				$num_fall = mysqli_num_rows($result);
 				if ($num_fall == 1) {
-					$row = mysql_fetch_array($result);
-					mysql_free_result($result);
+					$row = mysqli_fetch_array($result);
+					mysqli_free_result($result);
 				} else {
 					$row = array();
 				}
@@ -137,7 +138,7 @@ if(!empty($_POST)) {
 					"`loginretries`='".$row["loginretries"]."',".
 					"`lastlogintry`='".date("Y-m-d H:i:s",time())."' ".
 					"WHERE `ID`='".$row["ID"]."'";
-				mysql_query($queryupdateretries);
+				mysqli_query($conn, $queryupdateretries);
 			}
 		}
 	}

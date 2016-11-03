@@ -23,8 +23,8 @@ $_GET = escape_and_clear($_GET);
  * werden können
  * DBID wird in DB der stationären Fälle geprüft und liefert ggf. ein FALSE
  * Anpassung muss noch erfolgen
- * if (mywaf($_GET)) { $error[] = "Variablenfehler #1"; }
- * if (mywaf($_POST)){ $error[] = "Variablenfehler #2"; }
+ * if (mywaf($conn, $_GET)) { $error[] = "Variablenfehler #1"; }
+ * if (mywaf($conn, $_POST)){ $error[] = "Variablenfehler #2"; }
  */
 if (count($error) == 0) {
     /*
@@ -39,28 +39,28 @@ if (count($error) == 0) {
             if ($_POST['fall_dbid'] != "") {
                 /* BadoID holen */
                 $query_s = "SELECT * FROM `fall` WHERE `ID`='".$_POST['fall_dbid']."'";
-                if (!($result_s = mysql_query($query_s))) {
+                if (!($result_s = mysqli_query($conn, $query_s))) {
                     $error[] = "Datenbank Fehler";
                 }
-                $row_s = mysql_fetch_array($result_s, MYSQL_ASSOC);
+                $row_s = mysqli_fetch_assoc($result_s);
                 $burning_badoid = $row_s['badoid'];
-                mysql_free_result($result_s);
+                mysqli_free_result($result_s);
                 /* BadoID Spool updaten */
                 $query_sb = 'SELECT * FROM badoids WHERE `ID`="1"';
-                if (!($result_sb = mysql_query($query_sb))) {
+                if (!($result_sb = mysqli_query($conn, $query_sb))) {
                     $error[] = "Datenbank Fehler";
                 }
-                $row_sb = mysql_fetch_array($result_sb, MYSQL_ASSOC);
+                $row_sb = mysqli_fetch_assoc($result_sb);
                 $new_badoids = explode(",", $row_sb['spool']);
-                mysql_free_result($result_sb);
+                mysqli_free_result($result_sb);
                 $new_badoids[] = $burning_badoid;
                 sort($new_badoids, SORT_NUMERIC);
                 $new_badoid_str = implode(",", $new_badoids);
                 $query_ub = 'UPDATE badoids SET `spool`="'.$new_badoid_str.'" WHERE `ID`="1"';
-                $result_ub = mysql_query($query_ub);
+                $result_ub = mysqli_query($conn, $query_ub);
                 /* Fall löschen */
                 $query = "DELETE FROM `fall` WHERE `ID`='".$_POST['fall_dbid']."'";
-                if (!($result = mysql_query($query))){
+                if (!($result = mysqli_query($conn, $query))){
                     $error[] = "Datenbank Fehler";
                 }
             } else {
@@ -78,11 +78,11 @@ if (count($error) == 0) {
             $error[] = "Befehl nicht erlaubt";
         } else {
             $query_reopen = "SELECT * FROM fall WHERE `ID`='".$_POST['fall_dbid']."'";
-            $result_reopen = mysql_query($query_reopen);
-            $num_fall_reopen = mysql_num_rows($result_reopen);
+            $result_reopen = mysqli_query($conn, $query_reopen);
+            $num_fall_reopen = mysqli_num_rows($result_reopen);
             if ($num_fall_reopen == 1) {
-                $row_reopen = mysql_fetch_array($result_reopen);
-                mysql_free_result($result_reopen);
+                $row_reopen = mysqli_fetch_array($result_reopen);
+                mysqli_free_result($result_reopen);
                 // ggf. Messagelog setzen
                 if ($_POST['cur_msg']!="") {
                     $new_log_entry = date("Y-m-d")." ".date("H:i")." vom Statistiknutzer:\n".
@@ -90,7 +90,7 @@ if (count($error) == 0) {
                 } else {
                     $new_log_entry = $row['msg_log'];
                 }
-                $new_log_entry = mysql_real_escape_string($new_log_entry);
+                $new_log_entry = mysqli_real_escape_string($conn, $new_log_entry);
                 $query_u = "UPDATE `fall` SET "
                     ."`geschlossen`='0', "
                     ."`closed_time`='', "
@@ -98,7 +98,7 @@ if (count($error) == 0) {
                     ."`reopen`='1', "
                     ."`msg_log`='".$new_log_entry."' "
                     ."WHERE `ID`='".$_POST['fall_dbid']."'";
-                if (!($result_u = mysql_query($query_u))) {
+                if (!($result_u = mysqli_query($conn, $query_u))) {
                     $error[] = "Datenbank Fehler";
                 }
             } else {
@@ -125,8 +125,8 @@ if (count($error) == 0) {
                 }
                 if (count($error) == 0) {
                     $query = "SELECT * from `fall` WHERE `badoid`='".$_POST['badoid']."'";
-                    $result = mysql_query($query);
-                    if (mysql_num_rows($result) != 0){
+                    $result = mysqli_query($conn, $query);
+                    if (mysqli_num_rows($result) != 0){
                         $error[] = "BaDo ID bereits vergeben";
                     }
                 }
@@ -136,7 +136,7 @@ if (count($error) == 0) {
             $_POST['badoid']="";
         }
         $query = "UPDATE `fall` SET `badoid`='".$_POST['badoid']."' WHERE `ID`='".$_POST['fall_dbid']."'";
-        if (!($result = mysql_query($query))) {
+        if (!($result = mysqli_query($conn, $query))) {
             $error[] = "Datenbank Fehler";
         }
     }
@@ -152,8 +152,8 @@ if (count($error) == 0) {
         } else {
             $dbtbl_liste = array("fall", "fall_pia");
             $query = "UPDATE `".$dbtbl_liste[$_POST['db_tbl']-1]."` SET `behandler`='".$_POST['behandler']."' WHERE `ID`='".$_POST['fall_dbid']."'";
-            if (!($result = mysql_query($query))) {
-                $error[] = "Datenbank Fehler: ".mysql_error();
+            if (!($result = mysqli_query($conn, $query))) {
+                $error[] = "Datenbank Fehler: ".mysqli_error($conn);
             }
         }
     }
@@ -168,7 +168,7 @@ if (count($error) == 0) {
             $error[] = "Befehl nicht erlaubt:".$_SESSION['userlevel'];
         } else {
             $query = "UPDATE `fall` SET `station_c`='".$_POST['stationid']."' WHERE `ID`='".$_POST['fall_dbid']."'";
-            if (!($result = mysql_query($query))){
+            if (!($result = mysqli_query($conn, $query))){
                 $error[]="Datenbank Fehler";
             }
         }
@@ -203,10 +203,10 @@ if (count($error) == 0) {
                 }
                 if ($check_datum_vorhanden == 1) {
                     $query .= "' WHERE `ID`='".$_POST['fall_dbid']."'";
-                    if (!($result = mysql_query($query))) {
+                    if (!($result = mysqli_query($conn, $query))) {
                         $error[] = "Datenbank Fehler";
                         $error[] = $query;
-                        $error[] = mysql_error();
+                        $error[] = mysqli_error($conn);
                     }
                 } else {
                     $error[] = "Parameteranzahl falsch (".$check_datum_vorhanden.")";

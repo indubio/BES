@@ -21,10 +21,10 @@ $_GET = escape_and_clear($_GET);
 /*
  * WAF Variablen Check
  */
-if (mywaf($_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_GET)) {message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
-if (mywaf($_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
+if (mywaf($conn, $_POST)){message_die(GENERAL_ERROR,"Eine mögliche Manipulation der Übergabeparameter wurde ".
                                              "festgestellt und der Seitenaufruf unterbunden!<br/>".
                                              "Wenden Sie sich bitte an einen Systembetreuer.","myWAF");}
 
@@ -42,34 +42,34 @@ $selectboxen = array(
 
 foreach ($selectboxen as $value) {
     if ($value == "weiterbehandlung"){
-        create_select($value, array(6));
+        create_select($conn, $value, array(6));
     } else {
-        create_select($value);
+        create_select($conn, $value);
     }
 }
 
 // Behandlerliste erstellen
 $query = "SELECT * FROM `user` WHERE `arzt`='1' and `active`='1' ORDER BY `username` ASC";
-$result = mysql_query($query);
-$num = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num = mysqli_num_rows($result);
 $dummyarray_i = array("-1");
 $dummyarray_k = array("&nbsp;");
 for ($i=0; $i < $num; $i++){
-    $row = mysql_fetch_array($result);
+    $row = mysqli_fetch_array($result);
     $dummyarray_i[] = $row['ID'];
     $dummyarray_k[] = $row['username'];
 }
 $smarty -> assign('pia_behandler_values', $dummyarray_i);
 $smarty -> assign('pia_behandler_options', $dummyarray_k);
-mysql_free_result($result);
+mysqli_free_result($result);
 
 // Falldaten holen und zuweisen
 $query = "SELECT * FROM fall_pia WHERE `ID`='".$fall_dbid."'";
-$result = mysql_query($query);
-$num_fall = mysql_num_rows($result);
+$result = mysqli_query($conn, $query);
+$num_fall = mysqli_num_rows($result);
 if ($num_fall == 1){
-    $row = mysql_fetch_array($result);
-    mysql_free_result($result);
+    $row = mysqli_fetch_array($result);
+    mysqli_free_result($result);
     $smarty -> assign('pia_fall_dbid', $row['ID']);
     switch ($row['badotyp']) {
         case  1 : $smarty->assign('pia_fall_badotyp', 1); break; // StammBaDo einfordern
@@ -111,7 +111,7 @@ if ($num_fall == 1){
         htmlspecialchars($row['familienname'], ENT_NOQUOTES, 'UTF-8').", ".
         htmlspecialchars($row['vorname'], ENT_NOQUOTES, 'UTF-8')." geb. ".$row['geburtsdatum']
     );
-    $smarty -> assign('pia_fall_kontakt_info', idtostr($row['pia_id'], "f_psy_ambulanzen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
+    $smarty -> assign('pia_fall_kontakt_info', idtostr($conn, $row['pia_id'], "f_psy_ambulanzen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
     $bado_typ_array = array("", "Stammdaten Erfassung", "Verlaufsdaten Erfassung");
     $smarty -> assign('pia_fall_badotyp_title', $bado_typ_array[$row['badotyp']]);
 

@@ -42,23 +42,23 @@ if ($_GET['mode'] == "export"){
         ."and `deleted`=0 "
         ."and `text` != ''"
         ."ORDER BY creation_datetime asc";
-    $result = mysql_query($query);
+    $result = mysqli_query($conn, $query);
     $verlauf = array();
-    while ($row = mysql_fetch_assoc($result)) {
+    while ($row = mysqli_fetch_assoc($result)) {
         $verlauf_entry = array(
             'dbid' => $row['ID'],
             'text' => $row['text'],
             'creation_date' => datetime_to_de($row['creation_datetime'], "date"),
             'creation_time' => datetime_to_de($row['creation_datetime'], "time"),
-            'owner_firstname' => get_username_by_id($row['owner'], "first"),
-            'owner_lastname' => get_username_by_id($row['owner'], "last"),
-            'owner_function' => get_function_by_userid($row['owner']),
+            'owner_firstname' => get_username_by_id($conn, $row['owner'], "first"),
+            'owner_lastname' => get_username_by_id($conn, $row['owner'], "last"),
+            'owner_function' => get_function_by_userid($conn,$row['owner']),
             'update_date' => datetime_to_de($row['update_timestamp'], "date"),
             'update_time' => datetime_to_de($row['update_timestamp'], "time")
         );
         $verlauf[] = $verlauf_entry;
     }
-    mysql_free_result($result);
+    mysqli_free_result($result);
     $smarty -> assign('verlauf', $verlauf);
     $verlauf_html = $smarty -> fetch('export_verlauf_content.tpl');	
 
@@ -104,19 +104,19 @@ if ($_GET['mode'] == "export"){
 if ($_GET['mode'] == "getheader"){
     // get header infos
     $query = "SELECT * FROM fall WHERE `ID`='".$_GET['fall_dbid']."'";
-    $result = mysql_query($query);
-    $num_fall = mysql_num_rows($result);
+    $result = mysqli_query($conn, $query);
+    $num_fall = mysqli_num_rows($result);
     if ($num_fall == 1){
-        $row = mysql_fetch_array($result);
-        mysql_free_result($result);
+        $row = mysqli_fetch_array($result);
+        mysqli_free_result($result);
         // Info Strings
         $smarty->assign('fall_person_info',$row['aufnahmenummer']." ".
             htmlspecialchars($row['familienname'], ENT_NOQUOTES, 'UTF-8').", ".
             htmlspecialchars($row['vorname'], ENT_NOQUOTES,'UTF-8')." geb. ".$row['geburtsdatum']);
 
-        $smarty -> assign('fall_aufnahme_info', idtostr($row['station_a'], "f_psy_stationen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
+        $smarty -> assign('fall_aufnahme_info', idtostr($conn, $row['station_a'], "f_psy_stationen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
         if ($row['entlassungsdatum']!=""){
-            $smarty -> assign('fall_entlass_info', idtostr($row['station_e'], "f_psy_stationen")." am ".$row['entlassungsdatum']." um ".$row['entlassungszeit']);
+            $smarty -> assign('fall_entlass_info', idtostr($conn, $row['station_e'], "f_psy_stationen")." am ".$row['entlassungsdatum']." um ".$row['entlassungszeit']);
         } else {
             $smarty -> assign('fall_entlass_info', 'noch nicht entlassen');
         }
