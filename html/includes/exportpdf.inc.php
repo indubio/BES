@@ -1,7 +1,7 @@
 <?php
 require('fpdf/fpdf.php');
 
-function gen_selectview(&$pdf,$posx,$ln,$boxname,$addtext='',$select1='',$select2='',$select3='')
+function gen_selectview(&$pdf, $conn, $posx,$ln,$boxname,$addtext='',$select1='',$select2='',$select3='')
 {
 //  global $pdf;
   $query = "SELECT * FROM f_".$boxname." ORDER BY ID ASC";
@@ -16,7 +16,7 @@ function gen_selectview(&$pdf,$posx,$ln,$boxname,$addtext='',$select1='',$select
     if ($row['ID']==$select1 or $row['ID']==$select2 or $row['ID']==$select3){
       $pdf->SetFillColor(0,0,0);
       $pdf->SetTextColor(255,255,255);
-      $pdf->Cell(8,5,"(".$id_nr.")",0,0,L,1);
+      $pdf->Cell(8,5,"(".$id_nr.")",0,0,'L',1);
       $pdf->SetTextColor(0,0,0);
       if ($addtext!=''){$output.=": ".$addtext;}
       $pdf->Write($ln,utf8_decode($output."\n"));
@@ -42,7 +42,7 @@ function exportIDsPDF($conn, $ids=array())
   foreach ($ids as $id) {
     $query = "SELECT * FROM `fall` WHERE `ID`='".$id."'";
     $result = mysqli_query($conn, $query);
-    $row=mysqli_fetch_object($result);
+    $row = mysqli_fetch_object($result);
     //$updatequery = "UPDATE `fall` SET `pdfed`='1' WHERE `ID`='".$id."'";
     //if ($updateresult = mysqli_query($conn, $updatequery)){
     $badoid=$row->badoid;
@@ -65,7 +65,7 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->Write($ln,utf8_decode("Name: ".$row->familienname.", ".$row->vorname." (".$gender.")\n"));
     //$dummy=split("-",$row->geburtsdatum);
 	$dummy = explode("-", $row->geburtsdatum);
-    if ($row-geburtsdatum == ""){
+    if ($row->geburtsdatum == ""){
       $pdf->Write($ln,"Geburtsdatum: unbekannt\n");
     } else {
       $pdf->Write($ln,"Geburtsdatum: ".$row->geburtsdatum."\n");
@@ -75,31 +75,31 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Wohnort\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"wohnort","",$row->wohnort_a);
+    gen_selectview($pdf, $conn, 0,$ln,"wohnort","",$row->wohnort_a);
     $pdf->Write($ln,"\n");
 // Migrationshintergrund
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Migrationshintergrund\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"migration",$row->migration_anderer,$row->migration);
+    gen_selectview($pdf, $conn, 0,$ln,"migration",$row->migration_anderer,$row->migration);
     $pdf->Write($ln,"\n");
 // Familienstand
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Familienstand\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"familienstand","",$row->familienstand);
+    gen_selectview($pdf, $conn, 0,$ln,"familienstand","",$row->familienstand);
     $pdf->Write($ln,"\n");
 // Berufsbildung
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Berufsbildung\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"berufsbildung","",$row->berufsbildung);
+    gen_selectview($pdf, $conn, 0,$ln,"berufsbildung","",$row->berufsbildung);
     $pdf->Write($ln,"\n");
 // Einkuenfte
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,utf8_decode("Einkünfte\n"));
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"einkuenfte","",$row->einkuenfte);
+    gen_selectview($pdf, $conn, 0,$ln,"einkuenfte","",$row->einkuenfte);
     $pdf->Write($ln,"\n");
 // Wohnsituation
     $pdf->SetY(26);
@@ -107,14 +107,14 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Wohnsituation\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,120,$ln,"wohnsituation","",$row->wohnsituation_a);
+    gen_selectview($pdf, $conn, 120,$ln,"wohnsituation","",$row->wohnsituation_a);
     $pdf->Write($ln,"\n");
 // Einweisung,Verlegung,Weiterleitung
     $pdf->SetX(120);
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Einweisung / Verlegung / Weiterleitung\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,120,$ln,"einweisung",idtostr($row->einweisung_evb,"f_kliniken_evb","kuerzel"),$row->einweisung);
+    gen_selectview($pdf, $conn, 120,$ln,"einweisung",idtostr($row->einweisung_evb,"f_kliniken_evb","kuerzel"),$row->einweisung);
     $pdf->Write($ln,"\n");
 // Begleitung, Transport
     $pdf->SetX(120);
@@ -124,14 +124,14 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','',$fontsize3);
     $pdf->Write($ln,utf8_decode("(bis zu 2 Angaben möglich)\n"));
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,120,$ln,"begleitung","",$row->begleitung1,$row->begleitung2);
+    gen_selectview($pdf, $conn, 120,$ln,"begleitung","",$row->begleitung1,$row->begleitung2);
     $pdf->Write($ln,"\n");
 // Aufnahmemodus
     $pdf->SetX(120);
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Aufnahmemodus\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,120,$ln,"amodus","",$row->modus_a);
+    gen_selectview($pdf, $conn, 120,$ln,"amodus","",$row->modus_a);
     $pdf->Write($ln,"\n");
 // Aufnahme ins ZPPP
     $pdf->SetX(120);
@@ -150,7 +150,7 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Uhrzeit der Aufnahme im ZPP&P\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,120,$ln,"auhrzeit_schicht","",idtostr($row->auhrzeit_schicht,"f_auhrzeit_schicht"),$row->auhrzeit_schicht);
+    gen_selectview($pdf, $conn, 120,$ln,"auhrzeit_schicht","",idtostr($row->auhrzeit_schicht,"f_auhrzeit_schicht"),$row->auhrzeit_schicht);
 
 // Kopf Seite 2
     $pdf->AddPage();
@@ -169,21 +169,21 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Rechtsstatus\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"rechtsstatus","",$row->rechtsstatus);
+    gen_selectview($pdf, $conn, 0,$ln,"rechtsstatus","",$row->rechtsstatus);
     $pdf->Write($ln,"\n");
 // Unterbringungsdauer
     $pdf->SetXY(60,$posy);
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Unterbringungsdauer\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,60,$ln,"unterbringungsdauer","",$row->unterbringungsdauer);
+    gen_selectview($pdf, $conn, 60,$ln,"unterbringungsdauer","",$row->unterbringungsdauer);
     $pdf->Write($ln,"\n");
 // Entlassungsmodus
     $pdf->SetXY(112,$posy);
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Entlassungsmodus\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,112,$ln,"emodus","",$row->modus_e);
+    gen_selectview($pdf, $conn, 112,$ln,"emodus","",$row->modus_e);
     $pdf->Write($ln,"\n");
     $pdf->Write($ln,"\n");
 // Entlassungs aus ZPPP
@@ -198,13 +198,13 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Wohnsituation bei Entlassung\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"wohnsituation","",$row->wohnsituation_e);
+    gen_selectview($pdf, $conn, 0,$ln,"wohnsituation","",$row->wohnsituation_e);
     $pdf->Write($ln,"\n");
 // Wohnort bei Entlassung
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,"Wohnort bei Entlassung\n");
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"wohnort","",$row->wohnort_e);
+    gen_selectview($pdf, $conn, 0,$ln,"wohnort","",$row->wohnort_e);
     $pdf->Write($ln,"\n");
 // Weiterbehandlung
     $pdf->SetFont('Arial','B',$fontsize2);
@@ -212,14 +212,14 @@ function exportIDsPDF($conn, $ids=array())
     $pdf->SetFont('Arial','',$fontsize3);
     $pdf->Write($ln,utf8_decode("(bis zu 3 Angaben möglich)\n"));
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,0,$ln,"weiterbehandlung","",$row->weiterbehandlung1,$row->weiterbehandlung2,$row->weiterbehandlung3);
+    gen_selectview($pdf, $conn, 0,$ln,"weiterbehandlung","",$row->weiterbehandlung1,$row->weiterbehandlung2,$row->weiterbehandlung3);
     $pdf->Write($ln,"\n");
 // Suizidalitaet
     $pdf->SetXY(112,60);
     $pdf->SetFont('Arial','B',$fontsize2);
     $pdf->Write($ln,utf8_decode("Suizidalität & Selbstverletzung\n"));
     $pdf->SetFont('Arial','',$fontsize);
-    gen_selectview($pdf,112,$ln,"suizid_sv","",$row->suizid_sv);
+    gen_selectview($pdf, $conn, 112,$ln,"suizid_sv","",$row->suizid_sv);
     $pdf->Write($ln,"\n");
 // PSY Diag
     $pdf->SetX(112);

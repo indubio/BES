@@ -76,7 +76,7 @@ function check_pia_entlassung($i_values, $i_bdata) {
     return array ($o_error_msgs, $o_msgs);
 }
 
-function save_pia_bado ($i_values) {
+function save_pia_bado ($conn, $i_values) {
     $o_msg = array();
     // Daten bearbeiten
     // mgl disabled Elemente mit Daten füllen
@@ -212,7 +212,7 @@ function save_pia_bado ($i_values) {
         "zusatzbetreuung1" => "piabef_zusatzbetreuung1",
         "zusatzbetreuung2" => "piabef_zusatzbetreuung2",
         "wohngemeinschaft" => "piabef_wohngemeinschaft",
-        "zuweisung" => "piabef_zuweisung",
+//        "zuweisung" => "piabef_zuweisung",
         "krankheitsbeginn" => "piabef_krankheitsbeginn",
 //        "klinik_first" => "piabef_klinik_first",
 //        "klinik_last" => "piabef_klinik_last",
@@ -245,7 +245,7 @@ function save_pia_bado ($i_values) {
     }
     $query .= "`last_change`='".date("Y-m-d H:i:s")."' ";
     $query .= "WHERE `ID`='".$i_values['piabef_fall_dbid']."'";
-    if (!($result = mysqli_query($query))) {
+    if (!($result = mysqli_query($conn, $query))) {
         $o_msg[] = "Datenbank Fehler: ".mysqli_error($conn);
     }
     return $o_msg;
@@ -274,7 +274,7 @@ if (mywaf($conn, $_GET)) {$error_msgs[] = "Datenfehler: Übergabeparameter nicht
 if (mywaf($conn, $_POST)){$error_msgs[] = "Datenfehler: Übergabeparameter nicht korrekt";}
 
 $query = "SELECT * FROM fall_pia WHERE `ID`='".$_POST['piabef_fall_dbid']."'";
-$result = mysqli_query($query);
+$result = mysqli_query($conn, $query);
 $db_daten = mysqli_fetch_array($result);
 mysqli_free_result($result);
 
@@ -317,7 +317,7 @@ if (count($error_msgs) == 0) {
                 $error_msgs[] = "Stammdaten nicht vollständig";
             }
         }
-        $error_msgs = array_merge($error_msgs, save_pia_bado($_POST));
+        $error_msgs = array_merge($error_msgs, save_pia_bado($conn, $_POST));
         if (count($error_msgs) == 0) {
             $success_msg = "Die BaDo Daten wurden erfolgreich gespeichert.";
             $btn_close_window = 1;
@@ -327,7 +327,7 @@ if (count($error_msgs) == 0) {
     // close bado
     if ($_POST['ajax_pia_cmd'] == "close") {
         $incorrect_msgs = array();
-        $error_msgs = save_pia_bado($_POST);
+        $error_msgs = save_pia_bado($conn, $_POST);
         if (count($error_msgs) == 0) {
             if ($_POST['piabef_cb_mdata'] != 1) {
                 $incorrect_msgs[] = "Stammdaten als vollständig kennzeichnen";
@@ -345,9 +345,9 @@ if (count($error_msgs) == 0) {
                         ."`closed_time`='".date("Y-m-d H:i:s")."', "
                         ."`geschlossen`='1' "
                         ."WHERE `ID`='".$_POST['piabef_fall_dbid']."'";
-//                    if (!($result = mysqli_query($conn, $query))){
-//                        $error_msgs[] = "Datenbank Fehler: ".mysql_error();
-//                    }
+                    if (!($result = mysqli_query($conn, $query))){
+                        $error_msgs[] = "Datenbank Fehler: ".mysqli_error($conn);
+                    }
                     if (count($error_msgs) == 0) {
                         $success_msg = "Die BaDo wurde abgeschlossen.";
                         $btn_back_badolist = 1;

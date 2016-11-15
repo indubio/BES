@@ -59,7 +59,8 @@ if (count($error) == 0) {
 		$updatequery = "UPDATE `fall` SET `pdfed`='1' WHERE `ID`='".$fall_dbids[$i]."'";
 		$updateresult = mysqli_query($conn, $updatequery);
 	}
-	$output = exportIDsPDF($fall_dbids);
+	$output = exportIDsPDF($conn, $fall_dbids);
+
 	$dirname = "export/".session_id();
 	if (count($fall_dbids) == 1) {
 		$query = "SELECT * FROM `fall` WHERE `ID`='".$fall_dbids[0]."' and `geschlossen`>'0'";
