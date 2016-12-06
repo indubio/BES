@@ -31,6 +31,7 @@ opts_chunk$set(echo = FALSE)
 \usepackage{hyphenat} % Silbentrennung
 \usepackage[justification=raggedright,singlelinecheck=false]{caption}
 \usepackage{float} % H zur Positionierung nutzen
+\usepackage{calc} % macht textwidth, linewidth Berechnungen möglich
 
 \pagestyle{scrheadings}
 \clearscrheadfoot
