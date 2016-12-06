@@ -39,8 +39,10 @@
     {foreach from=$verlauf item=verlauf_entry}
     <fieldset>
         <legend>{$verlauf_entry.creation_date}&nbsp;{$verlauf_entry.creation_time}&nbsp;-&nbsp;{$verlauf_entry.owner_lastname},&nbsp;{$verlauf_entry.owner_firstname}&nbsp;[{$verlauf_entry.owner_function}]</legend>
+{*
         <div style="text-align:right;">letzte Änderung am {$verlauf_entry.update_date} um {$verlauf_entry.update_time}</div>
         <hr/>
+*}
         <div>{$verlauf_entry.text}</div>
     </fieldset>
     {/foreach}
