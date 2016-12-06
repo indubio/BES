@@ -110,7 +110,7 @@ if ($mode == "submit") {
 	$num_mhcountry = mysqli_num_rows($result_mhcountry);
 	if ($num_mhcountry == 1) {
 		$row_mhcountry = mysqli_fetch_array($result_mhcountry);
-		$submit['migration_anderer'] = mysqli_real_escape_string($row_mhcountry['Name']);
+		$submit['migration_anderer'] = mysqli_real_escape_string($conn, $row_mhcountry['Name']);
 		$submit['migration_anderer_id'] = $row_mhcountry['ID'];
 	} else {
 		$submit['migration_anderer'] = "";
