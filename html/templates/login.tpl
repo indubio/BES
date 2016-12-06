@@ -11,16 +11,15 @@
       <p class="login">
         <label for="password" class="login">Passwort:</label><input class="login" type="password" name="login_pass" id="password" value="" size="24" />
       </p>
+      {if count($infos) > 0}
       <div class="loginerror">
-      {if isset($infos)}{section name=infoid loop=$infos step=1}{/section}{/if}
-      {if $smarty.section.infoid.max > 0}
-      <ul>
-        {section name=infoid loop=$infos step=1}
-        <li>{$infos[infoid]}</li>
-        {/section}
-      </ul>
-      {/if}
+        <ul>
+          {section name=infoid loop=$infos step=1}
+          <li>{$infos[infoid]}</li>
+          {/section}
+        </ul>
       </div>
+      {/if}
       </div>
     </fieldset>
     <fieldset class="loginfooter">
