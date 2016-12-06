@@ -1,0 +1,35 @@
+% !TEX root = _report_pna.tex
+\clearpage
+
+\section{Vorwort}
+Der vorliegende Report soll die Dokumentation in der Psychiatrischen Notaufnahme (PNA) darstellen.
+
+Die Auswertung stützt sich dabei primär auf die Erhebung des operationalisierten PNA Befundes. Dieser wird seit dem 01.07.2016 regelhaft im KIS Soarian per Formular erhoben. Aktuell jedoch nur bei Patienten ohne stationäre Aufnahme, um als Basis für den Arztbrief zu dienen. Dies hat zur Folge, das die statistischen Daten nicht alle Kontakte der Notaufnahme repräsentieren.\\[1em]
+Insgesamt wurden \Sexpr{nrow(PNAdata_dc)} Formulare ausgewertet.\\
+Erstes Formulardatum: \Sexpr{min(PNAdata_dc$ContactTime)}\\
+Letztes Formulardatum: \Sexpr{max(PNAdata_dc$ContactTime)}\\
+<<case_table,>>=
+BES_pna$casetyp <- "PNA stationär"
+BES_pna[is.na(BES_pna$anr), "casetyp"] <- "PNA ambulant"
+out_tbl <- xtabs(~casetyp + format(datum_zeit, format = "%Y"),
+                 subset(BES_pna, ambulanz == "PNA"))
+
+fn_colaligns <- c("l",rep("r", ncol(out_tbl)))
+print(xtable(
+    out_tbl
+    , caption = "PNA Fälle pro Jahr"
+    , align = fn_colaligns
+    , digits = 0
+    )
+  , caption.placement = "top"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+@
+\vfill
+\colorbox{hellgrau}{%
+\begin{minipage}{1\linewidth-2\fboxsep-2\fboxrule}%
+Die Vereinfachung umfangreicher und komplexer Datenbestände birgt immer die Gefahr von Fehlern und inhaltlich falscher Reduktion. Unter diesem Aspekt sollte dieses Reporting vornehmlich als Basis für einen kollegialen und kritischen Austausch verstanden werden.
+\end{minipage}
+}
+\clearpage

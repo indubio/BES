@@ -1,0 +1,52 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Suizidalität}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth-2\fboxsep-2\fboxrule}
+    \begin{description}
+      \item[Variable] PNABef\_SuizidNot - <<keine Suizidalität>>
+      \item[Variable] PNABef\_Suizid - <<Suizidalität>>
+      \item[Typ] kategorial
+      \item[Kategorien] akut ; paktfähig ; Suizidversuch in der Vorgeschichte
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<suizidal>>=
+dummy_df <- subset(PNAdata_dc, select=c("PNABef_SuizidNot", "PNABef_Suizid"))
+dummy_df$Kategorien <- "keine Angaben"
+dummy_df[!is.na(dummy_df$PNABef_SuizidNot), "Kategorien"] <- "keine Suizidalität"
+dummy_df[!is.na(dummy_df$PNABef_Suizid), "Kategorien"] <- dummy_df[!is.na(dummy_df$PNABef_Suizid), "PNABef_Suizid"]
+Kategorien <- unlist(strsplit(dummy_df$Kategorien , "\036"))
+rm(dummy_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+rm(Kategorien)
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+# sortieren
+out_df$Kategorien <- ordered(out_df$Kategorien,
+    levels=c(
+      "keine Suizidalität",
+      "akut",
+      "paktfähig",
+      "Suizidversuch in der Vorgeschichte",
+      "keine Angaben"
+      )
+    )
+out_df <- with(out_df, out_df[order(Kategorien),])
+
+# ausgabe
+print(xtable(
+    out_df
+    , caption = "Suizidalität"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

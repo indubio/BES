@@ -1,0 +1,56 @@
+% !TEX root = _report_pna.tex
+\clearpage
+\section{Fälle ohne PNA Befund}
+Die folgenden PNA Fälle haben im Kontext des Falles (Fallnummer) keinen standardisierten Befund.
+<<missing_finding,>>=
+Befund_needed <- subset(BES_pna, 
+            ambulanz == "PNA" &
+            format(datum_zeit, format="%Y-%m-%d") >= "2015-07-01" &
+            cancelled == 0 &
+            is.na(anr)
+            )
+
+Befund_missing <- Befund_needed[Befund_needed$aufnahmenummer %nin% PNAdata_dc$CaseID,
+              c("aufnahmenummer","datum_zeit", "name_last")]
+
+Befund_missing <- Befund_missing[order(Befund_missing$datum_zeit, decreasing = TRUE), ]
+Befund_missing$datum_zeit <- format(Befund_missing$datum_zeit, format="%d.%m.%Y %H:%M")
+
+Befund_missing$Kommentar <- kommentarDT[Befund_missing$aufnahmenummer, "kommentar"]
+Befund_missing[is.na(Befund_missing$Kommentar), "Kommentar"] <- " "
+
+rownames(Befund_missing) <- seq(1:nrow(Befund_missing))
+colnames(Befund_missing) <- c("ANr", "Datum", "Name", "Kommentar")
+
+rws <- seq(0, (nrow(Befund_missing)-1), by = 2)
+col <- rep("\\rowcolor{hellgrau}", length(rws))
+
+addtorow <- list(pos = as.list(rws), command = col)
+addtorow$command[1] <- c(paste(
+  "\\hline \n"
+  , "\\endhead \n"
+  , "\\hline \n"
+  , "\\multicolumn{5}{r}{\\footnotesize weiter auf nächster Seite} \n"
+  , "\\endfoot \n"
+  , "\\endlastfoot \n"
+  , "\\rowcolor{hellgrau}"
+  , sep=""))
+
+Befund_missing_XT <- xtable(Befund_missing
+    , caption = "fehlende Befunde"
+    , digits = 0
+    , align= c("p{0.03\\textwidth}|","r|","c|","l|","X")
+    )
+
+print(Befund_missing_XT
+  , caption.placement = "top"
+  , tabular.environment ='longtabu'
+  , table.placement = "!htp"
+  , latex.environment="flushleft"
+  , floating = FALSE
+  , include.rownames = TRUE
+  , hline.after=c(-1)
+  , add.to.row = addtorow
+)
+@
+\clearpage

@@ -1,0 +1,39 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Inhaltliches Denken / Wahnerleben}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_IDenkNot - <<Wahnerleben nicht vorhanden>>
+      \item[Variable] PNABef\_IDenk - <<Inhaltliches Denken>>
+      \item[Typ] kategorial
+      \item[Kategorien] Größenwahn ; Beziehungswahn ; Schuld- / Verarmungswahn ; Beeinträchtigungs- / Verfolgungswahn ; andere 
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+dummy_df <- subset(PNAdata_dc, select=c("PNABef_IDenkNot", "PNABef_IDenk"))
+dummy_df$Kategorien <- "keine Angaben"
+dummy_df[!is.na(dummy_df$PNABef_IDenkNot), "Kategorien"] <- "kein Wahnerleben"
+dummy_df[!is.na(dummy_df$PNABef_IDenk), "Kategorien"] <- dummy_df[!is.na(dummy_df$PNABef_IDenk), "PNABef_IDenk"]
+Kategorien <- unlist(strsplit(dummy_df$Kategorien , "\036"))
+rm(dummy_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+rm(Kategorien)
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+print(xtable(
+    out_df
+    , caption = "Formales Denken"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

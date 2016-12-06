@@ -1,0 +1,15 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Diagnosen}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] allgAnam\_132 - <<Diagnosen>>
+      \item[Typ] Freitext
+      \item[Hinweis]
+    \end{description}
+  \end{minipage}
+}
+Wird aktuell nicht ausgewertet
+<<>>=
+@

@@ -1,0 +1,45 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Stimmung}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_Stimm - <<Stimmung>>
+      \item[Typ] kategorial
+      \item[Kategorien] ausgeglichen  ; deprimiert ; euphorisch ; ratlos ; ängstlich ; dysphorisch 
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<stimmung>>=
+Kategorien <- unlist(strsplit(PNAdata_dc$PNABef_Stimm , "\036"))
+out_df <- as.data.frame(table(factor(Kategorien), exclude = NULL))
+
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+out_df$Kategorien <- as.character(out_df$Kategorien)
+out_df$Kategorien[is.na(out_df$Kategorien)] <- "keine Angabe"
+
+#print(xtable(
+#    out_df
+#    , caption = "Stimmung"
+#    , digits = 0
+#    )
+#  , caption.placement = "bottom"
+#  , table.placement = "H"
+#  , latex.environment="flushleft"
+#)
+@
+
+<<stimmung_fig, fig.height=4, fig.cap="Stimmung", fig.pos="H">>=
+ggplot(data = out_df, aes(x = reorder(Kategorien, Häufigkeit), y = Häufigkeit)) +
+  geom_bar(stat="identity", color = "black", fill = "#2b8cbe") +
+  geom_text(aes(x = Kategorien, y = 2, ymax = 2, label = Häufigkeit), hjust = 0, vjust=0.5) +
+  labs(x = 'Kategorien', y = 'Anzahl Fälle') +
+  coord_flip()
+@
+
+<<>>=
+rm(out_df)
+@

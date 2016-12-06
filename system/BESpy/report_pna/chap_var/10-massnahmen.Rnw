@@ -1,0 +1,15 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Massnahmen}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_Massn - <<Massnahmen>>
+      \item[Typ] Freitext
+      \item[Hinweis]
+    \end{description}
+  \end{minipage}
+}
+Wird aktuell nicht ausgewertet
+<<>>=
+@

@@ -1,0 +1,52 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{in ambulanter psychiatrischer/ psychotherapeutischer Behandlung}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_v10 - <<ambulante psychiatrische Versorgung>>
+      \item[Typ] kategorial
+      \item[Kategorien] ja ; nein
+      \item[Hinweis] 
+    \end{description}
+  \end{minipage}
+}
+
+<<, fig.height=3, fig.cap="", fig.pos="H">>=
+out_df <- as.data.frame(table(PNAdata_dc$PNABef_v10, exclude = NULL))
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+out_df$Kategorien <- as.character(out_df$Kategorien)
+out_df$Kategorien[is.na(out_df$Kategorien)] <- "keine Angabe"
+
+out_df$Kategorien <- ordered(out_df$Kategorien,
+    levels=c(
+      "keine",
+      "Psychiatrische Institutsambulanz",
+      "niedergelassener Arzt/ Psychotherapeut",
+      "keine Angabe"
+      )
+    )
+
+blank_theme <- theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    axis.ticks = element_blank(),
+    plot.title=element_text(size=14, face="bold")
+  )
+
+ggplot(transform(transform(out_df, value=Häufigkeit/sum(Häufigkeit)), labPos=cumsum(Häufigkeit)-Häufigkeit/2), 
+       aes(x="", y = Häufigkeit, fill = Kategorien)) +
+  geom_bar(width = 1, stat = "identity") +
+  scale_fill_brewer(palette="Set1") +
+  coord_polar(theta = "y") +
+  labs(title = "in ambulanter Behandlung") + 
+  geom_text(aes(y=labPos, label=scales::percent(value))) +
+  blank_theme
+
+rm(out_df)
+@

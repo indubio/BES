@@ -1,0 +1,35 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Körperlicher Befund}
+\colorbox{hellgrau}{
+  \begin{minipage}{\textwidth-2\fboxsep-2\fboxrule}
+    \begin{description}
+      \item[Variable] PNABef\_KBefund1 - <<körperlicher Befund>>
+      \item[Typ] kategorial
+      \item[Kategorien] nicht erhoben bei fehlenden körperlichen Beschwerden ; ohne pathologischen Befund ; Untersuchung wurde durch den Patienten abgelehnt ; Befund wie folgt 
+      \item[Hinweis] keine Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+out_df <- as.data.frame(table(PNAdata_dc$PNABef_KBefund1, exclude = NULL))
+
+###
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+out_df$Kategorien <- as.character(out_df$Kategorien)
+out_df$Kategorien[is.na(out_df$Kategorien)] <- "keine Angaben"
+
+print(xtable(
+    out_df
+    , caption = "Körperlicher Befund"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

@@ -1,0 +1,114 @@
+<<initpart, include=FALSE, cache=FALSE>>=
+start.time <- Sys.time()
+source("initpart.R")
+source("init_missing_kommentare.custom.R")
+source("import_data.R")
+source("import_data_BES.R")
+opts_chunk$set(results = 'asis')
+opts_chunk$set(echo = FALSE)
+options(warn=-1)
+@
+
+\documentclass[
+    titlepage, ngerman,
+    oneside,
+    fontsize=10pt,
+    paper=a4,
+    BCOR=8.25mm,
+]{scrartcl}
+\usepackage[
+    paper=a4paper,
+    left=25mm,
+    right=15mm,
+    top=20mm,
+    bottom=20mm
+]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{longtable, tabu}
+\usepackage{tabularx}
+\usepackage{colortbl, xcolor}
+\usepackage[automark,headsepline,footsepline]{scrpage2}
+\usepackage{hyphenat} % Silbentrennung
+\usepackage[justification=raggedright,singlelinecheck=false]{caption}
+\usepackage{float} % H zur Positionierung nutzen
+\usepackage[parfill]{parskip} % kein Einrücken
+\usepackage{calc} % macht textwidth Berechnungen möglich
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\clearscrheadings
+\ohead{\headmark}
+\ifoot{OPS Report}
+\cfoot{\today}
+\ofoot{\thepage}
+\setheadtopline{1pt}
+\setheadsepline{1pt}
+\setfootsepline{1pt}
+
+%\setlength{\LTleft}{0pt} % set longtable alignment LEFT
+
+\usepackage[
+  bookmarks=true,
+  bookmarksopen=true,
+  bookmarksnumbered=false,
+  pdfstartpage=1,
+  pdfstartview=Fit,
+  pdfview=FitB,
+  pdfborder={0 0 0},
+  linkcolor=black,
+  citecolor=black,
+  filecolor=black,
+  urlcolor=black,
+  pdftitle={PNA-Report},
+  pdfauthor={indUbio aka Steffen Eichhorn},
+  pdfsubject={PNA Assessment Reporting},
+  pdfkeywords={},
+]{hyperref}
+
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{helvet}
+
+% Bild- und Tabellenbezeichnungen
+\addtokomafont{caption}{\sffamily}
+\setkomafont{captionlabel}{\sffamily}
+
+% Table of Contents Depth
+\setcounter{tocdepth}{2}
+
+\definecolor{evb_blue}{RGB}{0,63,94}
+\definecolor{hellgrau}{rgb}{0.9,0.9,0.9}
+\definecolor{dunkelgrau}{rgb}{0.75,0.75,0.75}
+
+\begin{document}
+
+<<titlepage, child='chap_titlepage.Rnw'>>=
+@
+
+<<, child='chap_vorwort.Rnw'>>=
+@
+
+<<, child='chap_missing_finding.Rnw'>>=
+@
+
+\section{Variablen}
+<<variablen, include=FALSE>>=
+files <- NULL
+files <- list.files(path = "chap_var", pattern = "*.Rnw", full.names = T, recursive = FALSE)
+out <- ""
+for (file in files){
+  out <- c(out, knit_child(file))
+}
+@
+\Sexpr{paste(out, collapse = '\n')}
+
+\clearpage
+\section{Systeminformationen}
+Für die Erstellung dieses Berichtes wurde ausschließlich Open-Source-Software eingesetzt.\\
+Ausführungszeit (R-Script): \Sexpr{round(Sys.time() - start.time)} Sekunden\\
+<<,results='markup'>>=
+sessionInfo()
+@
+
+\end{document}

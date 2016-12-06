@@ -1,0 +1,64 @@
+% !TEX root = _report_pna.Rnw
+\subsection{Kontaktzeit}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth-2\fboxsep-2\fboxrule}
+    \begin{description}
+      \item[Variable] contacttime
+      \item[Typ] Datum Uhrzeit
+      \item[Hinweis] wird vom KIS übernommen und ist gleich Aufnahmedatum und Aufnahmezeit
+    \end{description}
+\end{minipage}
+}
+<<contacttime_fig1, fig.height=4, fig.cap="Anzahl ambulanter Kontakte nach Monat und Jahr", fig.pos="H">>=
+plot_df <- as.data.frame(xtabs( ~ ContactTime.Mon + ContactTime.Year, data=PNAdata_dc))
+ggplot(plot_df, aes(x = ContactTime.Mon, y = Freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "#2b8cbe") +
+  facet_grid(ContactTime.Year ~ .) +
+  geom_text(aes(x = ContactTime.Mon, y = 2, ymax = 2, label = Freq), vjust = 0) +
+  xlab("Monat") +
+  ylab("Anzahl Kontakte") #+
+  #ggtitle("Anzahl ambulanter Kontakte\nnach Monat und Jahr")
+
+rm(plot_df)
+@
+
+<<contacttime_tbl>>=
+out_tbl <- addmargins(xtabs( ~ ContactTime.Year + ContactTime.Mon, data=PNAdata_dc), FUN = list(Summe = sum), quiet = TRUE)
+names(dimnames(out_tbl)) <- c("Jahr", "Monat")
+print(xtable(
+    out_tbl
+    , caption = "Anzahl Kontakte"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+rm(out_tbl)
+@
+
+<<contacttime_fig2, fig.height=3, fig.cap="Anzahl ambulanter Kontakte nach Wochentag", fig.pos="H">>=
+PNAdata_dc$ContactTime.Weekdayn <- as.factor(format(PNAdata_dc$ContactTime, format="%A"))
+PNAdata_dc$ContactTime.Weekdayn <- factor(PNAdata_dc$ContactTime.Weekdayn,
+    levels=c("Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"))
+
+plot_df <- as.data.frame(table(PNAdata_dc$ContactTime.Weekdayn))
+ggplot(plot_df, aes(x = Var1, y = Freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "#2b8cbe") +
+  geom_text(aes(x = Var1, y = 2, ymax = 2, label = Freq), vjust = 0) +
+  xlab("Wochentag") +
+  ylab("Anzahl Kontakte") #+
+  #ggtitle("Anzahl ambulanter Kontakte\nnach Wochentage")
+@
+
+<<contacttime_fig3, fig.height=3, fig.cap="Anzahl ambulanter Kontakte nach Stunde", fig.pos="H">>=
+PNAdata_dc$ContactTime.Stunde <- format(PNAdata_dc$ContactTime, format="%H")
+plot_df <- as.data.frame(table(PNAdata_dc$ContactTime.Stunde))
+ggplot(plot_df, aes(x = Var1, y = Freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "#2b8cbe") +
+  geom_text(aes(x = Var1, y = 2, ymax = 2, label = Freq), vjust = 0) +
+  xlab("Uhrzeit: Stunde") +
+  ylab("Anzahl Kontakte") 
+  #ggtitle("Anzahl ambulanter Kontakte\nnach Uhrzeit")
+rm(plot_df)
+@

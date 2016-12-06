@@ -1,0 +1,35 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Kontaktaufnahme}
+\colorbox{lightgray}{
+  \begin{minipage}{.90\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_KonAuf - "Kontaktaufnahme"
+      \item[Typ] kategorial
+      \item[Kategorien] freundlich ; distanzgemindert ; gereizt ; misstrauisch ; bedrohlich
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+Kategorien <- unlist(strsplit(PNAdata_dc$PNABef_KonAuf, "\036"))
+
+out_df <- as.data.frame(table(factor(Kategorien), exclude = NULL))
+names(out_df) <- c("Kategorie", "Häufigkeit")
+
+out_df$Kategorie <- as.character(out_df$Kategorie)
+out_df$Kategorie[is.na(out_df$Kategorie)] <- "nicht gewählt"
+
+print(xtable(
+    out_df
+    , caption = "Häufigkeit der Kontaktaufnahmekategorien"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

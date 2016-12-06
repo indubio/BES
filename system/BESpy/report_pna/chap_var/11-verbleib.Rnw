@@ -1,0 +1,65 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Verbleib}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_v11 - <<Verbleib>>
+      \item[Typ] kategorial
+      \item[Kategorien] geht nach Hause ; Weiterleitung in andere Klinik ; Aufnahme PSY1 ; Aufnahme PSY2 ; Aufnahme PSY3 ; Aufnahme PSY4 ; Aufnahme PSY5 ; Aufnahme PSY6 ; Aufnahme TPS1 ; Aufnahme TPS2
+      \item[Hinweis] keine Mehrfachnennung möglich
+      \item[Variable] PNABef\_v12 - <<Weiterleitung in andere Klinik>>
+      \item[Typ] Freitext
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+out_df <- as.data.frame(table(PNAdata_dc$PNABef_v11, exclude = NULL))
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+out_df$Kategorien <- as.character(out_df$Kategorien)
+out_df$Kategorien[is.na(out_df$Kategorien)] <- "keine Angabe"
+
+out_df$Kategorien <- ordered(out_df$Kategorien,
+    levels=c(
+      "geht nach Hause",
+      "Weiterleitung in andere Klinik",
+      "Aufnahme PSY1",
+      "Aufnahme PSY2",
+      "Aufnahme PSY3",
+      "Aufnahme PSY4",
+      "Aufnahme PSY5",
+      "Aufnahme PSY6",
+      "Aufnahme TPS1",
+      "Aufnahme TPS2",
+      "keine Angabe"
+      )
+    )
+
+print(xtable(
+    out_df
+    , caption = "Verbleibkategorien"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+out_df <- as.data.frame(table(PNAdata_dc$PNABef_v12, exclude = NULL))
+names(out_df) <- c("Freitext", "Häufigkeit")
+out_df$Freitext <- as.character(out_df$Freitext)
+
+print(xtable(
+    out_df
+    , caption = "Weiterleitung in Klinik..."
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

@@ -1,0 +1,15 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Anamnese}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_Anamn - <<Anamnese>>
+      \item[Typ] Freitext
+      \item[Hinweis]
+    \end{description}
+  \end{minipage}
+}
+Wird aktuell nicht ausgewertet
+<<>>=
+@

@@ -1,0 +1,29 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Kontaktdauer}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_v08 - <<Dauer>>
+      \item[Typ] numerisch
+      \item[Hinweis] Wird bei der Formularerhebung manuell festgelegt und entspricht der Kontaktdauer in der Notaufnahme in Minuten
+    \end{description}
+  \end{minipage}
+}
+<<>>=
+print(
+  xtable(
+    as.table(t(summary(PNAdata_dc$PNABef_v08)))
+  )
+  , caption.placement = "top"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+@
+<<, fig.height=4, fig.cap="", fig.pos="H">>=
+ggplot(PNAdata_dc, aes(PNABef_v08)) +
+  geom_histogram(bins = 15, color = "black", fill = "#2b8cbe") +
+  ylab("Anzahl Fälle") +
+  xlab("Kontaktdauer in Minuten") +
+  ggtitle("Verteilung Kontaktdauer")
+@

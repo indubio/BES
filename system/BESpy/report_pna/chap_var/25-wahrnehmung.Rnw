@@ -1,0 +1,52 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Wahrnehmung}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_WahrneNOT - <<keine Halluzinationen>>
+      \item[Variable] PNABef\_Wahrne - <<Wahrnehmung>>
+      \item[Typ] kategorial
+      \item[Kategorien] Akustische Halluzination ; Optische Halluzination ; andere Halluzination
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<wahrnehmung>>=
+dummy_df <- subset(PNAdata_dc, select=c("PNABef_WahrneNOT", "PNABef_Wahrne"))
+dummy_df$Kategorien <- "keine Angaben"
+dummy_df[!is.na(dummy_df$PNABef_WahrneNOT), "Kategorien"] <- "keine Halluzinationen"
+dummy_df[!is.na(dummy_df$PNABef_Wahrne), "Kategorien"] <- dummy_df[!is.na(dummy_df$PNABef_Wahrne), "PNABef_Wahrne"]
+Kategorien <- unlist(strsplit(dummy_df$Kategorien , "\036"))
+rm(dummy_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+rm(Kategorien)
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+# sortieren
+out_df$Kategorien <- ordered(out_df$Kategorien,
+    levels=c(
+      "keine Halluzinationen",
+      "Akustische Halluzination",
+      "Optische Halluzination",
+      "andere Halluzination",
+      "keine Angaben"
+    )
+)
+out_df <- with(out_df, out_df[order(Kategorien),])
+
+# ausgabe
+print(xtable(
+    out_df
+    , caption = "Terminvereinbarung"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

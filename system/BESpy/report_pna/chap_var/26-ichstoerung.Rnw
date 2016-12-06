@@ -1,0 +1,54 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Ich Störung}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_IStoerNot - <<keine Ich Störung>>
+      \item[Variable] PNABef\_IStoer - <<Ich Störung>>
+      \item[Typ] kategorial
+      \item[Kategorien] Derealisation ; Depersonalisation ; Gedankenausbreiten ; Gedankeneingebung ; Fremdbeeinflussung
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+dummy_df <- subset(PNAdata_dc, select=c("PNABef_IStoerNot", "PNABef_IStoer"))
+dummy_df$Kategorien <- "keine Angaben"
+dummy_df[!is.na(dummy_df$PNABef_IStoerNot), "Kategorien"] <- "keine Ich Störung"
+dummy_df[!is.na(dummy_df$PNABef_IStoer), "Kategorien"] <- dummy_df[!is.na(dummy_df$PNABef_IStoer), "PNABef_IStoer"]
+Kategorien <- unlist(strsplit(dummy_df$Kategorien , "\036"))
+rm(dummy_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+rm(Kategorien)
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+# sortieren
+out_df$Kategorien <- ordered(out_df$Kategorien,
+    levels=c(
+      "keine Ich Störung",
+      "Derealisation",
+      "Depersonalisation",
+      "Gedankenausbreiten",
+      "Gedankeneingebung",
+      "Fremdbeeinflussung",
+      "keine Angaben"
+    )
+)
+out_df <- with(out_df, out_df[order(Kategorien),])
+
+# ausgabe
+print(xtable(
+    out_df
+    , caption = "Terminvereinbarung"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

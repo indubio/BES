@@ -1,0 +1,49 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Formales Denken}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_FDenkNot - <<Formales Denken intakt>>
+      \item[Variable] PNABef\_FDenk - <<Formales Denken>>
+      \item[Typ] kategorial
+      \item[Kategorien] umständlich ; Grübeln ; verlangsamt ; eingeengt ; Vorbeireden ; ideenflüchtig ; inkohärent / zerfahren 
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+dummy_df <- subset(PNAdata_dc, select=c("PNABef_FDenkNot", "PNABef_FDenk"))
+dummy_df$Kategorien <- "keine Angaben"
+dummy_df[!is.na(dummy_df$PNABef_FDenkNot), "Kategorien"] <- "intakt"
+dummy_df[!is.na(dummy_df$PNABef_FDenk), "Kategorien"] <- dummy_df[!is.na(dummy_df$PNABef_FDenk), "PNABef_FDenk"]
+Kategorien <- unlist(strsplit(dummy_df$Kategorien , "\036"))
+rm(dummy_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+rm(Kategorien)
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+#print(xtable(
+#    out_df
+#    , caption = "Formales Denken"
+#    , digits = 0
+#    )
+#  , caption.placement = "bottom"
+#  , table.placement = "H"
+#  , latex.environment="flushleft"
+#)
+@
+
+<<, fig.height=4, fig.cap="Formales Denken", fig.pos="H">>=
+ggplot(data = out_df, aes(x = reorder(Kategorien, Häufigkeit), y = Häufigkeit)) +
+  geom_bar(stat="identity", color = "black", fill = "#2b8cbe") +
+  geom_text(aes(x = Kategorien, y = 2, ymax = 2, label = Häufigkeit), hjust = 0, vjust=0.5) +
+  labs(x = 'Kategorien', y = 'Anzahl Fälle') +
+  coord_flip()
+@
+
+<<>>=
+rm(out_df)
+@

@@ -1,0 +1,39 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Gedächtnisstörung}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_GedaeNot - <<Gedächntnis intakt>>
+      \item[Variable] PNABef\_Gedae - <<Gedächntnis>>
+      \item[Typ] kategorial
+      \item[Kategorien] Merkfähigkeit gestört ; andere Störung
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+dummy_df <- subset(PNAdata_dc, select=c("PNABef_GedaeNot", "PNABef_Gedae"))
+dummy_df$Kategorien <- "keine Angaben"
+dummy_df[!is.na(dummy_df$PNABef_GedaeNot), "Kategorien"] <- "keine Störung"
+dummy_df[!is.na(dummy_df$PNABef_Gedae), "Kategorien"] <- dummy_df[!is.na(dummy_df$PNABef_Gedae), "PNABef_Gedae"]
+Kategorien <- unlist(strsplit(dummy_df$Kategorien , "\036"))
+rm(dummy_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+rm(Kategorien)
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+print(xtable(
+    out_df
+    , caption = "Gedächtnisstörung"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

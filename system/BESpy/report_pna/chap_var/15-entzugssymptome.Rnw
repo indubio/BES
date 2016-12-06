@@ -1,0 +1,40 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Enzugssysmptome}
+\colorbox{lightgray}{
+  \begin{minipage}{.90\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_EZSympNo - <<keine Entzugssymptome>>
+      \item[Variable] PNABef\_EZSymp - <<Entzugssysmptome>>
+      \item[Typ] kategorial
+      \item[Kategorien] Schwitzen ; Tremor ; Unruhe
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+ez_df <- subset(PNAdata_dc, select=c("PNABef_EZSympNot", "PNABef_EZSympt"))
+
+ez_df$Kategorien <- "keine Angaben"
+
+ez_df[!is.na(ez_df$PNABef_EZSympNot), "Kategorien"] <- "keine"
+ez_df[!is.na(ez_df$PNABef_EZSympt), "Kategorien"] <- ez_df[!is.na(ez_df$PNABef_EZSympt), "PNABef_EZSympt"]
+Kategorien <- unlist(strsplit(ez_df$Kategorien , "\036"))
+rm(ez_df)
+
+out_df <- as.data.frame(table(factor(Kategorien)))
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+print(xtable(
+    out_df
+    , caption = "Entzugssymptome"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@

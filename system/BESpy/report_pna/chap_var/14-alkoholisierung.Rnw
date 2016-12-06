@@ -1,0 +1,54 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Alkoholisierung}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth-2\fboxsep-2\fboxrule}
+    \begin{description}
+      \item[Variable] PNABef\_AlkoiAL - <<Alkoholisierung>>
+      \item[Typ] numerisch
+      \item[Hinweis] wird in Promille angegeben
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+#out_df <- as.data.frame(table(PNAdata_dc$PNABef_KBefund1, exclude = NULL))
+fn_df <- subset(PNAdata_dc, select = c("PNABef_AlkoiAL"))
+fn_df$PNABef_AlkoiAL <-  as.numeric(fn_df$PNABef_AlkoiAL)
+
+print(
+  xtable(
+    as.table(summary(fn_df))
+    , caption = "Alkoholisierung alle Fälle"
+    , digits = 2
+  )
+  , caption.placement = "top"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+fn_df2 <- subset(fn_df, ! is.na(fn_df$PNABef_AlkoiAL) & fn_df$PNABef_AlkoiAL != 0)
+print(
+  xtable(
+    as.table(summary(fn_df2))
+    , caption = "Alkoholisierung, nur wenn angegeben"
+    , digits = 2
+  )
+  , caption.placement = "top"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+@
+
+<<, fig.height=3, fig.cap="", fig.pos="H">>=
+fn_df$'Fälle' <- "inkl. 0 Promille"
+fn_df2$'Fälle' <- "excl. 0 Promille"
+fn_df3 = rbind(fn_df, fn_df2)
+ggplot(fn_df3, aes(PNABef_AlkoiAL, fill=Fälle)) +
+  geom_density(color = "black",  alpha = 0.3) +
+  labs(x = 'Alkohol in der Atemluft', y = 'Dichte (KDE)')
+@
+
+<<>>=
+rm(fn_df, fn_df2, fn_df3)
+@

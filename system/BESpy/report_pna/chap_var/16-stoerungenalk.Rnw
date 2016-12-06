@@ -1,0 +1,35 @@
+% !TEX root = _report_pna.Rnw
+\filbreak
+\subsection{Störungen durch Alkoholabusus}
+\colorbox{lightgray}{
+  \begin{minipage}{\textwidth}
+    \begin{description}
+      \item[Variable] PNABef\_AlkoStrg - <<Störungen>>
+      \item[Typ] kategorial
+      \item[Kategorien] Dysarthrie ; Gangunsicherheit ; Ataxie / Koordinationsstörungen 
+      \item[Hinweis] Mehrfachnennung möglich
+    \end{description}
+  \end{minipage}
+}
+
+<<>>=
+Kategorien <- unlist(strsplit(PNAdata_dc$PNABef_AlkoStrg , "\036"))
+out_df <- as.data.frame(table(factor(Kategorien), exclude = NULL))
+
+names(out_df) <- c("Kategorien", "Häufigkeit")
+
+out_df$Kategorien <- as.character(out_df$Kategorien)
+out_df$Kategorien[is.na(out_df$Kategorien)] <- "keine Angabe"
+
+print(xtable(
+    out_df
+    , caption = "Störungen durch Alkoholabusus"
+    , digits = 0
+    )
+  , caption.placement = "bottom"
+  , table.placement = "H"
+  , latex.environment="flushleft"
+)
+
+rm(out_df)
+@
