@@ -74,7 +74,7 @@ class Case(object):
 
         ## get CaseID
         sqlquery = """
-            select ID from CASES
+            select ID from id_scorer.dbo.CASES
             where CID=?
             """
         SQLCursor.execute(sqlquery, self.__Soarian_Nr)
@@ -86,7 +86,7 @@ class Case(object):
         ## get CaseNodeID by CaseID
         if self.__CaseID != '':
             sqlquery = """
-                select nodes_ID from CASES_NODES
+                select nodes_ID from id_scorer.dbo.CASES_NODES
                 where CASES_ID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseID)
@@ -98,7 +98,7 @@ class Case(object):
         if self.__CaseNodeID != '':
             ## get CaseEHRID by CaseNodeID
             sqlquery = """
-                select ehrid from NODES
+                select ehrid from id_scorer.dbo.NODES
                 where ID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseNodeID)
@@ -109,7 +109,7 @@ class Case(object):
 
             ## get CaseNodeChildID by CaseNodeID
             sqlquery = """
-                select ID from NODES
+                select ID from id_scorer.dbo.NODES
                 where PARENTID=?
                 """
             SQLCursor.execute(sqlquery, self.__CaseNodeID)
@@ -135,13 +135,13 @@ class Case(object):
             PropertiesSQLCursor = PropertiesSQLConn.cursor()
             # fetch nodes
             sqlquery = """
-                select * from NODES
+                select * from id_scorer.dbo.NODES
                 where NODETYPEID='3' and PARENTID=?
                 """
             for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
                 newPsychPV = PsychPV()
                 sqlquery = """
-                    select * from PROPERTIES
+                    select * from id_scorer.dbo.PROPERTIES
                     where NodeID=?
                     """
                 for property in PropertiesSQLCursor.execute(sqlquery, node.ID):
@@ -153,13 +153,13 @@ class Case(object):
                             property.PROPERTYVALUE.split('T')[0],
                             "%Y-%m-%d").date()
                 sqlquery = """
-                    select * from NODES
+                    select * from id_scorer.dbo.NODES
                     where ParentID=?
                     and NODETYPEID='7'
                     """
                 for ChildNode in NodeChildsSQLCursor.execute(sqlquery, node.ID):
                     sqlquery = """
-                        select * from PROPERTIES
+                        select * from id_scorer.dbo.PROPERTIES
                         where NodeID=?
                         """
                     for ChildNodeProperty in PropertiesSQLCursor.execute(sqlquery, ChildNode.ID):
@@ -203,14 +203,14 @@ class Case(object):
             PropertiesSQLCursor = PropertiesSQLConn.cursor()
             ## fetch all Status Nodes
             sqlquery = """
-                select ID from NODES
+                select ID from id_scorer.dbo.NODES
                 where NODETYPEID='8'
                 and PARENTID=?
                 """
             for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
                 newPsychStatus = PsychStatus()
                 sqlquery = """
-                    select * from PROPERTIES
+                    select * from id_scorer.dbo.PROPERTIES
                     where NODEID=?
                     """
                 for row in PropertiesSQLCursor.execute(sqlquery, node.ID):
@@ -225,14 +225,14 @@ class Case(object):
                             newPsychStatus.Finished = True
                 ## get Child Nodes and Data
                 sqlquery = """
-                    select * from NODES
+                    select * from id_scorer.dbo.NODES
                     where PARENTID=?
                     """
                 IntensiveCareNode = ''
                 Hardship = ''
                 for node_row in NodeChildsSQLCursor.execute(sqlquery, node.ID):
                     sqlquery = """
-                        select * from PROPERTIES
+                        select * from id_scorer.dbo.PROPERTIES
                         where NODEID=?
                         """
                     for nodeprop in PropertiesSQLCursor.execute(sqlquery, node_row.ID):
@@ -276,12 +276,12 @@ class Case(object):
 
                 if IntensiveCareNode != '':
                     sqlquery = """
-                        select * from NODES
+                        select * from id_scorer.dbo.NODES
                         where PARENTID=?
                         """
                     for childnode in NodeChildsSQLCursor.execute(sqlquery, IntensiveCareNode):
                         sqlquery = """
-                            select * from PROPERTIES
+                            select * from id_scorer.dbo.PROPERTIES
                             where NODEID=?
                             """
                         for childnodeproperty in PropertiesSQLCursor.execute(sqlquery, childnode.ID):
@@ -352,21 +352,21 @@ class Case(object):
             CodesSQLCursor = CodesSQLConn.cursor()
             ## fetch all Procedures
             sqlquery = """
-                select * from PROCEDURES
+                select * from id_scorer.dbo.PROCEDURES
                 where CID=?
                 order by PDATE asc
                 """
             for procedure in ProceduresSQLCursor.execute(sqlquery, self.__CaseID):
                 # get Code ID
                 sqlquery = """
-                    select codes_ID from PROCEDURES_CODES
+                    select codes_ID from id_scorer.dbo.PROCEDURES_CODES
                     where PROCEDURES_ID=?
                     """
                 Procedures_CodesSQLCursor.execute(sqlquery, procedure.ID)
                 CodesID = Procedures_CodesSQLCursor.fetchone().codes_ID
                 # get Code
                 sqlquery = """
-                    select * from CODES
+                    select * from id_scorer.dbo.CODES
                     where ID=?
                 """
                 CodesSQLCursor.execute(sqlquery, CodesID)
@@ -400,13 +400,13 @@ class Case(object):
             PropertiesSQLCursor = PropertiesSQLConn.cursor()
             ## fetch all CareIntensityERW2013 Nodes
             sqlquery = """
-                select ID from NODES
+                select ID from id_scorer.dbo.NODES
                 where NODETYPEID='16'
                 and PARENTID=?
                 """
             for node in NodesSQLCursor.execute(sqlquery, self.__CaseNodeChildID):
                 sqlquery = """
-                    select * from PROPERTIES
+                    select * from id_scorer.dbo.PROPERTIES
                     where NODEID=?
                     """
                 newBIScore = BI_Score()
@@ -503,7 +503,7 @@ class connection(object):
         SQLConn = pyodbc.connect(self.__connection_str)
         SQLCursor = SQLConn.cursor()
         sqlquery = """
-            SELECT CID, WARD, ADMHOSPITAL, SEPHOSPITAL from CASES
+            SELECT CID, WARD, ADMHOSPITAL, SEPHOSPITAL from id_scorer.dbo.CASES
             WHERE APSYCH = 1
             """
         SQLCursor.execute(sqlquery)
