@@ -5,10 +5,10 @@
 <div style="width: 300px;">
 <hr>
 <div align="center">
-{if $smarty.section.errorid.max == 0}
-Datei wurde generiert.<br />Zum Herunterladen bzw. Anzeigen der Datei bitte den [OK] Button drücken
+{if count($error_msgs) == 0}
+    Datei wurde generiert.<br />Zum Herunterladen bzw. Anzeigen der Datei bitte den [OK] Button drücken
 {else}
-Zum Schliessen dieses Fensters bitte den [OK] Button drücken
+    Zum Schliessen dieses Fensters bitte den [OK] Button drücken
 {/if}
 <br /><br />
 <form id="genpdf_boxy_form" name="genpdf_boxy_form">
