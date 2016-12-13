@@ -1,7 +1,7 @@
 <<initpart, include=FALSE, cache=FALSE>>=
 start.time <- Sys.time()
 source("initpart.R")
-source("init_missing_kommentare.custom.R")
+source("init_missing.custom.R")
 source("import_data.R")
 source("import_data_BES.R")
 opts_chunk$set(results = 'asis')

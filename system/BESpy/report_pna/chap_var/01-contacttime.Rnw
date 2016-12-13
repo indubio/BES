@@ -52,7 +52,7 @@ ggplot(plot_df, aes(x = Var1, y = Freq)) +
 @
 
 <<contacttime_fig3, fig.height=3, fig.cap="Anzahl ambulanter Kontakte nach Stunde", fig.pos="H">>=
-PNAdata_dc$ContactTime.Stunde <- format(PNAdata_dc$ContactTime, format="%H")
+PNAdata_dc$ContactTime.Stunde <- as.integer(format(PNAdata_dc$ContactTime, format="%H"))
 plot_df <- as.data.frame(table(PNAdata_dc$ContactTime.Stunde))
 ggplot(plot_df, aes(x = Var1, y = Freq)) +
   geom_bar(stat = "identity", color = "black", fill = "#2b8cbe") +
@@ -60,5 +60,22 @@ ggplot(plot_df, aes(x = Var1, y = Freq)) +
   xlab("Uhrzeit: Stunde") +
   ylab("Anzahl Kontakte") 
   #ggtitle("Anzahl ambulanter Kontakte\nnach Uhrzeit")
+rm(plot_df)
+@
+
+<<contacttime_fig4, fig.height=3, fig.cap="Anzahl ambulanter Kontakte nach Stundengruppen", fig.pos="H">>=
+PNAdata_dc$ContactTime.FS <- "08:00 - 14:00"
+PNAdata_dc[
+  PNAdata_dc$ContactTime.Stunde < 8 | 
+  PNAdata_dc$ContactTime.Stunde > 14, 
+  "ContactTime.FS"] <- "14:01 - 07:59"
+
+plot_df <- as.data.frame(table(PNAdata_dc$ContactTime.FS))
+ggplot(plot_df, aes(x = Var1, y = Freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "#2b8cbe") +
+  geom_text(aes(x = Var1, y = 10, label = Freq), vjust = 0) +
+  xlab("Uhrzeit: Bereich") +
+  ylab("Anzahl Kontakte") 
+  #ggtitle("Anzahl ambulanter Kontakte\nnach Stunden gruppiert")
 rm(plot_df)
 @

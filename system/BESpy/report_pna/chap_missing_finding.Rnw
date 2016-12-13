@@ -16,8 +16,10 @@ Befund_missing <- Befund_needed[Befund_needed$aufnahmenummer %nin% PNAdata_dc$Ca
 Befund_missing <- Befund_missing[order(Befund_missing$datum_zeit, decreasing = TRUE), ]
 Befund_missing$datum_zeit <- format(Befund_missing$datum_zeit, format="%d.%m.%Y %H:%M")
 
-Befund_missing$Kommentar <- kommentarDT[Befund_missing$aufnahmenummer, "kommentar"]
+Befund_missing$Kommentar <- miss_commentsDT[Befund_missing$aufnahmenummer, "comment"]
 Befund_missing[is.na(Befund_missing$Kommentar), "Kommentar"] <- " "
+
+Befund_missing <- Befund_missing[Befund_missing$aufnahmenummer %nin% missing_to_skip,]
 
 rownames(Befund_missing) <- seq(1:nrow(Befund_missing))
 colnames(Befund_missing) <- c("ANr", "Datum", "Name", "Kommentar")
