@@ -5,7 +5,7 @@
 <div style="width: 300px;">
 <hr>
 <div align="center">
-{if $smarty.section.errorid.max == 0}
+{if $smarty.section.errorid.total == 0}
 Datei wurde generiert.<br />Zum Herunterladen bzw. Anzeigen der Datei bitte den [OK] Button drücken
 {else}
 Zum Schliessen dieses Fensters bitte den [OK] Button drücken

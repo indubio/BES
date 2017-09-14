@@ -172,6 +172,10 @@ function mywaf($conn, $var = array()) {
                 case "wohnort_e"             : if ($value!=""){if (idnotindb($conn, "f_wohnort",$value)){$error=true;}} else {$error=true;} break;
                 case "wohnsituation_a"       : if ($value!=""){if (idnotindb($conn, "f_wohnsituation",$value)){$error=true;}} else {$error=true;} break;
                 case "wohnsituation_e"       : if ($value!=""){if (idnotindb($conn, "f_wohnsituation",$value)){$error=true;}} else {$error=true;} break;
+                case "wohnsituation_a_heim_art" : if ($value!=""){if (idnotindb($conn, "f_wohnsituation_heim_art",$value)){$error=true;}} else {$error=true;} break;
+                case "wohnsituation_a_heim_ort" : if ($value!=""){if (idnotindb($conn, "f_wohnsituation_heim_ort",$value)){$error=true;}} else {$error=true;} break;
+                case "wohnsituation_e_heim_art" : if ($value!=""){if (idnotindb($conn, "f_wohnsituation_heim_art",$value)){$error=true;}} else {$error=true;} break;
+                case "wohnsituation_e_heim_ort" : if ($value!=""){if (idnotindb($conn, "f_wohnsituation_heim_ort",$value)){$error=true;}} else {$error=true;} break;
                 case "piabef_behandler"      : if ($value!=""){if (idnotindb($conn, "user",$value)){$error=true;}} else {$error=true;} break;
                 case "piabef_berufsbildung"  : if ($value!=""){if (idnotindb($conn, "f_pia_berufsbildung",$value)){$error=true;}} else {$error=true;} break;
                 case "piabef_cb_akrisen"     : if ($value!=0 and $value!=1){$error=true;} break;

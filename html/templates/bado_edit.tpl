@@ -91,7 +91,30 @@ Entlassung:&nbsp;{$fall_entlass_info}
               <label for="begleitung2">Wahl 2:&nbsp;</label><select id="begleitung2" name="begleitung2" class="begleitung"{if $fall_begleitung1_selected==9} disabled="disabled"{/if}>{html_options values=$begleitung_values output=$begleitung_options selected=$fall_begleitung2_selected}</select>
             </fieldset>
           </td>
-          <td valign="top"><fieldset class="h2"><legend class="h2">Wohnsituation bei Aufnahme</legend><select id="wohnsituation_a" name="wohnsituation_a">{html_options values=$wohnsituation_values output=$wohnsituation_options selected=$fall_wohnsituation_a_selected}</select></fieldset></td>
+          <td valign="top">
+            <fieldset class="h2"><legend class="h2">Wohnsituation bei Aufnahme</legend>
+              <table cellspacing="5" cellpadding="0" border="0">
+                <tr>
+                  <td valign="top">
+                    <select id="wohnsituation_a" name="wohnsituation_a">{html_options values=$wohnsituation_values output=$wohnsituation_options selected=$fall_wohnsituation_a_selected}</select>
+
+                    </br>
+                    <table cellspacing="5" cellpadding="0" border="0">
+                      <tr>
+                        <td><label for="wohnsituation_a_heim_art">Art des Heimes:&nbsp;</label></td>
+                        <td><select id="wohnsituation_a_heim_art" name="wohnsituation_a_heim_art" {if $fall_wohnsituation_a_selected!=10 and $fall_wohnsituation_a_selected!=11}readonly="readonly" disabled="disabled"{/if}>{html_options values=$wohnsituation_heim_art_values output=$wohnsituation_heim_art_options selected=$fall_wohnsituation_a_heim_art_selected}</select></td>
+                      </tr>
+                      <tr>
+                        <td><label for="wohnsituation_a_heim_ort">Standort des Heimes:&nbsp;</label></td>
+                        <td><select id="wohnsituation_a_heim_ort" name="wohnsituation_a_heim_ort" {if $fall_wohnsituation_a_selected!=10 and $fall_wohnsituation_a_selected!=11}readonly="readonly" disabled="disabled"{/if}>{html_options values=$wohnsituation_heim_ort_values output=$wohnsituation_heim_ort_options selected=$fall_wohnsituation_a_heim_ort_selected}</select></td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+          </td>
         </tr>
       </table>
       </fieldset>
@@ -135,11 +158,38 @@ Entlassung:&nbsp;{$fall_entlass_info}
       <table cellspacing="5" cellpadding="0" border="0">
         <tr>
           <td>
-            <fieldset class="h2"><legend class="h2">Wohnort / Wohnsituation bei Entlassung</legend>
-              <label for="wohnort_e">Wohnort:&nbsp;</label><select id="wohnort_e" name="wohnort_e">{html_options values=$wohnort_values output=$wohnort_options selected=$fall_wohnort_e_selected}</select>
-              <label for="wohnsituation_e">Wohnsituation:&nbsp;</label><select id="wohnsituation_e" name="wohnsituation_e">{html_options values=$wohnsituation_values output=$wohnsituation_options selected=$fall_wohnsituation_e_selected}</select>
-              <br />
-              <input type="button" id="badoedit_btn_set_wohnoptions_e" name="badoedit_btn_set_wohnoptions_e" value="Optionen wie bei Aufnahme wählen" /><br />
+            <fieldset class="h2"><legend class="h2"><input type="button" id="badoedit_btn_set_wohnoptions_e" name="badoedit_btn_set_wohnoptions_e" value="Wohnort und -situation wie bei Aufnahme wählen" /></legend>
+              <table cellspacing="5" cellpadding="0" border="0">
+              <tr>
+                <td valign="top">
+                  <fieldset class="h2"><legend class="h2">Wohnort bei Entlassung</legend>
+                    <select id="wohnort_e" name="wohnort_e">{html_options values=$wohnort_values output=$wohnort_options selected=$fall_wohnort_e_selected}</select>
+                  </fieldset>
+                </td>
+                <td valign="top">
+                  <fieldset class="h2"><legend class="h2">Wohnsituation bei Entlassung</legend>
+                    <table cellspacing="5" cellpadding="0" border="0">
+                      <tr>
+                        <td valign="top">
+                          <select id="wohnsituation_e" name="wohnsituation_e">{html_options values=$wohnsituation_values output=$wohnsituation_options selected=$fall_wohnsituation_e_selected}</select>
+                          </br>
+                          <table cellspacing="5" cellpadding="0" border="0">
+                            <tr>
+                              <td><label for="wohnsituation_e_heim_art">Art des Heimes:&nbsp;</label></td>
+                              <td><select id="wohnsituation_e_heim_art" name="wohnsituation_e_heim_art" {if $fall_wohnsituation_e_selected!=10 and $fall_wohnsituation_e_selected!=11}readonly="readonly" disabled="disabled"{/if}>{html_options values=$wohnsituation_heim_art_values output=$wohnsituation_heim_art_options selected=$fall_wohnsituation_e_heim_art_selected}</select></td>
+                            </tr>
+                            <tr>
+                              <td><label for="wohnsituation_e_heim_ort">Standort des Heimes:&nbsp;</label></td>
+                              <td><select id="wohnsituation_e_heim_ort" name="wohnsituation_e_heim_ort" {if $fall_wohnsituation_e_selected!=10 and $fall_wohnsituation_e_selected!=11}readonly="readonly" disabled="disabled"{/if}>{html_options values=$wohnsituation_heim_ort_values output=$wohnsituation_heim_ort_options selected=$fall_wohnsituation_e_heim_ort_selected}</select></td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </fieldset>
+                </td>
+              </tr>
+              </table>
             </fieldset>
           </td>
         </tr>

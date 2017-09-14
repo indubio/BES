@@ -31,7 +31,9 @@ $('#badoedit_btn_close').click(function() {
 $('#badoedit_btn_set_wohnoptions_e').click(function() {
 	//Setzt die Auswahl von Aufnahme bei Entlassung ein
 	$('#wohnort_e').val($('#wohnort_a').val());
-	$('#wohnsituation_e').val($('#wohnsituation_a').val());
+	$('#wohnsituation_e').val($('#wohnsituation_a').val()).change();
+	$('#wohnsituation_e_heim_ort').val($('#wohnsituation_a_heim_ort').val());
+	$('#wohnsituation_e_heim_art').val($('#wohnsituation_a_heim_art').val());
 });
 
 $('.tt_badoedit').click(function() {
@@ -93,6 +95,54 @@ $('#migration').change(function() {
 		$(element).attr("disabled","disabled");
 		$(element).val("");
 	}
+});
+
+$('#wohnsituation_a').change(function() {
+//BADO EDIT Wohnsituation A Heim
+    var element1 = $('#wohnsituation_a_heim_art');
+    var element2 = $('#wohnsituation_a_heim_ort');
+    var selection = $(this).val();
+    if (selection == 10 || selection == 11 || selection == 12){
+        element1.removeAttr("readonly").removeAttr("disabled");
+        element2.removeAttr("readonly").removeAttr("disabled");
+    } else {
+        element1.removeAttr("readonly").removeAttr("disabled");
+        element1.attr("readonly", "readonly").attr("disabled", "disabled");
+        element1.val("-1");
+        element1.removeAttr("readonly").removeAttr("disabled");
+        element1.attr("readonly", "readonly").attr("disabled", "disabled");
+        element1.val("-1");
+        element2.removeAttr("readonly").removeAttr("disabled");
+        element2.attr("readonly", "readonly").attr("disabled", "disabled");
+        element2.val("-1");
+        element2.removeAttr("readonly").removeAttr("disabled");
+        element2.attr("readonly", "readonly").attr("disabled", "disabled");
+        element2.val("-1");
+    }
+});
+
+$('#wohnsituation_e').change(function() {
+//BADO EDIT Wohnsituation E Heim
+    var element1 = $('#wohnsituation_e_heim_art');
+    var element2 = $('#wohnsituation_e_heim_ort');
+    var selection = $(this).val();
+    if (selection == 10 || selection == 11 || selection == 12){
+        element1.removeAttr("readonly").removeAttr("disabled");
+        element2.removeAttr("readonly").removeAttr("disabled");
+    } else {
+        element1.removeAttr("readonly").removeAttr("disabled");
+        element1.attr("readonly", "readonly").attr("disabled", "disabled");
+        element1.val("-1");
+        element1.removeAttr("readonly").removeAttr("disabled");
+        element1.attr("readonly", "readonly").attr("disabled", "disabled");
+        element1.val("-1");
+        element2.removeAttr("readonly").removeAttr("disabled");
+        element2.attr("readonly", "readonly").attr("disabled", "disabled");
+        element2.val("-1");
+        element2.removeAttr("readonly").removeAttr("disabled");
+        element2.attr("readonly", "readonly").attr("disabled", "disabled");
+        element2.val("-1");
+    }
 });
 
 $('.begleitung').change(function() {

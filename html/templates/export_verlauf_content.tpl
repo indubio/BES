@@ -13,7 +13,7 @@
         font-size: 12px;
         margin: 0px;
         padding: 0px;
-        line-heightsdd: 1em;
+        line-height: 1em;
         color: #000000;
     }
     fieldset {

@@ -49,6 +49,10 @@ if ($mode == "submit") {
 	if (!(isset($submit['einweisung_evb']))) {$submit['einweisung_evb'] = -1;}
 	if (!(isset($submit['aufenthalt_art']))) {$submit['aufenthalt_art'] = 0;}
 	if (!(isset($submit['weiterbehandlung_evb']))) {$submit['weiterbehandlung_evb'] = -1;}
+	if (!(isset($submit['wohnsituation_a_heim_art']))) {$submit['wohnsituation_a_heim_art'] = -1;}
+	if (!(isset($submit['wohnsituation_a_heim_ort']))) {$submit['wohnsituation_a_heim_ort'] = -1;}
+	if (!(isset($submit['wohnsituation_e_heim_art']))) {$submit['wohnsituation_e_heim_art'] = -1;}
+	if (!(isset($submit['wohnsituation_e_heim_ort']))) {$submit['wohnsituation_e_heim_ort'] = -1;}
 	// wenn nicht andere Migration, dann leer
 	if ($submit['migration'] !=4 ){$submit['migration_anderer'] = "";}
 	// wenn nicht Untergebracht, dann leer
@@ -138,7 +142,11 @@ if ($mode == "submit") {
 		"`berufsbildung`='".$submit['berufsbildung']."', ".
 		"`einkuenfte`='".$submit['einkuenfte']."', ".
 		"`wohnsituation_a`='".$submit['wohnsituation_a']."', ".
+		"`wohnsituation_a_heim_art`='".$submit['wohnsituation_a_heim_art']."', ".
+		"`wohnsituation_a_heim_ort`='".$submit['wohnsituation_a_heim_ort']."', ".
 		"`wohnsituation_e`='".$submit['wohnsituation_e']."', ".
+		"`wohnsituation_e_heim_art`='".$submit['wohnsituation_e_heim_art']."', ".
+		"`wohnsituation_e_heim_ort`='".$submit['wohnsituation_e_heim_ort']."', ".
 		"`einweisung`='".$submit['einweisung']."', ".
 		"`einweisung_evb`='".$submit['einweisung_evb']."', ".
 		"`einweisung_additional`='".$submit['einweisung_additional']."', ".
@@ -195,6 +203,9 @@ if ($mode == "submit") {
 	if ($submit['einweisung']=="-1"){$error_msgs[]="Einweisung durch... fehlt";}
 	if ($submit['einweisung']=="7" and $submit['einweisung_evb']=="-1"){$error_msgs[]="Einweisung durchs EvB gewählt, aber durch welches Zentrum fehlt";}
 	if ($submit['begleitung1']=="-1"){$error_msgs[]="Begleitung bei Einweiung nicht gewählt";}
+	if ($submit['wohnsituation_e']=="10" and ($submit['wohnsituation_e_heim_art']=="-1" or $submit['wohnsituation_e_heim_ort']=="-1")){$error_msgs[]="Wohnsituation Entlassung: Heim nicht spezifiziert";}
+	if ($submit['wohnsituation_e']=="11" and ($submit['wohnsituation_e_heim_art']=="-1" or $submit['wohnsituation_e_heim_ort']=="-1")){$error_msgs[]="Wohnsituation Entlassung: Heim nicht spezifiziert";}
+	if ($submit['wohnsituation_e']=="12" and ($submit['wohnsituation_e_heim_art']=="-1" or $submit['wohnsituation_e_heim_ort']=="-1")){$error_msgs[]="Wohnsituation Entlassung: Heim nicht spezifiziert";}
 	if ($submit['amodus']=="-1"){$error_msgs[]="kein Aufnahmemodus gewählt";}
 	if ($submit['emodus']=="-1"){$error_msgs[]="kein Entlassungsmodus gewählt";}
 	if ($submit['rechtsstatus']=="-1"){$error_msgs[]="kein Rechtsstatus gewählt";}
@@ -291,7 +302,7 @@ if ($mode == "edit") {
 		"psy_stationen", "geschlecht", "wohnort", "migration", "familienstand", "berufsbildung",
 		"einkuenfte", "wohnsituation", "einweisung", "kliniken_evb", "begleitung", "amodus",
 		"aufenthalt_art", "rechtsstatus", "unterbringungsdauer", "emodus", "weiterbehandlung",
-		"suizid_sv", "betreuung");
+		"suizid_sv", "betreuung","wohnsituation_heim_art", "wohnsituation_heim_ort");
 	foreach ($selectboxen as $value) { create_select($conn, $value); }
 
 	// Falldaten holen und zuweisen
@@ -305,7 +316,9 @@ if ($mode == "edit") {
 			"wohnort_a", "wohnort_e", "migration", "familienstand", "berufsbildung", "einkuenfte",
 			"wohnsituation_a", "wohnsituation_e", "einweisung", "einweisung_evb", "begleitung1",
 			"begleitung2", "rechtsstatus", "unterbringungsdauer", "weiterbehandlung1",
-			"weiterbehandlung2", "weiterbehandlung3", "weiterbehandlung_evb", "betreuung");
+			"weiterbehandlung2", "weiterbehandlung3", "weiterbehandlung_evb", "betreuung",
+			"wohnsituation_a_heim_art", "wohnsituation_a_heim_ort", "wohnsituation_e_heim_art",
+			"wohnsituation_e_heim_ort");
 		foreach ($fallvalues as $value) {
 			$smarty -> assign("fall_".$value."_selected", $row[$value]);
 		}

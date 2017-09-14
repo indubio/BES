@@ -348,9 +348,12 @@ function exportMySqlToCsv_PIA ($conn, $db_year) {
 		array("head_name" => "Aufnahmedatum",
 				"db_col" => "aufnahmedatum"
 		),
-		array("head_name" => "Entlassdatum",
-				"db_col" => "entlassdatum"
-		),
+        array("head_name" => "Entlassdatum",
+                "db_col" => "entlassdatum"
+        ),
+        array("head_name" => "LetzterKontakt",
+                "db_col" => "last_contact"
+        ),
 		array("head_name" => "PIA",
 				"db_col" => "pia_id",
 				"conversion" => "1on1",
@@ -513,16 +516,20 @@ function exportMySqlToCsv_PIA ($conn, $db_year) {
 				"db_col" => "entlassmodus",
 				"conversion" => "1on1",
 				"1on1tbl" => "f_emodus"
-		)
-	);
-	if ($db_year != "-1") {
-		$sql_query  = "select * from `fall_pia` WHERE ";
-		$sql_query .= "`geschlossen`!=0 AND `cancelled`='0' ";
-		$sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')>='".$db_year."-01-01' ";
-		$sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')<='".$db_year."-12-31'";
-	} else {
-		$sql_query = "select * from `fall_pia` WHERE `geschlossen`!=0 AND `cancelled`='0'";
-	}
-	return generate_csv($conn, $to_export, $sql_query);
+        )
+    );
+    if ($db_year != "-1") {
+        $sql_query  = "select * from `fall_pia` WHERE ";
+       # $sql_query .= "`geschlossen`!=0 AND `cancelled`='0' ";
+       $sql_query .= "`mdata_complete`!=0 AND `cancelled`='0' AND `hide_case`='0' ";
+       # $sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')>='".$db_year."-01-01' ";
+       # $sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')<='".$db_year."-12-31'";
+
+        $sql_query .= "AND str_to_date(`last_contact`,'%Y-%m-%d')>='".$db_year."-01-01' ";
+        $sql_query .= "AND str_to_date(`aufnahmedatum`,'%d.%m.%Y')<='".$db_year."-12-31'";
+    } else {
+        $sql_query = "select * from `fall_pia` WHERE `geschlossen`!=0 AND `cancelled`='0'";
+    }
+    return generate_csv($conn, $to_export, $sql_query);
 }
 ?>
