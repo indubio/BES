@@ -3,7 +3,9 @@
 <h2>{$pia_fall_badotyp_title}</h2>
 <hr />
 <h2>{$pia_fall_person_info}</h2>
-Kontakt:&nbsp;{$pia_fall_kontakt_info}
+<b>erster Kontakt:</b>&nbsp;{$pia_fall_kontakt_info}
+<br />
+<b>letzter Kontakt:</b>&nbsp;{$pia_fall_lastcontact_info}
 <br />
 <form id="badoedit_pia" name="badoedit_pia" action="#" method="post">
 {if $btn_getstammdata==1}

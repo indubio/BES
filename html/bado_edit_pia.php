@@ -111,7 +111,8 @@ if ($num_fall == 1){
         htmlspecialchars($row['familienname'], ENT_NOQUOTES, 'UTF-8').", ".
         htmlspecialchars($row['vorname'], ENT_NOQUOTES, 'UTF-8')." geb. ".$row['geburtsdatum']
     );
-    $smarty -> assign('pia_fall_kontakt_info', idtostr($conn, $row['pia_id'], "f_psy_ambulanzen")." am ".$row['aufnahmedatum']." um ".$row['aufnahmezeit']);
+    $smarty -> assign('pia_fall_kontakt_info', idtostr($conn, $row['pia_id'], "f_psy_ambulanzen")." am ".$row['aufnahmedatum']);
+    $smarty -> assign('pia_fall_lastcontact_info', idtostr($conn, $row['pia_id'], "f_psy_ambulanzen")." am ".datetime_to_de($row['last_contact'], "date"));
     $bado_typ_array = array("", "Stammdaten Erfassung", "Verlaufsdaten Erfassung");
     $smarty -> assign('pia_fall_badotyp_title', $bado_typ_array[$row['badotyp']]);
 
