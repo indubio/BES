@@ -66,6 +66,21 @@ if ($mode == "edit"){
             $smarty->assign('fall_entlass_info', 'noch nicht entlassen');
         }
         $smarty->assign('case_dbid', $fall_dbid);
+
+        // Letzter PIA Kontakt
+        $query_pia = "SELECT * FROM fall_pia".
+        " WHERE CONCAT(`vorname`,`familienname`,`geburtsdatum`)='".$row['vorname'].$row['familienname'].$row['geburtsdatum']."'".
+        " AND hide_case = 0 ORDER BY `last_contact` DESC LIMIT 1";
+        $result_pia = mysqli_query($conn, $query_pia);
+        $num_piafall = mysqli_num_rows($result_pia);
+        if ($num_piafall > 0){
+            $rowpia = mysqli_fetch_array($result_pia);
+            mysqli_free_result($result);
+            $smarty -> assign('fall_pia_lastcontact_info', idtostr($conn, $rowpia['pia_id'], "f_psy_ambulanzen")." am ".datetime_to_de($rowpia['last_contact'], "date"));
+        } else {
+            $smarty->assign('fall_pia_lastcontact_info', "unbekannt");
+        }
+
     } else {
         message_die(GENERAL_ERROR, "Fall nicht in der Datenbank gefunden", "Fehler");
     }

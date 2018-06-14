@@ -120,6 +120,11 @@ if ($_GET['mode'] == "getheader"){
         } else {
             $smarty -> assign('fall_entlass_info', 'noch nicht entlassen');
         }
+        if ($row['geschlossen'] == "0"){
+            $smarty->assign('fall_bado_info', "noch nicht abgeschlossen");
+        } else {
+            $smarty->assign('fall_bado_info', 'abgeschlossen');
+        }
     }
     $smarty -> display('export_verlauf_header.tpl');
 }

@@ -8,11 +8,11 @@ Aufnahme:&nbsp;{$fall_aufnahme_info}
 <br />
 Entlassung:&nbsp;{$fall_entlass_info}
 <br />
+{if $fall_pia_lastcontact_info != "unbekannt"}
 <br />
-Basisdokumentation:&nbsp;{$fall_bado_info}
+letzter PIA Kontakt:&nbsp;{$fall_pia_lastcontact_info}
 <br />
-letzter PIA Kontakt:&nbsp;{$fall_pia_info}
-<br />
+{/if}
 <hr />
 {if $permission_ro != TRUE}
 <input type="button" id="newentry_btn" name="newentry_btn" value="Neuer Eintrag" />

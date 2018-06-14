@@ -392,8 +392,8 @@ if ($mode == "edit") {
 	}
 	mysqli_free_result($result);
 
-	$smarty -> assign('behandler_values', array_merge($dummyarray_i_cur, $dummyarray_i_all));
-	$smarty -> assign('behandler_options', array_merge($dummyarray_k_cur, $dummyarray_k_all));
+	$smarty -> assign('behandler_values', array_merge(array("-1"), $dummyarray_i_cur, $dummyarray_i_all));
+	$smarty -> assign('behandler_options', array_merge(array("&nbsp;"), $dummyarray_k_cur, $dummyarray_k_all));
 
 	if ($errorlog == 1 or $errorlog == 2) {
     	$smarty -> assign('badocheckok', $errorlog);

@@ -33,8 +33,9 @@
 <p class="header"><b>Therapieverlauf</b><br />
 {$fall_person_info}<br />
 <span style="font-size: 12px;">
-Aufnahme:&nbsp;{$fall_aufnahme_info}<br />
+Aufnahme:&nbsp;{$fall_aufnahme_info}&nbsp;
 Entlassung:&nbsp;{$fall_entlass_info}<br />
+Basisdokumentation:&nbsp;{$fall_bado_info}<br />
 </span>
 <hr />
 </p>
